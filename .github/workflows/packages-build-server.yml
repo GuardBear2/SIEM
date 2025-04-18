@@ -53,6 +53,12 @@ on:
         description: Generate package checksum.
         type: boolean
         required: false
+      build_from_source:
+        description: |
+          Build everything from source without using precompiled store.
+          By default: false
+        type: boolean
+        required: false
       id:
         type: string
         description: |
@@ -84,6 +90,10 @@ on:
       checksum:
         type: boolean
         required: false
+      build_from_source:
+        type: boolean
+        required: false
+        default: false
       id:
         type: string
         required: false
@@ -131,10 +141,10 @@ jobs:
           aws-region: ${{ secrets.CI_AWS_REGION }}
 
       - name: Download pre-compiled store
+        if: ${{ inputs.build_from_source != true }}
         run: |
           aws s3 cp ${{ env.S3_PRECOMPILED_STORE }} $GITHUB_WORKSPACE/${{ env.LOCAL_PRECOMPILED_STORE_PATH }}
           # Save the store in the workspace
-
 
       - name: Build ${{ inputs.system }} wazuh-server on ${{ inputs.architecture }}
         working-directory: packages
@@ -146,6 +156,9 @@ jobs:
           if [ "${{ inputs.checksum }}" == "true" ]; then FLAGS+="--checksum "; fi
           if [ "${{ inputs.debug}}" == "true" ]; then FLAGS+="--debug "; fi
           # Every call to this workflow will be internally managed as amd64, which is synonymous with x86_64
+          if [ "${{ inputs.build_from_source }}" == "true" ]; then
+            FLAGS+="--store-from-sources "
+          fi
           echo "generate_package.sh -a amd64 --tag ${{ env.TAG }} --system ${{ inputs.system }} $FLAGS"
           bash generate_package.sh -a amd64 --tag ${{ env.TAG }} --system ${{ inputs.system }} $FLAGS
 
