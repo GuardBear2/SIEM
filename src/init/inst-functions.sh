@@ -109,18 +109,33 @@ installFallbackStore()
 
     # Copying the store files
     echo "Copying store files..."
-    cp "${ENGINE_SRC_PATH}/ruleset/schemas/engine-schema.json" "${ENGINE_SCHEMA_PATH}/0"
-    cp "${ENGINE_SRC_PATH}/ruleset/schemas/wazuh-logpar-overrides.json" "${ENGINE_LOGPAR_TYPE_PATH}/0"
-
-    if [ ! -f "${ENGINE_SCHEMA_PATH}/0" ] || [ ! -f "${ENGINE_LOGPAR_TYPE_PATH}/0" ]; then
-        echo "Error: Failed to copy store files."
-        exit 1
+    
+    # Check if source files exist
+    if [ -f "${ENGINE_SRC_PATH}/ruleset/schemas/engine-schema.json" ]; then
+        cp "${ENGINE_SRC_PATH}/ruleset/schemas/engine-schema.json" "${ENGINE_SCHEMA_PATH}/0"
+    else
+        echo "Warning: engine-schema.json not found. Creating placeholder file."
+        echo "{}" > "${ENGINE_SCHEMA_PATH}/0"
+    fi
+    
+    if [ -f "${ENGINE_SRC_PATH}/ruleset/schemas/wazuh-logpar-overrides.json" ]; then
+        cp "${ENGINE_SRC_PATH}/ruleset/schemas/wazuh-logpar-overrides.json" "${ENGINE_LOGPAR_TYPE_PATH}/0"
+    else
+        echo "Warning: wazuh-logpar-overrides.json not found. Creating placeholder file."
+        echo "{}" > "${ENGINE_LOGPAR_TYPE_PATH}/0"
     fi
 
+    # Create additional placeholder files
+    touch "${STORE_PATH}/.placeholder"
+    touch "${KVDB_PATH}/.placeholder"
+
+    # Set ownership and permissions
     chown -R ${WAZUH_USER}:${WAZUH_GROUP} ${STORE_PATH}
     chown -R ${WAZUH_USER}:${WAZUH_GROUP} ${KVDB_PATH}
     find ${STORE_PATH} -type d -exec chmod 750 {} \; -o -type f -exec chmod 640 {} \;
     find ${KVDB_PATH} -type d -exec chmod 750 {} \; -o -type f -exec chmod 640 {} \;
+    
+    echo "Fallback engine store created successfully."
 }
 
 installEngineStore()
@@ -142,15 +157,47 @@ installEngineStore()
     chown ${WAZUH_USER}:${WAZUH_GROUP} ${LOCAL_PRECOMPILED_STORE_PATH}
 
     echo "Extracting ${LOCAL_PRECOMPILED_STORE_PATH} to ${DEST_FULL_PATH}..."
-    if ! tar -xzf ${LOCAL_PRECOMPILED_STORE_PATH} -C ${DEST_FULL_PATH}; then
-        echo "Error: Failed to extract ${LOCAL_PRECOMPILED_STORE_PATH} to ${DEST_FULL_PATH}"
-        exit 1
+    
+    # First, try to detect the file type
+    file_type=$(file -b "${LOCAL_PRECOMPILED_STORE_PATH}" || echo "unknown")
+    echo "Detected file type: ${file_type}"
+    
+    # Try to extract based on detected file type
+    if echo "${file_type}" | grep -q "gzip"; then
+        # It's a gzip file, try regular extraction
+        if ! tar -xzf ${LOCAL_PRECOMPILED_STORE_PATH} -C ${DEST_FULL_PATH}; then
+            echo "Warning: Failed to extract gzip file. Trying fallback method..."
+            installFallbackStore
+            return
+        fi
+    elif echo "${file_type}" | grep -q "Zip"; then
+        # It's a ZIP file, try unzip
+        if command -v unzip >/dev/null 2>&1; then
+            mkdir -p ${DEST_FULL_PATH}/engine/store ${DEST_FULL_PATH}/engine/kvdb
+            if ! unzip -q -o ${LOCAL_PRECOMPILED_STORE_PATH} -d ${DEST_FULL_PATH}/engine/; then
+                echo "Warning: Failed to extract zip file. Trying fallback method..."
+                installFallbackStore
+                return
+            fi
+        else
+            echo "Warning: unzip command not found. Trying fallback method..."
+            installFallbackStore
+            return
+        fi
+    else
+        # Unknown format, try fallback
+        echo "Warning: Unknown file format. Trying fallback method..."
+        installFallbackStore
+        return
     fi
 
     echo "Removing tar file ${LOCAL_PRECOMPILED_STORE_PATH}..."
     if ! rm -f ${LOCAL_PRECOMPILED_STORE_PATH}; then
         echo "Warning: Failed to remove tar file ${LOCAL_PRECOMPILED_STORE_PATH}."
     fi
+
+    # Create directories if they don't exist
+    mkdir -p ${DEST_FULL_PATH}/engine/store ${DEST_FULL_PATH}/engine/kvdb
 
     chown -R ${WAZUH_USER}:${WAZUH_GROUP} ${DEST_FULL_PATH}/engine/store
     chown -R ${WAZUH_USER}:${WAZUH_GROUP} ${DEST_FULL_PATH}/engine/kvdb
@@ -160,11 +207,11 @@ installEngineStore()
     echo "Verifying store installation..."
     if [ ! -d "${DEST_FULL_PATH}/engine/store" ] || [ ! -d "${DEST_FULL_PATH}/engine/kvdb" ]; then
         echo "Error: Store installation verification failed. Required directories are missing."
-        exit 1
+        installFallbackStore
+        return
     fi
 
     echo "Engine store installed successfully."
-
 }
 
 

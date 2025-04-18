@@ -37,7 +37,11 @@ RUN cd /build_deps_vcpkg && vcpkg install --triplet x64-linux --feature-flags=ma
 ADD build.sh /usr/local/bin/build_package
 RUN chmod +x /usr/local/bin/build_package
 ADD helper_function.sh /usr/local/bin/helper_function.sh
+ADD fix_date_epoch.sh /usr/local/bin/fix_date_epoch.sh
 ADD gen_permissions.sh /tmp/gen_permissions.sh
+
+# Make sure the date epoch wrapper is executable
+RUN chmod +x /usr/local/bin/fix_date_epoch.sh
 
 # Set the entrypoint
 ENTRYPOINT ["/usr/local/bin/build_package"]
