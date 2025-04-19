@@ -158,7 +158,7 @@ jobs:
           if [ "${{ inputs.debug}}" == "true" ]; then FLAGS+="--debug "; fi
           # Every call to this workflow will be internally managed as amd64, which is synonymous with x86_64
           if [ "${{ inputs.build_from_source }}" == "true" ]; then
-            FLAGS+="--store-from-sources "
+            FLAGS+="--sources $GITHUB_WORKSPACE "
           fi
           echo "generate_package.sh -a amd64 --tag ${{ env.TAG }} --system ${{ inputs.system }} $FLAGS"
           bash generate_package.sh -a amd64 --tag ${{ env.TAG }} --system ${{ inputs.system }} $FLAGS
