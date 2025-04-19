@@ -161,8 +161,31 @@ jobs:
           # Every call to this workflow will be internally managed as amd64, which is synonymous with x86_64
           FLAGS+="--sources $GITHUB_WORKSPACE "
           echo "generate_package.sh -a amd64 --tag ${{ env.TAG }} --system ${{ inputs.system }} $FLAGS"
-          bash generate_package.sh -a amd64 --tag ${{ env.TAG }} --system ${{ inputs.system }} $FLAGS
-
+          
+          # Variables for the Docker container
+          CONTAINER_NAME=pkg_${{ inputs.system }}_server_builder_amd64
+          DOCKERFILE_PATH=$GITHUB_WORKSPACE/packages/${{ inputs.system }}s/amd64
+          
+          # Copy necessary files
+          cp $GITHUB_WORKSPACE/packages/build.sh $DOCKERFILE_PATH/
+          cp $GITHUB_WORKSPACE/packages/${{ inputs.system }}s/utils/* $DOCKERFILE_PATH/
+          cp $GITHUB_WORKSPACE/src/engine/vcpkg.json $DOCKERFILE_PATH/
+          cp $GITHUB_WORKSPACE/src/engine/vcpkg-configuration.json $DOCKERFILE_PATH/
+          
+          # Run the container with explicit build command
+          docker run -t --rm \
+            -v /tmp:/var/local/wazuh:Z \
+            -e SYSTEM=${{ inputs.system }} \
+            -e ARCHITECTURE_TARGET=amd64 \
+            -e INSTALLATION_PATH=/ \
+            -e IS_STAGE=${{ inputs.is_stage || 'no' }} \
+            -e WAZUH_BRANCH= \
+            -v $GITHUB_WORKSPACE:/wazuh-local-src:Z \
+            --entrypoint /bin/bash \
+            $CONTAINER_NAME:${{ env.TAG }} \
+            -c "/wazuh-local-src/packages/build.sh 0 $(nproc) ${{ inputs.debug && 'yes' || 'no' }} no ${{ inputs.checksum && 'yes' || 'no' }} no"
+          
+          # Find the built packages
           if [ "${{ inputs.system }}" == "deb" ]; then
             SYMBOLS_TAG="dbg"
           else
@@ -176,7 +199,7 @@ jobs:
               PACKAGE_NAME="$file"
             fi
           done
-
+          
           echo "PACKAGE_NAME=${PACKAGE_NAME}" | tee -a $GITHUB_ENV
           echo "PACKAGE_SYMBOLS_NAME=${PACKAGE_SYMBOLS_NAME}" | tee -a $GITHUB_ENV
 
