@@ -1,15 +1,18 @@
 #!/bin/bash
-# Script to use local Docker image instead of pulling from GHCR
+# Script to pull Docker image from Docker Hub
 
 CONTAINER_NAME=$1
 DOCKER_IMAGE_TAG=$2
+DOCKER_HUB_USER="nikinov"
 
-# Check if the image exists locally
-if docker image inspect ${CONTAINER_NAME}:${DOCKER_IMAGE_TAG} > /dev/null 2>&1; then
-  echo "Using local Docker image ${CONTAINER_NAME}:${DOCKER_IMAGE_TAG}"
-else
-  echo "Error: Local Docker image ${CONTAINER_NAME}:${DOCKER_IMAGE_TAG} not found"
+echo "Pulling Docker image from Docker Hub: ${DOCKER_HUB_USER}/${CONTAINER_NAME}:${DOCKER_IMAGE_TAG}"
+docker pull ${DOCKER_HUB_USER}/${CONTAINER_NAME}:${DOCKER_IMAGE_TAG}
+
+if [ $? -ne 0 ]; then
+  echo "Error: Failed to pull Docker image ${DOCKER_HUB_USER}/${CONTAINER_NAME}:${DOCKER_IMAGE_TAG}"
   exit 1
 fi
 
-# No need to tag as it's already correctly named 
+# Tag the image with the expected name
+echo "Tagging image as ${CONTAINER_NAME}:${DOCKER_IMAGE_TAG}"
+docker tag ${DOCKER_HUB_USER}/${CONTAINER_NAME}:${DOCKER_IMAGE_TAG} ${CONTAINER_NAME}:${DOCKER_IMAGE_TAG} 
