@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         architecture: [amd64]
-        system: [deb, rpm]
+        system: [deb]
     uses: ./.github/workflows/packages-build-server.yml
     with:
       architecture: ${{ matrix.architecture }}
