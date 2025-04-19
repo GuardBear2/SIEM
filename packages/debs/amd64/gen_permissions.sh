@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env /bin/bash
+#!/usr/bin/env /bin/bash
 #
 # GuardBear restore permissions script generator (ver 0.1)
 # Copyright (C) 2019 GuardBear Inc.

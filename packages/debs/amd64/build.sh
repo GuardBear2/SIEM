@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 
 # GuardBear package builder
 # Copyright (C) 2015, GuardBear Inc.
@@ -84,7 +84,9 @@ set -x
 
 # Download source code if it is not shared from the local host
 if [ ! -d "/guardbear-local-src" ] ; then
-    git clone --branch ${GUARDBEAR_BRANCH} --recurse-submodules https://github.com/guardbear/guardbear.git
+    # Use the correct branch and repository
+    GUARDBEAR_BRANCH=${GUARDBEAR_BRANCH:-buildbranch3}
+    git clone --branch "${GUARDBEAR_BRANCH}" --recurse-submodules https://github.com/GuardBear2/SIEM.git guardbear
     cd guardbear
     git submodule update --init --recursive
     short_commit_hash=$(git rev-parse --short HEAD)

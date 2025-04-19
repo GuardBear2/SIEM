@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 
 # GuardBear package generator
 # Copyright (C) 2015, GuardBear Inc.

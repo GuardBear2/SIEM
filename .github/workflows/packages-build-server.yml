@@ -172,11 +172,24 @@ jobs:
           # Create a fix script to run inside container
           cat > $GITHUB_WORKSPACE/packages/fix_and_build.sh << 'EOL'
           #!/bin/bash
+          set -e
           # Fix line endings in helper scripts inside container
-          sed -i 's/\r$//' /usr/local/bin/helper_function.sh
-          sed -i 's/\r$//' /tmp/gen_permissions.sh
-          # Run the build script
-          /wazuh-local-src/packages/build.sh $1 $2 $3 $4 $5 $6
+          if [ -f "/usr/local/bin/helper_function.sh" ]; then
+            sed -i 's/\r$//' /usr/local/bin/helper_function.sh
+          fi
+          if [ -f "/tmp/gen_permissions.sh" ]; then
+            sed -i 's/\r$//' /tmp/gen_permissions.sh
+          fi
+          
+          # Create symlinks to handle path mismatches
+          if [ -d "/guardbear-local-src" ] && [ ! -d "/wazuh-local-src" ]; then
+            ln -s /guardbear-local-src /wazuh-local-src
+          elif [ -d "/wazuh-local-src" ] && [ ! -d "/guardbear-local-src" ]; then
+            ln -s /wazuh-local-src /guardbear-local-src
+          fi
+          
+          # Run the build script with all arguments passed to this script
+          /wazuh-local-src/packages/build.sh "$@"
           EOL
           
           chmod +x $GITHUB_WORKSPACE/packages/fix_and_build.sh
@@ -188,11 +201,11 @@ jobs:
             -e ARCHITECTURE_TARGET=amd64 \
             -e INSTALLATION_PATH=/ \
             -e IS_STAGE=${{ inputs.is_stage || 'no' }} \
-            -e WAZUH_BRANCH= \
+            -e GUARDBEAR_BRANCH=buildbranch3 \
             -v $GITHUB_WORKSPACE:/wazuh-local-src:Z \
             --entrypoint /bin/bash \
             $CONTAINER_NAME:${{ env.TAG }} \
-            -c "/wazuh-local-src/packages/fix_and_build.sh 0 $(nproc) ${{ inputs.debug && 'yes' || 'no' }} no ${{ inputs.checksum && 'yes' || 'no' }} no"
+            -c "/wazuh-local-src/packages/fix_and_build.sh 0 $(nproc) ${{ inputs.debug && 'yes' || 'no' }} ${{ inputs.checksum && 'yes' || 'no' }} no no"
           
           # Find the built packages
           if [ "${{ inputs.system }}" == "deb" ]; then
@@ -200,8 +213,8 @@ jobs:
           else
             SYMBOLS_TAG="debuginfo"
           fi
-          # Find all files starting with 'wazuh-server' and ending with '.rpm or .deb'
-          for file in $(find /tmp -maxdepth 1 -type f -name 'wazuh-server*.${{ inputs.system }}' -exec basename {} 2>/dev/null \;); do
+          # Find all files starting with 'guardbear-server' and ending with '.rpm or .deb'
+          for file in $(find /tmp -maxdepth 1 -type f -name 'guardbear-server*.${{ inputs.system }}' -exec basename {} 2>/dev/null \;); do
             if [[ "$file" == *"$SYMBOLS_TAG"* ]]; then
               PACKAGE_SYMBOLS_NAME="$file"
             else
@@ -216,8 +229,8 @@ jobs:
         run: |
           if [ -z "${{ env.PACKAGE_NAME }}" ]; then echo "No package found matching the pattern!"; exit 1; fi
           sudo docker run -v $GITHUB_WORKSPACE/.github/actions/test-install-components/:/tests -v /tmp/:/packages --entrypoint '/tests/install_component.sh' $CONTAINER_NAME:${{ env.TAG }} $PACKAGE_NAME server
-          # Check if Wazuh was installed. The /tmp/status.log file was generated in the previous step.
-          if grep -iq " installed.*wazuh-server" /tmp/status.log ; then
+          # Check if GuardBear was installed. The /tmp/status.log file was generated in the previous step.
+          if grep -iq " installed.*guardbear-server" /tmp/status.log ; then
             echo "Installation successfully."
           else
             echo "The installation could not be completed. The package will not be uploaded.";
