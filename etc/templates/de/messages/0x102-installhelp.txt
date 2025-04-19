@@ -1,4 +1,4 @@
-
+﻿
   - Es gibt drei Arten der Installation: agent, local oder server.
 
     - Wenn Sie Server wählen, können Logfiles analysiert werden,
@@ -23,4 +23,4 @@
 
   - Wöhlen Sie 'Local' wenn nur ein System analysiert werden soll.
 
-  - weitere Informationen unter: https://documentation.wazuh.com
+  - weitere Informationen unter: https://documentation.guardbear.com

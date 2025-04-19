@@ -1,10 +1,10 @@
-from unittest.mock import AsyncMock, MagicMock, patch
+﻿from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import Request, status
 from fastapi.applications import FastAPI
-from wazuh.core.exception import WazuhEngineError, WazuhError
-from wazuh.core.indexer.models.events import FIM_INDEX, TaskResult
+from guardbear.core.exception import GuardBearEngineError, GuardBearError
+from guardbear.core.indexer.models.events import FIM_INDEX, TaskResult
 
 from comms_api.models.events import StatefulEventsResponse
 from comms_api.routers.events import post_stateful_events, post_stateless_events
@@ -40,7 +40,7 @@ async def test_post_stateful_events_ko():
     request.app.state.batcher_queue = AsyncMock()  # Mock the batcher_queue
 
     code = status.HTTP_400_BAD_REQUEST
-    exception = WazuhError(2200)
+    exception = GuardBearError(2200)
 
     with patch('comms_api.routers.events.parse_stateful_events', MagicMock(side_effect=exception)):
         with pytest.raises(HTTPError, match=f'{code}: {exception.message}'):
@@ -63,7 +63,7 @@ async def test_post_stateless_events(send_stateless_events_mock):
 @pytest.mark.asyncio
 async def test_post_stateless_events_ko():
     """Verify that the `post_stateless_events` handler catches exceptions successfully."""
-    exception = WazuhEngineError(2802)
+    exception = GuardBearEngineError(2802)
 
     with patch('comms_api.routers.events.send_stateless_events', MagicMock(side_effect=exception)):
         with pytest.raises(HTTPError, match=rf'{exception.code}: {exception.message}'):

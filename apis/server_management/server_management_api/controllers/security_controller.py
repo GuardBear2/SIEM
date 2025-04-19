@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -7,13 +7,13 @@ import re
 
 from connexion import request
 from connexion.lifecycle import ConnexionResponse
-from wazuh import security
-from wazuh.core.cluster.control import get_system_nodes
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.exception import WazuhException, WazuhPermissionError
-from wazuh.core.results import AffectedItemsWazuhResult, WazuhResult
-from wazuh.core.security import revoke_tokens
-from wazuh.rbac import preprocessor
+from guardbear import security
+from guardbear.core.cluster.control import get_system_nodes
+from guardbear.core.cluster.dapi.dapi import DistributedAPI
+from guardbear.core.exception import GuardBearException, GuardBearPermissionError
+from guardbear.core.results import AffectedItemsGuardBearResult, GuardBearResult
+from guardbear.core.security import revoke_tokens
+from guardbear.rbac import preprocessor
 
 from server_management_api.authentication import generate_token
 from server_management_api.configuration import default_security_configuration
@@ -31,7 +31,7 @@ from server_management_api.models.security_model import (
 from server_management_api.models.security_token_response_model import TokenResponseModel
 from server_management_api.util import parse_api_param, raise_if_exc, remove_nones_to_dict
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('guardbear-api')
 auth_re = re.compile(r'basic (.*)', re.IGNORECASE)
 
 
@@ -65,14 +65,14 @@ async def login_user(user: str, raw: bool = False) -> ConnexionResponse:
     token = None
     try:
         token = generate_token(user_id=user, data=data.dikt)
-    except WazuhException as e:
+    except GuardBearException as e:
         raise_if_exc(e)
 
     return (
         ConnexionResponse(body=token, content_type='text/plain', status_code=200)
         if raw
         else ConnexionResponse(
-            body=dumps(WazuhResult({'data': TokenResponseModel(token=token)})),
+            body=dumps(GuardBearResult({'data': TokenResponseModel(token=token)})),
             content_type=JSON_CONTENT_TYPE,
             status_code=200,
         )
@@ -111,14 +111,14 @@ async def run_as_login(user: str, raw: bool = False) -> ConnexionResponse:
     token = None
     try:
         token = generate_token(user_id=user, data=data.dikt, auth_context=auth_context)
-    except WazuhException as e:
+    except GuardBearException as e:
         raise_if_exc(e)
 
     return (
         ConnexionResponse(body=token, content_type='text/plain', status_code=200)
         if raw
         else ConnexionResponse(
-            body=dumps(WazuhResult({'data': TokenResponseModel(token=token)})),
+            body=dumps(GuardBearResult({'data': TokenResponseModel(token=token)})),
             content_type=JSON_CONTENT_TYPE,
             status_code=200,
         )
@@ -171,7 +171,7 @@ async def get_user_me_policies(pretty: bool = False, wait_for_complete: bool = F
     ConnexionResponse
         API response with the user RBAC policies and mode.
     """
-    data = WazuhResult(
+    data = GuardBearResult(
         {
             'data': request.context['token_info']['rbac_policies'],
             'message': 'Current user processed policies information was returned',
@@ -1280,8 +1280,8 @@ async def revoke_all_tokens(pretty: bool = False) -> ConnexionResponse:
         nodes=nodes,
     )
     data = raise_if_exc(await dapi.distribute_function())
-    if type(data) is AffectedItemsWazuhResult and len(data.affected_items) == 0:
-        raise_if_exc(WazuhPermissionError(4000, data.message))
+    if type(data) is AffectedItemsGuardBearResult and len(data.affected_items) == 0:
+        raise_if_exc(GuardBearPermissionError(4000, data.message))
 
     return json_response(data, pretty=pretty)
 

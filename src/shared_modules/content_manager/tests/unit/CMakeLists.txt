@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12.4)
+﻿cmake_minimum_required(VERSION 3.12.4)
 
 project(content_manager_unit_tests)
 
@@ -19,7 +19,7 @@ target_link_libraries(${PROJECT_NAME}
     optimized gmock
     urlrequest
     router
-    wazuhext
+    guardbearext
     lzma
     rocksdb
     pthread

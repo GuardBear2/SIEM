@@ -1,5 +1,5 @@
-# Configuration
+﻿# Configuration
 
-The Wazuh Server can be configured modifying the available options in the `/etc/wazuh-server/wazuh-server.yml` file.
+The GuardBear Server can be configured modifying the available options in the `/etc/guardbear-server/guardbear-server.yml` file.
 
-## Wazuh Server Options
+## GuardBear Server Options

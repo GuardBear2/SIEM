@@ -1,4 +1,4 @@
-import engine_pb2 as _engine_pb2
+﻿import engine_pb2 as _engine_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -83,10 +83,10 @@ class EpsUpdate_Request(_message.Message):
     def __init__(self, eps: _Optional[int] = ..., refresh_interval: _Optional[int] = ...) -> None: ...
 
 class QueuePost_Request(_message.Message):
-    __slots__ = ["wazuh_event"]
-    WAZUH_EVENT_FIELD_NUMBER: _ClassVar[int]
-    wazuh_event: str
-    def __init__(self, wazuh_event: _Optional[str] = ...) -> None: ...
+    __slots__ = ["guardbear_event"]
+    GUARDBEAR_EVENT_FIELD_NUMBER: _ClassVar[int]
+    guardbear_event: str
+    def __init__(self, guardbear_event: _Optional[str] = ...) -> None: ...
 
 class RouteDelete_Request(_message.Message):
     __slots__ = ["name"]

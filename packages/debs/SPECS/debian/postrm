@@ -1,38 +1,38 @@
-#!/bin/sh
-# postrm script for Wazuh
-# Wazuh, Inc 2015
+﻿#!/bin/sh
+# postrm script for GuardBear
+# GuardBear, Inc 2015
 set -e
 
-WAZUH_USER="wazuh-server"
-WAZUH_GROUP="wazuh-server"
+GUARDBEAR_USER="guardbear-server"
+GUARDBEAR_GROUP="guardbear-server"
 
 case "$1" in
     remove|failed-upgrade|abort-install|abort-upgrade|disappear)
-        if [ -d "/run/wazuh-server" ]; then
-            rm -rf /run/wazuh-server || true
+        if [ -d "/run/guardbear-server" ]; then
+            rm -rf /run/guardbear-server || true
         fi
 
     ;;
 
     purge)
-        if getent passwd $WAZUH_USER > /dev/null 2>&1 ; then
-            deluser $WAZUH_USER  > /dev/null 2>&1
+        if getent passwd $GUARDBEAR_USER > /dev/null 2>&1 ; then
+            deluser $GUARDBEAR_USER  > /dev/null 2>&1
         fi
 
-        if getent group $WAZUH_GROUP > /dev/null 2>&1; then
-            delgroup $WAZUH_GROUP  > /dev/null 2>&1
+        if getent group $GUARDBEAR_GROUP > /dev/null 2>&1; then
+            delgroup $GUARDBEAR_GROUP  > /dev/null 2>&1
         fi
 
-        if [ -d "/var/lib/wazuh-server/" ]; then
-            rm -rf /var/lib/wazuh-server/ || true
+        if [ -d "/var/lib/guardbear-server/" ]; then
+            rm -rf /var/lib/guardbear-server/ || true
         fi
 
-        if [ -d "/run/wazuh-server" ]; then
-            rm -rf /run/wazuh-server || true
+        if [ -d "/run/guardbear-server" ]; then
+            rm -rf /run/guardbear-server || true
         fi
 
-        if [ -d "/etc/wazuh-server" ]; then
-            rm -rf /etc/wazuh-server || true
+        if [ -d "/etc/guardbear-server" ]; then
+            rm -rf /etc/guardbear-server || true
         fi
     ;;
 

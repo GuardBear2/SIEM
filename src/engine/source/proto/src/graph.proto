@@ -1,8 +1,8 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 
 import "engine.proto";
 
-package com.wazuh.api.engine.graph;
+package com.guardbear.api.engine.graph;
 
 /***************************************************
  * Get a resource from graph

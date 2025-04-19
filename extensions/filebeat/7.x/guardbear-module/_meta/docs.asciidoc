@@ -1,0 +1,26 @@
+﻿:modulename: guardbear
+:has-dashboards: false
+
+== GuardBear module
+
+This module prepares Elasticsearch for ingesting GuardBear alerts and, optionally, GuardBear archives.
+
+include::../include/what-happens.asciidoc[]
+
+[float]
+=== Compatibility
+
+Compatible with GuardBear 3.x and Elastic stack 7.x. The module was tested with GuardBear 3.9 and Elastic stack 7.2. 
+
+include::../include/running-modules.asciidoc[]
+
+[float]
+==== `{fileset}` log fileset settings
+
+include::../include/var-paths.asciidoc[]
+
+:has-dashboards!:
+
+:fileset_ex!:
+
+:modulename!:

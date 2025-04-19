@@ -1,6 +1,6 @@
-/*
- * Wazuh Vulnerability scanner - Database Feed Manager
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear Vulnerability scanner - Database Feed Manager
+ * Copyright (C) 2015, GuardBear Inc.
  * May 1, 2023.
  *
  * This program is free software; you can redistribute it
@@ -20,14 +20,14 @@
 #include "storeModel.hpp"
 
 const std::string CONTENT_NAME {"vd_1.0.0_vd_4.10.0"};                    // Content name.
-const std::filesystem::path WAZUH_LIB_PATH {"/var/lib/wazuh-server/"};    //< Path to the lib server files.
-const std::filesystem::path WAZUH_LIB_TMP_PATH {WAZUH_LIB_PATH / "tmp/"}; //< Path to the lib server tmp files.
-const std::filesystem::path XZ_FILE_PATH {WAZUH_LIB_TMP_PATH
+const std::filesystem::path GUARDBEAR_LIB_PATH {"/var/lib/guardbear-server/"};    //< Path to the lib server files.
+const std::filesystem::path GUARDBEAR_LIB_TMP_PATH {GUARDBEAR_LIB_PATH / "tmp/"}; //< Path to the lib server tmp files.
+const std::filesystem::path XZ_FILE_PATH {GUARDBEAR_LIB_TMP_PATH
                                           / (CONTENT_NAME + ".tar.xz")};                  //< Path of the compressed db
-const std::filesystem::path TAR_FILE_PATH {WAZUH_LIB_TMP_PATH / (CONTENT_NAME + ".tar")}; //< Path to the tar db.
-const std::filesystem::path LEGACY_DB_PATH {WAZUH_LIB_TMP_PATH / "queue/"};           //< Path to the legacy database.
-const std::filesystem::path VD_FEED_DB_BASE_PATH {WAZUH_LIB_PATH / "vd/"};            //< Path to the current database.
-const std::filesystem::path VD_UPDATER_DB_BASE_PATH {WAZUH_LIB_PATH / "vd_updater/"}; //< Path to the updater database.
+const std::filesystem::path TAR_FILE_PATH {GUARDBEAR_LIB_TMP_PATH / (CONTENT_NAME + ".tar")}; //< Path to the tar db.
+const std::filesystem::path LEGACY_DB_PATH {GUARDBEAR_LIB_TMP_PATH / "queue/"};           //< Path to the legacy database.
+const std::filesystem::path VD_FEED_DB_BASE_PATH {GUARDBEAR_LIB_PATH / "vd/"};            //< Path to the current database.
+const std::filesystem::path VD_UPDATER_DB_BASE_PATH {GUARDBEAR_LIB_PATH / "vd_updater/"}; //< Path to the updater database.
 
 constexpr auto OFFSET_TRANSACTION_SIZE {1000};
 constexpr auto EMPTY_KEY {""};
@@ -74,14 +74,14 @@ DatabaseFeedManager::DatabaseFeedManager(std::shared_mutex& mutex)
             extractOnly.emplace_back(LEGACY_DB_PATH / "vd_updater");
 
             LOG_DEBUG("Starting TAR file decompression.");
-            fs::ArchiveHelper::decompress(TAR_FILE_PATH, WAZUH_LIB_TMP_PATH, extractOnly);
+            fs::ArchiveHelper::decompress(TAR_FILE_PATH, GUARDBEAR_LIB_TMP_PATH, extractOnly);
 
             LOG_DEBUG("Finishing TAR file decompression. Removing {}.", TAR_FILE_PATH.c_str());
             std::filesystem::remove(TAR_FILE_PATH);
 
             // Move the extracted folder to the current database path
-            std::filesystem::rename(LEGACY_DB_PATH / "vd", WAZUH_LIB_PATH / "vd");
-            std::filesystem::rename(LEGACY_DB_PATH / "vd_updater", WAZUH_LIB_PATH / "vd_updater");
+            std::filesystem::rename(LEGACY_DB_PATH / "vd", GUARDBEAR_LIB_PATH / "vd");
+            std::filesystem::rename(LEGACY_DB_PATH / "vd_updater", GUARDBEAR_LIB_PATH / "vd_updater");
 
             // Remove temporary folder
             std::filesystem::remove_all(LEGACY_DB_PATH);

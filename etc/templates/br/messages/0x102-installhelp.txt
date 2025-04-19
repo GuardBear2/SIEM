@@ -1,4 +1,4 @@
-
+﻿
   - Você tem três opções de instalação: servidor, cliente ou local.
 
     - Se você escolher 'servidor', você poderá analizar todos os logs,
@@ -21,4 +21,4 @@
 
   - Utilize 'local' se você apenas tem um sistema para monitorar.
 
-  - Maiores informações: https://documentation.wazuh.com
+  - Maiores informações: https://documentation.guardbear.com

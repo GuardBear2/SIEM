@@ -1,4 +1,4 @@
-# Name of the helper function
+﻿# Name of the helper function
 name: contains
 
 metadata:
@@ -32,16 +32,16 @@ target_field:
 test:
   - arguments:
       searched_value: hello
-    target_field: hello wazuh!
+    target_field: hello guardbear!
     should_pass: true
     description: Success contains
   - arguments:
       searched_value: hello!
-    target_field: hello wazuh!
+    target_field: hello guardbear!
     should_pass: false
     description: Failure contains
   - arguments:
       searched_value: world
-    target_field: hello wazuh!
+    target_field: hello guardbear!
     should_pass: false
     description: Failure contains

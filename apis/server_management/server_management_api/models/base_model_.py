@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import pprint
@@ -9,7 +9,7 @@ from typing import Dict, List  # noqa: F401
 
 import six
 from connexion import ProblemException
-from wazuh.core.exception import WazuhError, WazuhNotAcceptable
+from guardbear.core.exception import GuardBearError, GuardBearNotAcceptable
 
 from server_management_api import util
 from server_management_api.util import get_invalid_keys, raise_if_exc
@@ -188,7 +188,7 @@ class Body(Model):
             dikt = request if isinstance(request, dict) else await request.json()
             f_kwargs = util.deserialize_model(dikt, cls).to_dict()
         except JSONDecodeError:
-            raise_if_exc(WazuhError(1018))
+            raise_if_exc(GuardBearError(1018))
 
         if dikt:
             invalid = get_invalid_keys(dikt, f_kwargs)
@@ -217,12 +217,12 @@ class Body(Model):
         try:
             decoded_body = body.decode('utf-8')
         except UnicodeDecodeError:
-            raise_if_exc(WazuhError(unicode_error))
+            raise_if_exc(GuardBearError(unicode_error))
         except AttributeError:
-            raise_if_exc(WazuhError(attribute_error))
+            raise_if_exc(GuardBearError(attribute_error))
         return decoded_body
 
     @classmethod
     def validate_content_type(cls, request, expected_content_type):
         if request.mimetype != expected_content_type:
-            raise_if_exc(WazuhNotAcceptable(6002))
+            raise_if_exc(GuardBearNotAcceptable(6002))

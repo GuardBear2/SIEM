@@ -1,6 +1,6 @@
-/*
- * Wazuh databaseFeedManager
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear databaseFeedManager
+ * Copyright (C) 2015, GuardBear Inc.
  * January 11, 2024.
  *
  * This program is free software; you can redistribute it

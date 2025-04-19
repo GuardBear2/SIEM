@@ -1,4 +1,4 @@
-# Name of the helper function
+﻿# Name of the helper function
 name: trim
 
 metadata:
@@ -38,21 +38,21 @@ test:
   - arguments:
       trim_place: end
       character: '-'
-    target_field: -- Hi wazuh! --
+    target_field: -- Hi guardbear! --
     should_pass: true
-    expected: "-- Hi wazuh! "
+    expected: "-- Hi guardbear! "
     description: Success trim
   - arguments:
       trim_place: begin
       character: '-'
-    target_field: -- Hi wazuh! --
+    target_field: -- Hi guardbear! --
     should_pass: true
-    expected: " Hi wazuh! --"
+    expected: " Hi guardbear! --"
     description: Success trim
   - arguments:
       trim_place: both
       character: '-'
-    target_field: -- Hi wazuh! --
+    target_field: -- Hi guardbear! --
     should_pass: true
-    expected: " Hi wazuh! "
+    expected: " Hi guardbear! "
     description: Success trim

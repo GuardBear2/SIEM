@@ -1,6 +1,6 @@
-/*
- * Wazuh shared modules utils
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear shared modules utils
+ * Copyright (C) 2015, GuardBear Inc.
  * January 30, 2024.
  *
  * This program is free software; you can redistribute it
@@ -29,7 +29,7 @@ std::filesystem::path findHomeDirectory()
     }
     if (ec)
     {
-        const char* envHome = std::getenv("WAZUH_HOME");
+        const char* envHome = std::getenv("GUARDBEAR_HOME");
         if (envHome != nullptr)
         {
             homeDir = envHome;

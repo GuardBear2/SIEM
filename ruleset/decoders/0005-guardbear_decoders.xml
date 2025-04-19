@@ -1,0 +1,55 @@
+﻿<!--
+  -  GuardBear decoders
+  -  Created by GuardBear, Inc.
+  -  Copyright (C) 2015, GuardBear Inc.
+  -  This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2.
+-->
+
+<decoder name="guardbear">
+  <prematch>^guardbear: </prematch>
+</decoder>
+
+<decoder name="agent-buffer">
+  <parent>guardbear</parent>
+  <prematch offset="after_parent">^Agent buffer:</prematch>
+  <regex offset="after_prematch">^ '(\S+)'.</regex>
+  <order>level</order>
+</decoder>
+
+<decoder name="agent-upgrade">
+  <parent>guardbear</parent>
+  <prematch offset="after_parent">^Upgrade procedure |^Custom installation </prematch>
+  <regex offset="after_prematch">on agent (\d\d\d)\s\((\S+)\):\s(\w+)</regex>
+  <order>agent.id, agent.name, status</order>
+</decoder>
+
+<decoder name="agent-upgrade">
+  <parent>guardbear</parent>
+  <regex>aborted:\s(\.+)$|failed:\s(\.+)$|lost:\s(\.+)$</regex>
+  <order>error</order>
+</decoder>
+
+<decoder name="agent-upgrade">
+  <parent>guardbear</parent>
+  <regex>started.\sCurrent\sversion:\sGuardBear\s(\.+)$</regex>
+  <order>agent.cur_version</order>
+</decoder>
+
+<decoder name="agent-upgrade">
+  <parent>guardbear</parent>
+  <regex>succeeded.\sNew\sversion:\sGuardBear\s(\.+)$</regex>
+  <order>agent.new_version</order>
+</decoder>
+
+<decoder name="agent-restart">
+  <parent>guardbear</parent>
+  <prematch offset="after_parent">^Invalid remote configuration:</prematch>
+  <regex offset="after_prematch">^ '(\S+)'.</regex>
+  <order>module</order>
+</decoder>
+
+<decoder name="fim-state">
+  <parent>guardbear</parent>
+  <prematch offset="after_parent">^FIM DB: </prematch>
+  <plugin_decoder offset="after_prematch">JSON_Decoder</plugin_decoder>
+</decoder>

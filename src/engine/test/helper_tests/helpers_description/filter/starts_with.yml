@@ -1,4 +1,4 @@
-# Name of the helper function
+﻿# Name of the helper function
 name: starts_with
 
 metadata:
@@ -32,16 +32,16 @@ target_field:
 test:
   - arguments:
       conteined: hello
-    target_field: hello wazuh!
+    target_field: hello guardbear!
     should_pass: true
     description: Success start with
   - arguments:
       conteined: hello!
-    target_field: hello wazuh!
+    target_field: hello guardbear!
     should_pass: false
     description: Failure start with
   - arguments:
-      conteined: wazuh!
-    target_field: hello wazuh!
+      conteined: guardbear!
+    target_field: hello guardbear!
     should_pass: false
     description: Failure start with

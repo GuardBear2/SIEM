@@ -1,14 +1,14 @@
-import json
+﻿import json
 from typing import List
 
 from fastapi import Request
 from starlette.requests import ClientDisconnect
-from wazuh.core.batcher.client import BatcherClient
-from wazuh.core.batcher.mux_demux import MuxDemuxQueue, Packet
-from wazuh.core.engine import get_engine_client
-from wazuh.core.exception import WazuhError
-from wazuh.core.indexer.base import IndexerKey
-from wazuh.core.indexer.models.events import AgentMetadata, Header, Operation, TaskResult
+from guardbear.core.batcher.client import BatcherClient
+from guardbear.core.batcher.mux_demux import MuxDemuxQueue, Packet
+from guardbear.core.engine import get_engine_client
+from guardbear.core.exception import GuardBearError
+from guardbear.core.indexer.base import IndexerKey
+from guardbear.core.indexer.models.events import AgentMetadata, Header, Operation, TaskResult
 
 from comms_api.models.events import StatefulEvents
 
@@ -45,14 +45,14 @@ async def send_stateless_events(request: Request) -> None:
 
     Raises
     ------
-    WazuhError(2708)
+    GuardBearError(2708)
         If the client closed the request before the server could process the stream.
     """
     try:
         async with get_engine_client() as engine_client:
             await engine_client.events.send(request.stream())
     except ClientDisconnect:
-        raise WazuhError(2708)
+        raise GuardBearError(2708)
 
 
 async def parse_stateful_events(request: Request) -> StatefulEvents:
@@ -65,9 +65,9 @@ async def parse_stateful_events(request: Request) -> StatefulEvents:
 
     Raises
     ------
-    WazuhError(2708)
+    GuardBearError(2708)
         If the client closed the request before the server could process the stream.
-    WazuhError(2709)
+    GuardBearError(2709)
         Invalid request body structure.
 
     Returns
@@ -87,7 +87,7 @@ async def parse_stateful_events(request: Request) -> StatefulEvents:
             parts = chunk.splitlines()
 
             if len(parts) < 2:
-                raise WazuhError(2709)
+                raise GuardBearError(2709)
 
             for part in parts:
                 if len(part) == 0:
@@ -106,9 +106,9 @@ async def parse_stateful_events(request: Request) -> StatefulEvents:
 
                 i += 1
     except ClientDisconnect:
-        raise WazuhError(2708)
+        raise GuardBearError(2708)
     except json.JSONDecodeError as e:
-        raise WazuhError(2709, extra_message=str(e))
+        raise GuardBearError(2709, extra_message=str(e))
 
     return StatefulEvents(agent_metadata=agent_metadata, headers=headers, data=data)
 

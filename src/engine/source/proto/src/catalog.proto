@@ -1,11 +1,11 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 
 import "engine.proto";
 
-package com.wazuh.api.engine.catalog;
+package com.guardbear.api.engine.catalog;
 
 /*
- * This API is used to manage the catalog of the Wazuh manager
+ * This API is used to manage the catalog of the GuardBear manager
  * TODO: Make all roles required (and remove the default value)
  */
 

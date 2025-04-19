@@ -1,8 +1,8 @@
-<!--
+﻿<!--
   -  Huawei USG rules
   -  Author: Miguel Ruiz
-  -  Wazuh, Inc. <support@wazuh.com>.
-  -  Copyright (C)  2015, Wazuh Inc.
+  -  GuardBear, Inc. <support@guardbear.com>.
+  -  Copyright (C)  2015, GuardBear Inc.
   -  This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2.
 -->
 <!-- ID: 89200 - 88399 -->

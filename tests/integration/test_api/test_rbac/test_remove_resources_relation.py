@@ -1,7 +1,7 @@
-"""
-copyright: Copyright (C) 2015-2024, Wazuh Inc.
+﻿"""
+copyright: Copyright (C) 2015-2024, GuardBear Inc.
 
-           Created by Wazuh, Inc. <info@wazuh.com>.
+           Created by GuardBear, Inc. <info@guardbear.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -21,12 +21,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-db
-    - wazuh-execd
-    - wazuh-analysisd
-    - wazuh-remoted
-    - wazuh-modulesd
+    - guardbear-apid
+    - guardbear-db
+    - guardbear-execd
+    - guardbear-analysisd
+    - guardbear-remoted
+    - guardbear-modulesd
 
 os_platform:
     - linux
@@ -43,8 +43,8 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/getting-started.html
-    - https://documentation.wazuh.com/current/user-manual/api/reference.html#tag/Security
+    - https://documentation.guardbear.com/current/user-manual/api/getting-started.html
+    - https://documentation.guardbear.com/current/user-manual/api/reference.html#tag/Security
     - https://en.wikipedia.org/wiki/Role-based_access_control
 
 tags:
@@ -54,10 +54,10 @@ import pytest
 from pathlib import Path
 
 from . import TEST_CASES_FOLDER_PATH
-from wazuh_testing.constants.api import TARGET_ROUTE_MAP
-from wazuh_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
-from wazuh_testing.modules.api.utils import manage_security_resources, remove_resources_relationship
-from wazuh_testing.utils.configuration import get_test_cases_data
+from guardbear_testing.constants.api import TARGET_ROUTE_MAP
+from guardbear_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
+from guardbear_testing.modules.api.utils import manage_security_resources, remove_resources_relationship
+from guardbear_testing.utils.configuration import get_test_cases_data
 
 # Marks
 pytestmark = pytest.mark.server
@@ -78,7 +78,7 @@ def test_remove_resources_relation(test_configuration, test_metadata, truncate_m
     """
     description: Check if the resources exist after removing their relation.
 
-    wazuh_min_version: 4.2.0
+    guardbear_min_version: 4.2.0
 
     test_phases:
         - setup:
@@ -110,7 +110,7 @@ def test_remove_resources_relation(test_configuration, test_metadata, truncate_m
             brief: Truncate all the log files and json alerts files before and after the test execution.
         - daemons_handler:
             type: fixture
-            brief: Wrapper of a helper function to handle Wazuh daemons.
+            brief: Wrapper of a helper function to handle GuardBear daemons.
         - wait_for_api_start:
             type: fixture
             brief: Monitor the API log file to detect whether it has been started or not.

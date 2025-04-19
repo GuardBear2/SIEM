@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 import shutil
 
 import sys
@@ -97,7 +97,7 @@ def init(env_path: Path, conf_path: Path, mmdb_dir: Path):
     cpy_kvdb(env_path)
     print("KVDB created.")
 
-    binary_path = env_path / 'wazuh-engine'
+    binary_path = env_path / 'guardbear-engine'
 
     try:
         print("Starting engine...")

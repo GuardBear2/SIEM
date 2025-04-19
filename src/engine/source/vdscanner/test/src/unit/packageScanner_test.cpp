@@ -1,6 +1,6 @@
-/*
- * Wazuh Vulnerability Scanner - Unit Tests
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear Vulnerability Scanner - Unit Tests
+ * Copyright (C) 2015, GuardBear Inc.
  * September 21, 2023.
  *
  * This program is free software; you can redistribute it

@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+﻿#include <gtest/gtest.h>
 
 #include <atomic>
 #include <filesystem>
@@ -171,12 +171,12 @@ TEST_F(GeoManagerTest, MultithreadDeleteAddLookup)
             }
             else
             {
-                if (base::getResponse(res) != "Wazuh")
+                if (base::getResponse(res) != "GuardBear")
                 {
                     setError(
                         error,
                         errorMsg,
-                        fmt::format("Locator thread got response '{}' which is not 'Wazuh'", base::getResponse(res)));
+                        fmt::format("Locator thread got response '{}' which is not 'GuardBear'", base::getResponse(res)));
                 }
             }
         }
@@ -270,12 +270,12 @@ TEST_F(GeoManagerTest, MultithreadListLookup)
             }
             else
             {
-                if (base::getResponse(res) != "Wazuh")
+                if (base::getResponse(res) != "GuardBear")
                 {
                     setError(
                         error,
                         errorMsg,
-                        fmt::format("Locator thread got response '{}' which is not 'Wazuh'", base::getResponse(res)));
+                        fmt::format("Locator thread got response '{}' which is not 'GuardBear'", base::getResponse(res)));
                 }
             }
         }
@@ -465,11 +465,11 @@ TEST_F(GeoManagerTest, ComplexUseCase)
                 }
                 else
                 {
-                    if (base::getResponse(res) != "Wazuh")
+                    if (base::getResponse(res) != "GuardBear")
                     {
                         setError(error,
                                  errorMsg,
-                                 fmt::format("Locator thread got response '{}' which is not 'Wazuh'",
+                                 fmt::format("Locator thread got response '{}' which is not 'GuardBear'",
                                              base::getResponse(res)));
                     }
                 }

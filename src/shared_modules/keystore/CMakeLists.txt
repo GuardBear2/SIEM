@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12.4)
+﻿cmake_minimum_required(VERSION 3.12.4)
 
 project(keystore)
 
@@ -40,13 +40,13 @@ link_directories(${SRC_FOLDER}/external/rocksdb/build)
 
 add_library(keystore STATIC ${KEYSTORE_SRC})
 
-target_link_libraries(keystore rocksdb wazuhext)
+target_link_libraries(keystore rocksdb guardbearext)
 
-add_executable(wazuh-keystore src/main.cpp)
+add_executable(guardbear-keystore src/main.cpp)
 
-target_link_libraries(wazuh-keystore keystore)
+target_link_libraries(guardbear-keystore keystore)
 
-set_target_properties(wazuh-keystore PROPERTIES
+set_target_properties(guardbear-keystore PROPERTIES
     BUILD_RPATH_USE_ORIGIN TRUE
     BUILD_RPATH "$ORIGIN/../lib"
 )

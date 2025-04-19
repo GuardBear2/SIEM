@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 from health_test.test_suite import UnitResultInterface, UnitOutput, run as suite_run
 
 class UnitResult(UnitResultInterface):
@@ -13,8 +13,8 @@ class UnitResult(UnitResultInterface):
             self.error = actual.error
             return
 
-        self.expected_decoders = expected.get('wazuh', {}).get('decoders', [])
-        self.expected_rules = expected.get('wazuh', {}).get('rules', [])
+        self.expected_decoders = expected.get('guardbear', {}).get('decoders', [])
+        self.expected_rules = expected.get('guardbear', {}).get('rules', [])
 
         self.success_decoders = []
         self.success_rules = []

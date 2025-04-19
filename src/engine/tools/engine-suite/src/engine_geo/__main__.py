@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import argparse
 from importlib.metadata import metadata
 
@@ -16,7 +16,7 @@ def parse_args():
 
     # Add socket path argument
     parser.add_argument('--api-socket', type=str, default=Constants.SOCKET_PATH,
-                        help='Path to the Wazuh API socket')
+                        help='Path to the GuardBear API socket')
 
     # dest used because of bug: https://bugs.python.org/issue29298
     subparsers = parser.add_subparsers(

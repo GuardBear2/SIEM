@@ -1,4 +1,4 @@
-#ifndef _BUILDER_TEST_DEFINITIONS_HPP
+﻿#ifndef _BUILDER_TEST_DEFINITIONS_HPP
 #define _BUILDER_TEST_DEFINITIONS_HPP
 
 #include <base/behaviour.hpp>
@@ -17,10 +17,10 @@ using namespace defs::mocks;
 namespace builder::test
 {
 
-auto constexpr WAZUH_LOGPAR_TYPES_JSON = R"({
+auto constexpr GUARDBEAR_LOGPAR_TYPES_JSON = R"({
     "name": "name",
     "fields": {
-        "wazuh.message": "text",
+        "guardbear.message": "text",
         "event.code": "text"
     }
 }
@@ -43,7 +43,7 @@ auto constexpr DECODER_JSON = R"({
 auto constexpr FILTER_JSON = R"({
     "name": "filter/test/0",
     "check": [{
-        "wazuh.queue": 49
+        "guardbear.queue": 49
     }
     ]
 })";
@@ -330,13 +330,13 @@ public:
         builder::BuilderDeps builderDeps;
         builderDeps.logparDebugLvl = 0;
 
-        ON_CALL(*m_spMocks->m_spSchemf, hasField(DotPath("wazuh.message"))).WillByDefault(testing::Return(true));
+        ON_CALL(*m_spMocks->m_spSchemf, hasField(DotPath("guardbear.message"))).WillByDefault(testing::Return(true));
         ON_CALL(*m_spMocks->m_spSchemf, hasField(DotPath("event.code"))).WillByDefault(testing::Return(true));
-        ON_CALL(*m_spMocks->m_spSchemf, isArray(DotPath("wazuh.message"))).WillByDefault(testing::Return(false));
+        ON_CALL(*m_spMocks->m_spSchemf, isArray(DotPath("guardbear.message"))).WillByDefault(testing::Return(false));
         ON_CALL(*m_spMocks->m_spSchemf, isArray(DotPath("event.code"))).WillByDefault(testing::Return(false));
 
         builderDeps.logpar =
-            std::make_shared<hlp::logpar::Logpar>(json::Json {WAZUH_LOGPAR_TYPES_JSON}, m_spMocks->m_spSchemf);
+            std::make_shared<hlp::logpar::Logpar>(json::Json {GUARDBEAR_LOGPAR_TYPES_JSON}, m_spMocks->m_spSchemf);
         builderDeps.kvdbScopeName = "builder";
         builderDeps.kvdbManager = nullptr;
 

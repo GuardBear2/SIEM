@@ -1,9 +1,9 @@
-#!/bin/bash
+﻿#!/bin/bash
 
 # DEB helper functions
 
-# Wazuh package builder
-# Copyright (C) 2015, Wazuh Inc.
+# GuardBear package builder
+# Copyright (C) 2015, GuardBear Inc.
 #
 # This program is a free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public
@@ -52,10 +52,10 @@ build_package(){
 }
 
 get_package_and_checksum(){
-    wazuh_version="$1"
+    guardbear_version="$1"
     short_commit_hash="$2"
-    base_name="wazuh-server_${wazuh_version}-${REVISION}"
-    symbols_base_name="wazuh-server-dbg_${wazuh_version}-${REVISION}"
+    base_name="guardbear-server_${guardbear_version}-${REVISION}"
+    symbols_base_name="guardbear-server-dbg_${guardbear_version}-${REVISION}"
 
     deb_file="${base_name}_${ARCHITECTURE_TARGET}.deb"
     symbols_deb_file="${symbols_base_name}_${ARCHITECTURE_TARGET}.deb"
@@ -67,10 +67,10 @@ get_package_and_checksum(){
 
     pkg_path="${build_dir}/server"
     if [[ "${checksum}" == "yes" ]]; then
-        cd ${pkg_path} && sha512sum wazuh-server_*deb > /var/local/wazuh/${deb_file}.sha512
-        sha512sum wazuh-server-dbg_*deb > /var/local/wazuh/${symbols_deb_file}.sha512
+        cd ${pkg_path} && sha512sum guardbear-server_*deb > /var/local/guardbear/${deb_file}.sha512
+        sha512sum guardbear-server-dbg_*deb > /var/local/guardbear/${symbols_deb_file}.sha512
     fi
     ls -lh ${pkg_path}
-    find ${pkg_path} -type f -name "wazuh-server_*deb" -exec mv {} /var/local/wazuh/${deb_file} \;
-    find ${pkg_path} -type f -name "wazuh-server-dbg_*deb" -exec mv {} /var/local/wazuh/${symbols_deb_file} \;
+    find ${pkg_path} -type f -name "guardbear-server_*deb" -exec mv {} /var/local/guardbear/${deb_file} \;
+    find ${pkg_path} -type f -name "guardbear-server-dbg_*deb" -exec mv {} /var/local/guardbear/${symbols_deb_file} \;
 }

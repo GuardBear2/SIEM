@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+﻿#include <gtest/gtest.h>
 
 #include <bk/mockController.hpp>
 #include <builder/mockBuilder.hpp>
@@ -65,7 +65,7 @@ public:
     void makeControllerPolicyAssetsSuccess()
     {
         makeControllerBuildPolicySuccess();
-        auto assets = std::unordered_set<base::Name> {"asset/wazuh/0"};
+        auto assets = std::unordered_set<base::Name> {"asset/guardbear/0"};
         EXPECT_CALL(*m_mockPolicy, assets()).WillRepeatedly(::testing::ReturnRefOfCopy(assets));
     }
 

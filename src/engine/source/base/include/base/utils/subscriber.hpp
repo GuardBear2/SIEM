@@ -1,6 +1,6 @@
-/*
- * Wazuh router
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear router
+ * Copyright (C) 2015, GuardBear Inc.
  * March 25, 2023.
  *
  * This program is free software; you can redistribute it

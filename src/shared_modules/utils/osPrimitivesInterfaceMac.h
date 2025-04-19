@@ -1,6 +1,6 @@
-/*
- * Wazuh SYSINFO
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear SYSINFO
+ * Copyright (C) 2015, GuardBear Inc.
  * May 11, 2023.
  *
  * This program is free software; you can redistribute it

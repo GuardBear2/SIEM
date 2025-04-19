@@ -1,5 +1,5 @@
-#!/usr/bin/with-contenv bash
-# Wazuh App Copyright (C) 2017, Wazuh Inc. (License GPLv2)
+﻿#!/usr/bin/with-contenv bash
+# GuardBear App Copyright (C) 2017, GuardBear Inc. (License GPLv2)
 
 set -e
 

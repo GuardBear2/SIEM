@@ -1,6 +1,6 @@
-{
+﻿{
   "index_patterns": [
-    "wazuh-alerts-5.x-*"
+    "guardbear-alerts-5.x-*"
   ],
   "template": {
     "settings": {

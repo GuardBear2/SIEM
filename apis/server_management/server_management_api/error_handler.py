@@ -1,12 +1,12 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from connexion import exceptions
 from connexion.lifecycle import ConnexionRequest, ConnexionResponse
 from content_size_limit_asgi.errors import ContentSizeExceeded
-from wazuh.core.config.client import CentralizedConfig
-from wazuh.core.utils import get_utc_now
+from guardbear.core.config.client import CentralizedConfig
+from guardbear.core.utils import get_utc_now
 
 from server_management_api.api_exception import ExpectFailedException
 from server_management_api.controllers.util import ERROR_CONTENT_TYPE, json_response

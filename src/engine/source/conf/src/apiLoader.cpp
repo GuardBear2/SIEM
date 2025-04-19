@@ -1,4 +1,4 @@
-#include <conf/apiLoader.hpp>
+﻿#include <conf/apiLoader.hpp>
 
 #include <base/logging.hpp>
 
@@ -8,12 +8,12 @@ namespace conf
 {
 
 constexpr auto URL_CONFIG {"http://localhost/api/v1/config?sections=indexer,engine"}; ///< Endpoint to get the config
-constexpr auto SOCKET_CONFIG {"/run/wazuh-server/config-server.sock"};                ///< Unix socket to get the config
+constexpr auto SOCKET_CONFIG {"/run/guardbear-server/config-server.sock"};                ///< Unix socket to get the config
 
 json::Json ApiLoader::load() const
 {
     // Allow starting the engine without the API
-    if (const auto env = std::getenv("WAZUH_CONFIG_SKIP_API"); env != nullptr && std::string(env) == "true")
+    if (const auto env = std::getenv("GUARDBEAR_CONFIG_SKIP_API"); env != nullptr && std::string(env) == "true")
     {
         LOG_INFO("Skipping configuration from API.");
         return json::Json(R"({})");

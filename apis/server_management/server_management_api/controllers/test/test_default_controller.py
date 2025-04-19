@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -8,22 +8,22 @@ from unittest.mock import MagicMock, patch
 import pytest
 from connexion.lifecycle import ConnexionResponse
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        from wazuh.core.utils import get_utc_now
-        from wazuh.tests.util import RBAC_bypasser
+with patch('guardbear.common.guardbear_uid'):
+    with patch('guardbear.common.guardbear_gid'):
+        sys.modules['guardbear.rbac.orm'] = MagicMock()
+        import guardbear.rbac.decorators
+        from guardbear.core.utils import get_utc_now
+        from guardbear.tests.util import RBAC_bypasser
 
         from server_management_api.controllers.default_controller import DATE_FORMAT, BasicInfo, default_info, socket
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        del sys.modules['wazuh.rbac.orm']
+        guardbear.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['guardbear.rbac.orm']
 
 
 @pytest.mark.asyncio
 @patch('server_management_api.controllers.default_controller.load_spec', return_value=MagicMock())
-@patch('server_management_api.controllers.default_controller.WazuhResult', return_value={})
+@patch('server_management_api.controllers.default_controller.GuardBearResult', return_value={})
 async def test_default_info(mock_wresult, mock_lspec):
     """Verify 'default_info' endpoint is working as expected."""
     result = await default_info()

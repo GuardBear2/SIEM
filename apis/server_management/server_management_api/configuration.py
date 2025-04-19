@@ -1,11 +1,11 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import datetime
 import os
 
-import wazuh.core.utils as core_utils
+import guardbear.core.utils as core_utils
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend as crypto_default_backend
 from cryptography.hazmat.primitives import hashes, serialization
@@ -107,8 +107,8 @@ def generate_self_signed_certificate(private_key: rsa.RSAPrivateKey, certificate
             x509.NameAttribute(NameOID.COUNTRY_NAME, 'US'),
             x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, 'California'),
             x509.NameAttribute(NameOID.LOCALITY_NAME, 'San Francisco'),
-            x509.NameAttribute(NameOID.ORGANIZATION_NAME, 'Wazuh'),
-            x509.NameAttribute(NameOID.COMMON_NAME, 'wazuh.com'),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, 'GuardBear'),
+            x509.NameAttribute(NameOID.COMMON_NAME, 'guardbear.com'),
         ]
     )
     cert = (

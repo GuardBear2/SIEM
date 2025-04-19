@@ -1,0 +1,42 @@
+﻿#!/bin/sh
+
+# Copyright (C) 2015, GuardBear Inc.
+# OSSEC         Controls GuardBear
+# Author:       Daniel B. Cid <dcid@ossec.net>
+# Modified for slackware by Jack S. Lai
+
+GUARDBEAR_HOME=GUARDBEAR_HOME_TMP
+GUARDBEAR_SERVER="${GUARDBEAR_HOME}/usr/share/guardbear-server/bin/guardbear-server"
+
+start() {
+    ${GUARDBEAR_SERVER} start
+}
+
+stop() {
+    ${GUARDBEAR_SERVER} stop
+}
+
+status() {
+    ${GUARDBEAR_SERVER} status
+}
+
+case "$1" in
+start)
+    start
+    ;;
+stop)
+    stop
+    ;;
+restart)
+    stop
+    start
+    ;;
+status)
+    status
+    ;;
+*)
+    echo "*** Usage: $0 {start|stop|restart|status}"
+    exit 1
+esac
+
+exit 0

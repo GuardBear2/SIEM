@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import json
 from pathlib import Path
 import shared.resource_handler as rs
@@ -55,7 +55,7 @@ def find_expected_json_files(test_folder):
 
 def verify(mandatory_mapping_path, integration: Path, reporter, key):
     mandatory_mapping = load_mandatory_mapping(mandatory_mapping_path)    
-    if integration.name != 'wazuh-core':
+    if integration.name != 'guardbear-core':
         test_folder = integration / 'test'
         if not test_folder.exists() or not test_folder.is_dir():
             sys.exit(f"No 'test' folder found in '{integration}'.")

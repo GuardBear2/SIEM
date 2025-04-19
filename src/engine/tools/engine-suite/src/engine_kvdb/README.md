@@ -1,6 +1,6 @@
-## engine-kvdb
+﻿## engine-kvdb
 
-The `engine-kvdb` tool is a command-line interface that allows you to manage key-value databases in the Wazuh engine. It provides the ability to list, create, update, and delete key-value databases. The tool is part of the `engine-suite` package.
+The `engine-kvdb` tool is a command-line interface that allows you to manage key-value databases in the GuardBear engine. It provides the ability to list, create, update, and delete key-value databases. The tool is part of the `engine-suite` package.
 
 ## Directory structure
 
@@ -39,7 +39,7 @@ options:
   -h, --help            show this help message and exit
   --version             show program's version number and exit
   --api-socket API_SOCKET
-                        Path to the Wazuh API socket
+                        Path to the GuardBear API socket
 
 subcommands:
   {list,create,delete,dump,get,search,remove,upsert}

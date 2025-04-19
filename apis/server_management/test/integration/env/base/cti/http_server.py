@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import argparse
@@ -17,7 +17,7 @@ MOCK_RESPONSE = {
                 'published_date': '2024-05-10T16:06:52Z',
                 'semver': {'major': 4, 'minor': 9, 'patch': 0},
                 'tag': 'v4.9.0',
-                'title': 'Wazuh v4.9.0',
+                'title': 'GuardBear v4.9.0',
             },
         ],
         'patch': [],
@@ -26,7 +26,7 @@ MOCK_RESPONSE = {
 
 
 class Handler(BaseHTTPRequestHandler):
-    """Custom HTTP request handler to respond to Wazuh's CTI service requests."""
+    """Custom HTTP request handler to respond to GuardBear's CTI service requests."""
 
     def do_GET(self):
         if re.search('/cti/v1/ping', self.path):

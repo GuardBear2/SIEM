@@ -1,7 +1,7 @@
-"""
-copyright: Copyright (C) 2015, Wazuh Inc.
+﻿"""
+copyright: Copyright (C) 2015, GuardBear Inc.
 
-           Created by Wazuh, Inc. <info@wazuh.com>.
+           Created by GuardBear, Inc. <info@guardbear.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -18,12 +18,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-execd
-    - wazuh-db
-    - wazuh-remoted
+    - guardbear-apid
+    - guardbear-modulesd
+    - guardbear-analysisd
+    - guardbear-execd
+    - guardbear-db
+    - guardbear-remoted
 
 os_platform:
     - linux
@@ -40,8 +40,8 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/getting-started.html
-    - https://documentation.wazuh.com/current/user-manual/api/configuration.html
+    - https://documentation.guardbear.com/current/user-manual/api/getting-started.html
+    - https://documentation.guardbear.com/current/user-manual/api/configuration.html
 
 tags:
     - api
@@ -53,13 +53,13 @@ from pathlib import Path
 from subprocess import CalledProcessError
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
-from wazuh_testing.constants.api import CONFIGURATION_TYPES, WAZUH_API_PORT
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
-from wazuh_testing.constants.paths.logs import WAZUH_API_LOG_FILE_PATH
-from wazuh_testing.tools.monitors import file_monitor
-from wazuh_testing.utils import services
-from wazuh_testing.utils.callbacks import generate_callback
-from wazuh_testing.modules.api.patterns import API_STARTED_MSG
+from guardbear_testing.constants.api import CONFIGURATION_TYPES, GUARDBEAR_API_PORT
+from guardbear_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from guardbear_testing.constants.paths.logs import GUARDBEAR_API_LOG_FILE_PATH
+from guardbear_testing.tools.monitors import file_monitor
+from guardbear_testing.utils import services
+from guardbear_testing.utils.callbacks import generate_callback
+from guardbear_testing.modules.api.patterns import API_STARTED_MSG
 
 # Marks
 pytestmark = pytest.mark.server
@@ -84,7 +84,7 @@ def test_logs_rotation_size_option_values(test_configuration, test_metadata, add
     """
     description: Check if the API works as expected with different values of log rotation size.
 
-    wazuh_min_version: 4.6.0
+    guardbear_min_version: 4.6.0
 
     test_phases:
         - setup:
@@ -107,7 +107,7 @@ def test_logs_rotation_size_option_values(test_configuration, test_metadata, add
             brief: Metadata from the test case.
         - add_configuration:
             type: fixture
-            brief: Add configuration to the Wazuh API configuration files.
+            brief: Add configuration to the GuardBear API configuration files.
         - truncate_monitored_files:
             type: fixture
             brief: Truncate all the log files and json alerts files before and after the test execution.
@@ -127,7 +127,7 @@ def test_logs_rotation_size_option_values(test_configuration, test_metadata, add
 
     try:
         # Restart the API
-        services.control_service('restart', 'wazuh-apid')
+        services.control_service('restart', 'guardbear-apid')
     except CalledProcessError:
         # Captures the output printed by the subprocess
         stdout_error_message = capfd.readouterr().out
@@ -143,10 +143,10 @@ def test_logs_rotation_size_option_values(test_configuration, test_metadata, add
     # If it wasn't expected to fail
     if expected_error_code == 0:
         host = '0.0.0.0'
-        port = WAZUH_API_PORT
+        port = GUARDBEAR_API_PORT
 
         # Monitor de API logs
-        monitor_start_message = file_monitor.FileMonitor(WAZUH_API_LOG_FILE_PATH)
+        monitor_start_message = file_monitor.FileMonitor(GUARDBEAR_API_LOG_FILE_PATH)
         monitor_start_message.start(
             callback=generate_callback(API_STARTED_MSG, {
                 'host': str(host),

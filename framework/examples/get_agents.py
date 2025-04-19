@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 
 ###
-#  Copyright (C) 2015, Wazuh Inc.All rights reserved.
-#  Wazuh.com
+#  Copyright (C) 2015, GuardBear Inc.All rights reserved.
+#  GuardBear.com
 #
 #  This program is free software; you can redistribute it
 #  and/or modify it under the terms of the GNU General Public
@@ -11,11 +11,11 @@
 ###
 
 # Instructions:
-#  - Use the embedded interpreter to run the script: {wazuh_path}/framework/python/bin/python3 get_agents.py
+#  - Use the embedded interpreter to run the script: {guardbear_path}/framework/python/bin/python3 get_agents.py
 
 import json
 
-import wazuh.agent as agent
+import guardbear.agent as agent
 
 if __name__ == '__main__':
     result = agent.get_agents()

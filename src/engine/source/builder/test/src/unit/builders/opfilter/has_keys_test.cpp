@@ -1,4 +1,4 @@
-#include "builders/baseBuilders_test.hpp"
+﻿#include "builders/baseBuilders_test.hpp"
 
 #include "builders/opfilter/opBuilderHelperFilter.hpp"
 
@@ -52,7 +52,7 @@ INSTANTIATE_TEST_SUITE_P(
         FilterT({makeValue(R"([1, 2, 3])")}, opfilter::opBuilderHelperKeysExistInList, FAILURE()),
         FilterT({makeValue(R"({"a": 1, "b": 2})")}, opfilter::opBuilderHelperKeysExistInList, FAILURE()),
         FilterT({makeValue(R"(null)")}, opfilter::opBuilderHelperKeysExistInList, FAILURE()),
-        FilterT({makeValue(R"(["ts", "host", "wazuh"])")}, opfilter::opBuilderHelperKeysExistInList, SUCCESS()),
+        FilterT({makeValue(R"(["ts", "host", "guardbear"])")}, opfilter::opBuilderHelperKeysExistInList, SUCCESS()),
         // Reference
         FilterT({makeRef("ref")},
                 opfilter::opBuilderHelperKeysExistInList,

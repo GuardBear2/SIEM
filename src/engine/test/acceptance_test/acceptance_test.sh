@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 
 
 
@@ -57,11 +57,11 @@ then
 
     TEST_NAME="analysisd-test-${RANDOM}"
 
-    # Stop Wazuh manager
+    # Stop GuardBear manager
 
-    systemctl stop wazuh-manager.service
+    systemctl stop guardbear-manager.service
 
-    # Backup Wazuh files
+    # Backup GuardBear files
 
     mkdir -p $CONFIG_BACKUP_DIR
     # mkdir -p $LOGS_BACKUP_DIR
@@ -72,26 +72,26 @@ then
     # Copy test files
 
     cp $CONFIG_SRC_DIR/* $CONFIG_DST_DIR
-    chgrp wazuh $CONFIG_DST_DIR/ossec.conf
-    chgrp wazuh $CONFIG_DST_DIR/local_internal_options.conf
+    chgrp guardbear $CONFIG_DST_DIR/ossec.conf
+    chgrp guardbear $CONFIG_DST_DIR/local_internal_options.conf
 
     mkdir -p $RULES_DST_DIR
     mkdir -p $DECODERS_DST_DIR
     cp $RULES_SRC_DIR/* $RULES_DST_DIR
     cp $DECODERS_SRC_DIR/* $DECODERS_DST_DIR
-    chown -R root:wazuh $RULES_DST_DIR
-    chown -R root:wazuh $DECODERS_DST_DIR
+    chown -R root:guardbear $RULES_DST_DIR
+    chown -R root:guardbear $DECODERS_DST_DIR
 
-    # Start Wazuh
+    # Start GuardBear
 
-    systemctl start wazuh-manager.service
+    systemctl start guardbear-manager.service
 
-    # Sleep to wait for wazuh-analysisd to start up
+    # Sleep to wait for guardbear-analysisd to start up
     sleep 5
 
     # Run stats collector script
 
-    python3 ./utils/monitor.py -s $STATS_MONITOR_POLL_TIME_SECS -b wazuh-analysisd -n $TEST_NAME &
+    python3 ./utils/monitor.py -s $STATS_MONITOR_POLL_TIME_SECS -b guardbear-analysisd -n $TEST_NAME &
 
     MONITOR_PID=$!
 
@@ -109,11 +109,11 @@ then
 
     kill -INT $MONITOR_PID
 
-    # Stop Wazuh manager
+    # Stop GuardBear manager
 
-    systemctl stop wazuh-manager.service
+    systemctl stop guardbear-manager.service
 
-    # Restore Wazuh files
+    # Restore GuardBear files
 
     mv $CONFIG_BACKUP_DIR/* $CONFIG_DST_DIR
 
@@ -140,7 +140,7 @@ then
     ./main server --event_queue_tasks 0                                    \
                   --event_socket "/var/ossec/queue/sockets/queue"          \
                   --api_queue_tasks 0                                      \
-                  --api_socket "/run/wazuh-server/engine-api.socket"       \
+                  --api_socket "/run/guardbear-server/engine-api.socket"       \
                   --server_threads 1                                       \
                   --router_threads ${ENGINE_N_THREADS}                     \
                   --queue_flood_file ""                                    \

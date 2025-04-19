@@ -1,4 +1,4 @@
-#include "builders/baseBuilders_test.hpp"
+﻿#include "builders/baseBuilders_test.hpp"
 #include "builders/optransform/sca.hpp"
 
 #include <sockiface/mockSockFactory.hpp>
@@ -7,7 +7,7 @@
 #include <wdb/mockWdbManager.hpp>
 
 using namespace builder::builders::optransform;
-using namespace wazuhdb::mocks;
+using namespace guardbeardb::mocks;
 using namespace sockiface::mocks;
 
 namespace

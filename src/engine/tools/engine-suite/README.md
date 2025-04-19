@@ -1,4 +1,4 @@
-# Engine python suite tools
+﻿# Engine python suite tools
 
 1. [Summary](#summary)
 2. [Directory structure](#directory-structure)
@@ -34,14 +34,14 @@ The `engine-suite` python package contains various scripts to help developing co
 ## Engine clear
 
 - **Resource Elimination**:
-    You can delete user-specified or default resources in different namespaces such as `user`, `wazuh`, and `system`. This is useful for keeping the environment clean and organized.
+    You can delete user-specified or default resources in different namespaces such as `user`, `guardbear`, and `system`. This is useful for keeping the environment clean and organized.
     To prevent accidental deletions, the module requests confirmation before proceeding with resource deletion, unless the `--force` option is used to force execution without confirmation.
 
 - **Support for Namespaces**:
     Users can specify which namespaces resources should be removed from. If not specified, the module removes them from the default namespaces.
 
 - **Deletion of Policies and Assets**:
-    In addition to kvdbs, can handle the removal of policies and other assets within the Wazuh environment, ensuring that all elements related to rules and configurations are aligned with the desired changes.
+    In addition to kvdbs, can handle the removal of policies and other assets within the GuardBear environment, ensuring that all elements related to rules and configurations are aligned with the desired changes.
 
 ## Engine catalog
 - **Catalog Management**:
@@ -128,7 +128,7 @@ Requires:
 - `pip3`
 -`tools/engine-suite` package.
 
-To install navigate where the Wazuh repository folder is located and run:
+To install navigate where the GuardBear repository folder is located and run:
 ```
 pip3 install tools/engine-suite
 ```

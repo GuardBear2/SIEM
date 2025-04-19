@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 
 import json
 import re
@@ -18,7 +18,7 @@ from api_communication.proto import policy_pb2 as api_policy
 from api_communication.proto import tester_pb2 as api_tester
 from engine_handler.handler import EngineHandler
 
-POLICY_NAME = "policy/wazuh/0"
+POLICY_NAME = "policy/guardbear/0"
 ASSET_NAME = "decoder/test/0"
 SESSION_NAME = "test"
 NAMESPACE = "user"
@@ -774,7 +774,7 @@ def runner(input_path: Path, env_dir: Path, show_failure: bool):
     success = True
 
     print("Validating parameters...")
-    bin_path = (env_dir / "wazuh-engine").resolve()
+    bin_path = (env_dir / "guardbear-engine").resolve()
     if not bin_path.is_file():
         raise FileNotFoundError(f"Binary file not found: {bin_path}")
 

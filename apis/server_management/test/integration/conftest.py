@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 
@@ -83,7 +83,7 @@ def build_and_up(interval: int = 10, build: bool = True):
 
     if build:
         # Ping the current branch tarball used to build the manager image.
-        response = requests.get(f'https://github.com/wazuh/wazuh/tarball/{current_branch}')
+        response = requests.get(f'https://github.com/guardbear/guardbear/tarball/{current_branch}')
         if response.status_code == 404:
             pytest.fail("Current branch tarball doesn't exist")
         elif not response.ok:
@@ -102,7 +102,7 @@ def build_and_up(interval: int = 10, build: bool = True):
                         'compose',
                         'build',
                         '--build-arg',
-                        f'WAZUH_BRANCH={current_branch}',
+                        f'GUARDBEAR_BRANCH={current_branch}',
                         '--build-arg',
                         '--no-cache',
                     ],
@@ -141,7 +141,7 @@ def down_env():
 
 
 def check_health(node_type: str = 'manager', agents: list = None):
-    """Check the Wazuh nodes health.
+    """Check the GuardBear nodes health.
 
     Parameters
     ----------
@@ -159,14 +159,14 @@ def check_health(node_type: str = 'manager', agents: list = None):
     if node_type == 'manager':
         for node in env_cluster_nodes:
             health = subprocess.check_output(
-                f"docker inspect env-wazuh-{node}-1 -f '{{{{json .State.Health.Status}}}}'", shell=True
+                f"docker inspect env-guardbear-{node}-1 -f '{{{{json .State.Health.Status}}}}'", shell=True
             )
             if not health.startswith(b'"healthy"'):
                 return False
     elif node_type == 'agent':
         for agent in agents:
             health = subprocess.check_output(
-                f"docker inspect env-wazuh-agent{agent}-1 -f '{{{{json .State.Health.Status}}}}'", shell=True
+                f"docker inspect env-guardbear-agent{agent}-1 -f '{{{{json .State.Health.Status}}}}'", shell=True
             )
             if not health.startswith(b'"healthy"'):
                 return False
@@ -300,7 +300,7 @@ def rbac_custom_config_generator(module: str, rbac_mode: str):
 
 
 def save_logs(test_name: str):
-    """Save API, cluster and Wazuh logs from every cluster node and Wazuh logs from every agent if tests fail.
+    """Save API, cluster and GuardBear logs from every cluster node and GuardBear logs from every agent if tests fail.
     Save haproxy-lb log.
 
     Examples
@@ -321,7 +321,7 @@ def save_logs(test_name: str):
         for log in logs:
             try:
                 subprocess.check_output(
-                    f'docker cp env-wazuh-{node}-1:{os.path.join(logs_path, log)} '
+                    f'docker cp env-guardbear-{node}-1:{os.path.join(logs_path, log)} '
                     f'{os.path.join(test_logs_path, f"test_{test_name}-{node}-{log}")}',
                     shell=True,
                 )
@@ -332,7 +332,7 @@ def save_logs(test_name: str):
     for agent in agent_names:
         try:
             subprocess.check_output(
-                f'docker cp env-wazuh-{agent}-1:{os.path.join(logs_path, "ossec.log")} '
+                f'docker cp env-guardbear-{agent}-1:{os.path.join(logs_path, "ossec.log")} '
                 f'{os.path.join(test_logs_path, f"test_{test_name}-{agent}-ossec.log")}',
                 shell=True,
             )
@@ -405,7 +405,7 @@ def api_test(request: _pytest.fixtures.SubRequest):
         try:
             error_message = (
                 subprocess.check_output(
-                    ['docker', 'exec', '-t', 'env-wazuh-master-1', 'sh', '-c', 'cat /entrypoint_error']
+                    ['docker', 'exec', '-t', 'env-guardbear-master-1', 'sh', '-c', 'cat /entrypoint_error']
                 )
                 .decode()
                 .strip()
@@ -431,7 +431,7 @@ def get_health():
     """
     health = '\nEnvironment final status\n'
     health += subprocess.check_output(
-        "docker ps --format 'table {{.Names}}\t{{.RunningFor}}\t{{.Status}}' --filter name=^env-wazuh", shell=True
+        "docker ps --format 'table {{.Names}}\t{{.RunningFor}}\t{{.Status}}' --filter name=^env-guardbear", shell=True
     ).decode()
     health += '\n'
 

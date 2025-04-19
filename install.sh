@@ -1,6 +1,6 @@
-#!/bin/sh
-# Copyright (C) 2015, Wazuh Inc.
-# Installation script for Wazuh
+﻿#!/bin/sh
+# Copyright (C) 2015, GuardBear Inc.
+# Installation script for GuardBear
 # Author: Daniel B. Cid <daniel.cid@gmail.com>
 
 ### Looking up for the execution directory
@@ -60,11 +60,11 @@ Install()
     BuildKeystore
 
     # Install
-    InstallWazuh
+    InstallGuardBear
 
     cd ../
 
-    # Calling the init script to start Wazuh during boot
+    # Calling the init script to start GuardBear during boot
     runInit
     runinit_value=$?
 }
@@ -185,7 +185,7 @@ main()
 
     . ./src/init/language.sh
     . ./src/init/init.sh
-    . ./src/init/wazuh/wazuh.sh
+    . ./src/init/guardbear/guardbear.sh
     . ${TEMPLATE}/${LANGUAGE}/messages.txt
     . ./src/init/inst-functions.sh
     . ./src/init/template-select.sh
@@ -205,7 +205,7 @@ main()
     fi
 
     # Initial message
-    echo " $NAME $VERSION (Rev. $REVISION) ${installscript} - https://www.wazuh.com"
+    echo " $NAME $VERSION (Rev. $REVISION) ${installscript} - https://www.guardbear.com"
     catMsg "0x101-initial"
     echo ""
     echo "  - $system: $UNAME (${DIST_NAME} ${DIST_VER}.${DIST_SUBVER})"
@@ -226,10 +226,10 @@ main()
     echo " - ${configurationdone}."
     echo ""
     echo " - ${tostart}:"
-    echo "      $INSTALLDIR/bin/wazuh-control start"
+    echo "      $INSTALLDIR/bin/guardbear-control start"
     echo ""
     echo " - ${tostop}:"
-    echo "      $INSTALLDIR/bin/wazuh-control stop"
+    echo "      $INSTALLDIR/bin/guardbear-control stop"
     echo ""
     echo ""
 
@@ -241,13 +241,13 @@ main()
     echo " - ${addserveragent}"
     echo ""
     echo "   ${moreinfo}"
-    echo "   https://documentation.wazuh.com/"
+    echo "   https://documentation.guardbear.com/"
     echo ""
 
 
     if [ "X$notmodified" = "Xyes" ]; then
         catMsg "0x105-noboot"
-        echo "      $INSTALLDIR/bin/wazuh-control start"
+        echo "      $INSTALLDIR/bin/guardbear-control start"
         echo ""
     fi
 }

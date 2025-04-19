@@ -1,8 +1,8 @@
-from multiprocessing import Event
+﻿from multiprocessing import Event
 from unittest.mock import AsyncMock, call, patch
 
 import pytest
-from wazuh.core.indexer.models.commands import Command, Status, Target, TargetType
+from guardbear.core.indexer.models.commands import Command, Status, Target, TargetType
 
 from comms_api.core.commands import CommandsManager, pull_commands
 

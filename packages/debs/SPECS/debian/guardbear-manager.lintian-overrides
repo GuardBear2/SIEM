@@ -1,0 +1,9 @@
+﻿guardbear-server: embedded-library
+guardbear-server: embedded-zlib
+guardbear-server: possible-gpl-code-linked-with-openssl
+guardbear-server: new-package-should-close-itp-bug
+guardbear-server: possibly-insecure-handling-of-tmp-files-in-maintainer-script
+guardbear-server: non-standard-dir-in-var
+guardbear-server: file-in-unusual-dir
+guardbear-server: hardening-no-fortify-functions
+guardbear-server: hardening-no-relro

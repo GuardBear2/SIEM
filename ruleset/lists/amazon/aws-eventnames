@@ -1,4 +1,4 @@
-TEMPLATE:# AWS Cloudtrail event names - https://www.gorillastack.com/news/important-aws-cloudtrail-security-events-tracking used as reference
+﻿TEMPLATE:# AWS Cloudtrail event names - https://www.gorillastack.com/news/important-aws-cloudtrail-security-events-tracking used as reference
 AttachLoadBalancers:Autoscaling
 DetachLoadBalancers:Autoscaling
 PutScalingPolicy:Autoscaling
@@ -315,33 +315,33 @@ UpdateSizeConstraintSet:WAF
 UpdateSqlInjectionMatchSet:WAF
 UpdateWebACL:WAF
 UpdateXssMatchSet:WAF
-AssociateDhcpOptions:Legacy Wazuh CDB
-AttachVolume:Legacy Wazuh CDB
-CopySnapshot:Legacy Wazuh CDB
-CreateImage:Legacy Wazuh CDB
-CreatePlacementGroup:Legacy Wazuh CDB
-CreateSnapshot:Legacy Wazuh CDB
-CreateSubnet:Legacy Wazuh CDB
-CreateTags:Legacy Wazuh CDB
-CreateVolume:Legacy Wazuh CDB
-DeletePlacementGroup:Legacy Wazuh CDB
-DeleteSnapshot:Legacy Wazuh CDB
-DeleteTags:Legacy Wazuh CDB
-DeleteVolume:Legacy Wazuh CDB
-DeregisterImage:Legacy Wazuh CDB
-DisableKey:Legacy Wazuh CDB
-GetGroup:Legacy Wazuh CDB
-ListAliases:Legacy Wazuh CDB
-ListGroups:Legacy Wazuh CDB
-ListUsers:Legacy Wazuh CDB
-ModifyImageAttribute:Legacy Wazuh CDB
-ModifyInstanceAttribute:Legacy Wazuh CDB
-ModifyNetworkInterfaceAttribute:Legacy Wazuh CDB
-ModifySnapshotAttribute:Legacy Wazuh CDB
-ModifySubnetAttribute:Legacy Wazuh CDB
-ModifyVolumeAttribute:Legacy Wazuh CDB
-MonitorInstances:Legacy Wazuh CDB
-RebootInstances:Legacy Wazuh CDB
-RegisterImage:Legacy Wazuh CDB
-UnmonitorInstances:Legacy Wazuh CDB
-UpdateInstanceAlias:Legacy Wazuh CDB
+AssociateDhcpOptions:Legacy GuardBear CDB
+AttachVolume:Legacy GuardBear CDB
+CopySnapshot:Legacy GuardBear CDB
+CreateImage:Legacy GuardBear CDB
+CreatePlacementGroup:Legacy GuardBear CDB
+CreateSnapshot:Legacy GuardBear CDB
+CreateSubnet:Legacy GuardBear CDB
+CreateTags:Legacy GuardBear CDB
+CreateVolume:Legacy GuardBear CDB
+DeletePlacementGroup:Legacy GuardBear CDB
+DeleteSnapshot:Legacy GuardBear CDB
+DeleteTags:Legacy GuardBear CDB
+DeleteVolume:Legacy GuardBear CDB
+DeregisterImage:Legacy GuardBear CDB
+DisableKey:Legacy GuardBear CDB
+GetGroup:Legacy GuardBear CDB
+ListAliases:Legacy GuardBear CDB
+ListGroups:Legacy GuardBear CDB
+ListUsers:Legacy GuardBear CDB
+ModifyImageAttribute:Legacy GuardBear CDB
+ModifyInstanceAttribute:Legacy GuardBear CDB
+ModifyNetworkInterfaceAttribute:Legacy GuardBear CDB
+ModifySnapshotAttribute:Legacy GuardBear CDB
+ModifySubnetAttribute:Legacy GuardBear CDB
+ModifyVolumeAttribute:Legacy GuardBear CDB
+MonitorInstances:Legacy GuardBear CDB
+RebootInstances:Legacy GuardBear CDB
+RegisterImage:Legacy GuardBear CDB
+UnmonitorInstances:Legacy GuardBear CDB
+UpdateInstanceAlias:Legacy GuardBear CDB

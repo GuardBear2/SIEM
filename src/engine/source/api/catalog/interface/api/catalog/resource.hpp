@@ -1,4 +1,4 @@
-#ifndef _API_CATALOG_RESOURCE_HPP
+﻿#ifndef _API_CATALOG_RESOURCE_HPP
 #define _API_CATALOG_RESOURCE_HPP
 
 #include <cstring>
@@ -19,11 +19,11 @@ public:
     /**
      * @brief Format of the resource managed by the catalog
      */
-    using Format = ::com::wazuh::api::engine::catalog::ResourceFormat;
+    using Format = ::com::guardbear::api::engine::catalog::ResourceFormat;
     /**
      * @brief Type of the resource managed by the catalog
      */
-    using Type = ::com::wazuh::api::engine::catalog::ResourceType;
+    using Type = ::com::guardbear::api::engine::catalog::ResourceType;
     constexpr static auto ASSET = 0;
 
     /**

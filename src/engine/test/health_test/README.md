@@ -1,8 +1,8 @@
-# Health Tests for Wazuh-Engine Integrations
+﻿# Health Tests for GuardBear-Engine Integrations
 
 ## Overview
 
-This directory contains the necessary tools and scripts to run health tests for various integrations within the Wazuh-Engine ruleset. These tests are crucial for verifying the correctness and efficacy of each integration by comparing actual outputs against expected outcomes.
+This directory contains the necessary tools and scripts to run health tests for various integrations within the GuardBear-Engine ruleset. These tests are crucial for verifying the correctness and efficacy of each integration by comparing actual outputs against expected outcomes.
 
 ## Directory Structure
 
@@ -73,7 +73,7 @@ engine-health-test static -r ruleset_dir metadata_validate
 ```
 
 ### Schema validate
-This tool validates that the fields present in the output event exist in the wazuh schema. If not, they should be defined in the custom_fields.yml file within the test folder of each integration. Otherwise the test will fail.
+This tool validates that the fields present in the output event exist in the guardbear schema. If not, they should be defined in the custom_fields.yml file within the test folder of each integration. Otherwise the test will fail.
 
 ```bash
 usage: engine-health-test schema_validate [-h] -r RULESET [--integration INTEGRATION] [--rule_folder rule_folder]
@@ -102,7 +102,7 @@ engine-health-test static -r ruleset_dir schema_validate
 
 ### Mandatory mapping validate
 This tool validates that certain fields that are required are mapped in the output event.
-Such as 'wazuh.decoders'. This list can be expanded and is located within base-rules
+Such as 'guardbear.decoders'. This list can be expanded and is located within base-rules
 
 ```bash
 usage: engine-health-test mandatory_mapping_validate [-h] -r RULESET [--integration INTEGRATION] [--rule_folder rule_folder]
@@ -320,7 +320,7 @@ engine-health-test dynamic -e health_test/environment load_rules
 ```
 
 ### Validate successful assets
-Verifies in the trace that the decoders that were successful are added to wazuh.decoders and that the successful rules are added to wazuh.rules.
+Verifies in the trace that the decoders that were successful are added to guardbear.decoders and that the successful rules are added to guardbear.rules.
 ```bash
 usage: engine-health-test dynamic -e health_test/environment validate_successful_assets [-h] [-i INTEGRATION] [--rule_folder rule_folder] --target TARGET [--skip SKIP]
 
@@ -392,7 +392,7 @@ engine-health-test dynamic -e health_test/environment validate_event_indexing --
 # To run all tests in rules
 engine-health-test dynamic -e health_test/environment validate_event_indexing --target rules
 # To skip specific tests in decoders
-engine-health-test dynamic -e health_test/environment validate_event_indexing --target decoder --skip windows,wazuh-core
+engine-health-test dynamic -e health_test/environment validate_event_indexing --target decoder --skip windows,guardbear-core
 ```
 
 ### Validate custom field indexing
@@ -427,7 +427,7 @@ engine-health-test dynamic -e health_test/environment validate_custom_field_inde
 # To run all tests in rules
 engine-health-test dynamic -e health_test/environment vvalidate_custom_field_indexing --target rules
 # To skip specific tests in decoders
-engine-health-test dynamic -e health_test/environment validate_custom_field_indexing --target decoder --skip windows,wazuh-core
+engine-health-test dynamic -e health_test/environment validate_custom_field_indexing --target decoder --skip windows,guardbear-core
 ```
 
 
@@ -457,7 +457,7 @@ engine-health-test dynamic -e health_test/environment run --target decoder
 # To run all tests in rules
 engine-health-test dynamic -e health_test/environment run --target rules
 # To skip specific tests in decoders
-engine-health-test dynamic -e health_test/environment run --target decoder --skip windows,wazuh-core
+engine-health-test dynamic -e health_test/environment run --target decoder --skip windows,guardbear-core
 ```
 
 ### Coverage report

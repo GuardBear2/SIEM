@@ -1,4 +1,4 @@
-# evtx2xml
+﻿# evtx2xml
 
 A Python tool to convert Windows Event Log (EVTX) files to XML format.
 
@@ -40,5 +40,5 @@ If you have any questions or issues, please open an issue on GitHub.
 
 ## Links
 
-- [GitHub Repository](https://github.com/wazuh/wazuh)
+- [GitHub Repository](https://github.com/guardbear/guardbear)
 

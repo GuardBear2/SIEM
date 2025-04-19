@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import base64
@@ -17,9 +17,9 @@ from secure import ContentSecurityPolicy, Secure, Server, XFrameOptions
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
-from wazuh.core.authentication import JWT_ALGORITHM, get_keypair
-from wazuh.core.config.client import CentralizedConfig
-from wazuh.core.utils import get_utc_now
+from guardbear.core.authentication import JWT_ALGORITHM, get_keypair
+from guardbear.core.config.client import CentralizedConfig
+from guardbear.core.utils import get_utc_now
 
 from server_management_api.alogging import custom_logging
 from server_management_api.api_exception import BlockedIPException, ExpectFailedException, MaxRequestsException
@@ -39,12 +39,12 @@ LOGIN_ENDPOINT = '/security/user/authenticate'
 HASH_AUTH_CONTEXT_KEY = 'hash_auth_context'
 
 # API secure headers
-server = Server().set('Wazuh')
+server = Server().set('GuardBear')
 csp = ContentSecurityPolicy().set('none')
 xfo = XFrameOptions().deny()
 secure_headers = Secure(server=server, csp=csp, xfo=xfo)
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('guardbear-api')
 
 ip_stats = dict()
 ip_block = set()
@@ -90,7 +90,7 @@ async def access_log(request: ConnexionRequest, response: Response, prev_time: t
                     user_passw,
                     public_key,
                     algorithms=[JWT_ALGORITHM],
-                    audience='Wazuh API REST',
+                    audience='GuardBear API REST',
                     options={'verify_exp': False},
                 )
                 user = s['sub']
@@ -212,11 +212,11 @@ class CheckBlockedIP(BaseHTTPMiddleware):
         return await call_next(request)
 
 
-class WazuhAccessLoggerMiddleware(BaseHTTPMiddleware):
+class GuardBearAccessLoggerMiddleware(BaseHTTPMiddleware):
     """Middleware to log custom Access messages."""
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        """Log Wazuh access information.
+        """Log GuardBear access information.
 
         Parameters
         ----------
@@ -237,7 +237,7 @@ class WazuhAccessLoggerMiddleware(BaseHTTPMiddleware):
             try:
                 # Load the request body to the _json field before calling the controller so it's cached before the stream
                 # is consumed. If there's a json error we skip it so it's handled later.
-                # Related to https://github.com/wazuh/wazuh/issues/24060.
+                # Related to https://github.com/guardbear/guardbear/issues/24060.
                 _ = await request.json()
             except json.decoder.JSONDecodeError:
                 pass

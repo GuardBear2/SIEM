@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -7,28 +7,28 @@ from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
 from connexion.lifecycle import ConnexionResponse
-from wazuh.core.config.client import CentralizedConfig
-from wazuh.core.config.models.server import ValidateFilePathMixin
+from guardbear.core.config.client import CentralizedConfig
+from guardbear.core.config.models.server import ValidateFilePathMixin
 
 from server_management_api.constants import INSTALLATION_UID_KEY, UPDATE_INFORMATION_KEY
 from server_management_api.controllers.test.utils import CustomAffectedItems, get_default_configuration
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
+with patch('guardbear.common.guardbear_uid'):
+    with patch('guardbear.common.guardbear_gid'):
         with patch.object(ValidateFilePathMixin, '_validate_file_path', return_value=None):
             default_config = get_default_configuration()
             CentralizedConfig._config = default_config
 
-            sys.modules['wazuh.rbac.orm'] = MagicMock()
-            import wazuh.rbac.decorators
-            from wazuh import manager
-            from wazuh.core.manager import query_update_check_service
-            from wazuh.tests.util import RBAC_bypasser
+            sys.modules['guardbear.rbac.orm'] = MagicMock()
+            import guardbear.rbac.decorators
+            from guardbear import manager
+            from guardbear.core.manager import query_update_check_service
+            from guardbear.tests.util import RBAC_bypasser
 
             from server_management_api.controllers.manager_controller import check_available_version
 
-            wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-            del sys.modules['wazuh.rbac.orm']
+            guardbear.rbac.decorators.expose_resources = RBAC_bypasser
+            del sys.modules['guardbear.rbac.orm']
 
 
 @pytest.mark.parametrize(

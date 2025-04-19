@@ -1,4 +1,4 @@
-#ifndef _API_ADAPTER_HPP
+﻿#ifndef _API_ADAPTER_HPP
 #define _API_ADAPTER_HPP
 
 #include <variant>
@@ -13,7 +13,7 @@
 namespace api::adapter
 {
 using RouteHandler = std::function<void(const httplib::Request&, httplib::Response&)>;
-namespace eEngine = ::com::wazuh::api::engine;
+namespace eEngine = ::com::guardbear::api::engine;
 
 struct Error
 {

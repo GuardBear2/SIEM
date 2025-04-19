@@ -1,4 +1,4 @@
-{
+﻿{
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
@@ -18,32 +18,32 @@
                     "value": "2"
                 },
                 {
-                    "name": "WAZUH_LOG_LEVEL",
+                    "name": "GUARDBEAR_LOG_LEVEL",
                     "value": "trace"
                 },
                 {
-                    "name": "WAZUH_CONFIG_SKIP_API",
+                    "name": "GUARDBEAR_CONFIG_SKIP_API",
                     "value": "true"
                 },
                 {
-                    "name": "WAZUH_QUEUE_FLOOD_FILE",
+                    "name": "GUARDBEAR_QUEUE_FLOOD_FILE",
                     "value": ""
                 },
                 {
-                    "name": "WAZUH_SERVER_EVENT_QUEUE_SIZE",
+                    "name": "GUARDBEAR_SERVER_EVENT_QUEUE_SIZE",
                     "value": "0"
                 },
                 /*
                 {
-                    "name": "WAZUH_KVDB_PATH",
+                    "name": "GUARDBEAR_KVDB_PATH",
                     "value": "${workspaceFolder}/engine-installed/kvdb/"
                 },
                 {
-                    "name": "WAZUH_STORE_PATH",
+                    "name": "GUARDBEAR_STORE_PATH",
                     "value": "${workspaceFolder}/engine-installed/store"
                 },
                 {
-                    "name": "WAZUH_SERVER_API_SOCKET",
+                    "name": "GUARDBEAR_SERVER_API_SOCKET",
                     "value": "/var/ossec/queue/sockets/engine-api"
                 }
                 */
@@ -71,12 +71,12 @@
         *                        Installation scripts debug configurations
         *********************************************************************************/
         {
-            "name": "Wazuh installer script",
+            "name": "GuardBear installer script",
             "type": "bashdb",
             "request": "launch",
-            "program": "${env:WAZUH_REPO}/install.sh",
+            "program": "${env:GUARDBEAR_REPO}/install.sh",
             "args": [],
-            "cwd": "${env:WAZUH_REPO}",
+            "cwd": "${env:GUARDBEAR_REPO}",
             "showDebugOutput": true,
             "terminalKind": "integrated"
         },
@@ -184,7 +184,7 @@
                 "-e", "${env:TMP_CLEAN_ENV}",
                 "validate_successful_assets",
                 "--target", "decoder",
-                "--skip", "wazuh-core"
+                "--skip", "guardbear-core"
             ],
             "cwd": "${env:TMP_CLEAN_ENV}",
             "env": {
@@ -223,7 +223,7 @@
                 "-e", "${env:TMP_CLEAN_ENV}",
                 "validate_successful_assets",
                 "--target", "rule",
-                "--skip", "wazuh-core"
+                "--skip", "guardbear-core"
             ],
             "cwd": "${env:TMP_CLEAN_ENV}",
             "env": {
@@ -242,7 +242,7 @@
                 "dynamic",
                 "-e", "${env:TMP_CLEAN_ENV}",
                 "validate_rule_mapping",
-                "--skip", "wazuh-core"
+                "--skip", "guardbear-core"
             ],
             "cwd": "${env:TMP_CLEAN_ENV}",
             "env": {
@@ -262,7 +262,7 @@
                 "-e", "${env:TMP_CLEAN_ENV}",
                 "run",
                 "--target", "decoder",
-                "--skip", "wazuh-core"
+                "--skip", "guardbear-core"
             ],
             "cwd": "${env:TMP_CLEAN_ENV}",
             "env": {
@@ -282,7 +282,7 @@
                 "-e", "${env:TMP_CLEAN_ENV}",
                 "run",
                 "--target", "rule",
-                "--skip", "wazuh-core"
+                "--skip", "guardbear-core"
             ],
             "cwd": "${env:TMP_CLEAN_ENV}",
             "env": {
@@ -428,7 +428,7 @@
             "env": {
                 "PYTHONPATH": "${env:ENGINE_PYTHONPATH_DBG}:${env:PYTHONPATH}",
                 "ENV_DIR": "${env:TMP_CLEAN_ENV}",
-                "BINARY_DIR": "${env:TMP_CLEAN_ENV}/wazuh-engine",
+                "BINARY_DIR": "${env:TMP_CLEAN_ENV}/guardbear-engine",
                 "CONF_FILE": "${env:TMP_CLEAN_ENV}/config.env"
             },
             "justMyCode": false
@@ -471,7 +471,7 @@
         {
             "type": "cppdbg",
             "request": "launch",
-            "name": "Open a core dump Wazuh-Engine",
+            "name": "Open a core dump GuardBear-Engine",
             "program": "${env:ENGINE_BUILD}/main",
             "coreDumpPath": "${input:coreFileName}",
             "cwd": "${env:ENGINE_SRC}",

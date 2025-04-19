@@ -1,4 +1,4 @@
-import socket
+﻿import socket
 import struct
 import time
 
@@ -11,7 +11,7 @@ sock.connect(ADDR)
 
 
 def send_msg(msg):
-    """Send message to wazuh-db socket.
+    """Send message to guardbear-db socket.
 
     Parameters
     ----------

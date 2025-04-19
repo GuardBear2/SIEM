@@ -1,11 +1,11 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
-from wazuh.core.config.client import Config
-from wazuh.core.config.models.indexer import IndexerConfig, IndexerNode
-from wazuh.core.config.models.server import NodeConfig, NodeType, ServerConfig, SSLConfig
-from wazuh.core.results import AffectedItemsWazuhResult
+from guardbear.core.config.client import Config
+from guardbear.core.config.models.indexer import IndexerConfig, IndexerNode
+from guardbear.core.config.models.server import NodeConfig, NodeType, ServerConfig, SSLConfig
+from guardbear.core.results import AffectedItemsGuardBearResult
 
 
 def get_default_configuration():
@@ -19,11 +19,11 @@ def get_default_configuration():
                 ssl=SSLConfig(key='example', cert='example', ca='example'),
             ),
         ),
-        indexer=IndexerConfig(hosts=[IndexerNode(host='example', port=1516)], username='wazuh', password='wazuh'),
+        indexer=IndexerConfig(hosts=[IndexerNode(host='example', port=1516)], username='guardbear', password='guardbear'),
     )
 
 
-class CustomAffectedItems(AffectedItemsWazuhResult):
+class CustomAffectedItems(AffectedItemsGuardBearResult):
     """Mock custom values that are needed in controller tests."""
 
     def __init__(self, empty: bool = False):

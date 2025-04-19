@@ -1,4 +1,4 @@
-# Engine development enviroment
+﻿# Engine development enviroment
 
 1. [Project structure](#structure)
     1. [Benchamarck](#benchamarck)
@@ -80,7 +80,7 @@ tar xf vcpkg.tar.gz --strip-components=1 -C /home/$USER/engine/vcpkg
 ```bash
 /home/$USER/engine/vcpkg/bootstrap-vcpkg.sh
 ```
-And create `astyle.config` file inside `.vscode` folder using Wazuh style guidelines:
+And create `astyle.config` file inside `.vscode` folder using GuardBear style guidelines:
 ```
 --style=allman
 --formatted
@@ -177,14 +177,14 @@ cd vcpkg
 export VCPKG_ROOT=$(pwd)
 export PATH=$VCPKG_ROOT:$PATH
 ```
-#### Step 4: Install Wazuh Engine
+#### Step 4: Install GuardBear Engine
 ```bash
-git clone --recurse-submodules https://github.com/wazuh/wazuh.git  
-cd wazuh/src/engine
+git clone --recurse-submodules https://github.com/guardbear/guardbear.git  
+cd guardbear/src/engine
 cmake --preset=release
 cmake --build build -j$(nproc)
 ```
 
 <a name="license"></a>
 ## License
-Wazuh Engine is distributed under the AGPLv3 license. See [LICENSE-engine](LICENSE-engine) and [COPYING-engine](COPYING-engine) for more details.
+GuardBear Engine is distributed under the AGPLv3 license. See [LICENSE-engine](LICENSE-engine) and [COPYING-engine](COPYING-engine) for more details.

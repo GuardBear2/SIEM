@@ -1,17 +1,17 @@
-FROM public.ecr.aws/o5x5t0j3/amd64/api_development:integration_test_wazuh-generic
+﻿FROM public.ecr.aws/o5x5t0j3/amd64/api_development:integration_test_guardbear-generic
 
 # ENV_MODE needs to be assigned to an environment variable as it is going to be used at run time (CMD)
 ARG ENV_MODE
 ENV ENV_MODE ${ENV_MODE}
 
 # INSTALL MANAGER
-ARG WAZUH_BRANCH
+ARG GUARDBEAR_BRANCH
 
 ADD base/manager/supervisord.conf /etc/supervisor/conf.d/
 
-RUN mkdir wazuh && curl -sL https://github.com/wazuh/wazuh/tarball/${WAZUH_BRANCH} | tar zx --strip-components=1 -C wazuh
-COPY base/manager/preloaded-vars.conf /wazuh/etc/preloaded-vars.conf
-RUN /wazuh/install.sh
+RUN mkdir guardbear && curl -sL https://github.com/guardbear/guardbear/tarball/${GUARDBEAR_BRANCH} | tar zx --strip-components=1 -C guardbear
+COPY base/manager/preloaded-vars.conf /guardbear/etc/preloaded-vars.conf
+RUN /guardbear/install.sh
 COPY base/manager/entrypoint.sh /scripts/entrypoint.sh
 
 # HEALTHCHECK

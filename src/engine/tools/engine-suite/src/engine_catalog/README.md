@@ -1,4 +1,4 @@
-## engine-catalog
+﻿## engine-catalog
 
 The `engine-catalog` script is part of the `engine-suite` package. It is a tool that allows you to manage the catalog of decoders, rules, and integrations. It provides the ability to list, add, update, and delete catalog items.
 
@@ -39,7 +39,7 @@ options:
   -h, --help            show this help message and exit
   --version             show program's version number and exit
   --api-socket API_SOCKET
-                        Path to the Wazuh API socket
+                        Path to the GuardBear API socket
   -n NAMESPACE, --namespace NAMESPACE
                         Namespace to use for the catalog
   --format {json,yml,yaml}

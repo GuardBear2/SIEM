@@ -1,6 +1,6 @@
-/*
- * Wazuh - Content Merge Tool
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear - Content Merge Tool
+ * Copyright (C) 2015, GuardBear Inc.
  * January 10, 2023.
  *
  */

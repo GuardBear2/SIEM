@@ -1,4 +1,4 @@
-#include <api/kvdb/handlers.hpp>
+﻿#include <api/kvdb/handlers.hpp>
 
 #include <string>
 
@@ -12,8 +12,8 @@
 
 namespace api::kvdb::handlers
 {
-namespace eKVDB = ::com::wazuh::api::engine::kvdb;
-namespace eEngine = ::com::wazuh::api::engine;
+namespace eKVDB = ::com::guardbear::api::engine::kvdb;
+namespace eEngine = ::com::guardbear::api::engine;
 
 constexpr auto MESSAGE_DB_NOT_EXISTS = "The KVDB '{}' does not exist.";
 constexpr auto MESSAGE_MISSING_NAME = "Missing /name";

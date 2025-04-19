@@ -1,0 +1,32 @@
+﻿server:
+  bind_addr: '0.0.0.0'
+  nodes:
+    - guardbear-manager
+  node:
+    name: server_01
+    type: master
+    ssl:
+      key: /etc/guardbear-server/certs/server-key.pem
+      cert: /etc/guardbear-server/certs/server.pem
+      ca: /etc/guardbear-server/certs/root-ca.pem
+  logging:
+    level: debug2
+indexer:
+  hosts:
+    - host: guardbear-indexer
+      port: 9200
+  username: admin
+  password: admin
+  ssl:
+    use_ssl: true
+    key: /etc/guardbear-server/certs/indexer-key.pem
+    certificate: /etc/guardbear-server/certs/indexer.pem
+    certificate_authorities:
+      - /etc/guardbear-server/certs/root-ca.pem
+    verify_certificates: true
+communications_api:
+  host: '0.0.0.0'
+management_api:
+  host:
+    - '0.0.0.0'
+    - '::'
