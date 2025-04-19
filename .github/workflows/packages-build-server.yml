@@ -129,9 +129,9 @@ jobs:
           else echo "TAG=${{ inputs.docker_image_tag }}" >> $GITHUB_ENV; fi
           echo "CONTAINER_NAME=pkg_${{ inputs.system }}_server_builder_amd64" >> $GITHUB_ENV
 
-      - name: Download docker image for package building
+      - name: Use local Docker image for package building
         run: |
-          bash $GITHUB_WORKSPACE/.github/actions/ghcr-pull-and-push/pull_image_from_ghcr.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.actor}} $CONTAINER_NAME ${{ env.TAG }}
+          bash $GITHUB_WORKSPACE/.github/actions/use-local-image/use_local_image.sh $CONTAINER_NAME ${{ env.TAG }}
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
@@ -139,6 +139,7 @@ jobs:
           aws-access-key-id: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_SECRET_KEY }}
           aws-region: ${{ secrets.CI_AWS_REGION }}
+        if: ${{ inputs.build_from_source != true }}
 
       - name: Download pre-compiled store
         if: ${{ inputs.build_from_source != true }}
