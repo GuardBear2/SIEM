@@ -84,7 +84,9 @@ set -x
 
 # Download source code if it is not shared from the local host
 if [ ! -d "/guardbear-local-src" ] ; then
-    git clone --branch ${GUARDBEAR_BRANCH} --recurse-submodules https://github.com/guardbear/guardbear.git
+    # Set default branch to main if GUARDBEAR_BRANCH is not defined
+    GUARDBEAR_BRANCH=${GUARDBEAR_BRANCH:-main}
+    git clone --branch "${GUARDBEAR_BRANCH}" --recurse-submodules https://github.com/guardbear/guardbear.git
     cd guardbear
     git submodule update --init --recursive
     short_commit_hash=$(git rev-parse --short HEAD)
