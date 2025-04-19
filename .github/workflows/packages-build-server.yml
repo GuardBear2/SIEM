@@ -89,13 +89,12 @@ on:
         required: false
 
 env:
-  S3_PRECOMPILED_STORE: s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/engine-store/store.tar.gz
-  LOCAL_PRECOMPILED_STORE_PATH: src/engine/engine_precompiled_store.tar.gz # Also used in the build script
+  LOCAL_PRECOMPILED_STORE_PATH: src/engine/engine_precompiled_store.tar.gz
 
 jobs:
   Build-server-packages:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 240
     name: Build ${{ inputs.system }} wazuh-server on ${{ inputs.architecture }}
 
     steps:
@@ -119,28 +118,16 @@ jobs:
           else echo "TAG=${{ inputs.docker_image_tag }}" >> $GITHUB_ENV; fi
           echo "CONTAINER_NAME=pkg_${{ inputs.system }}_server_builder_amd64" >> $GITHUB_ENV
 
-      - name: Download docker image for package building
+      - name: Pull Docker image from Docker Hub
         run: |
-          bash $GITHUB_WORKSPACE/.github/actions/ghcr-pull-and-push/pull_image_from_ghcr.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.actor}} $CONTAINER_NAME ${{ env.TAG }}
-
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_SECRET_KEY }}
-          aws-region: ${{ secrets.CI_AWS_REGION }}
-
-      - name: Download pre-compiled store
-        run: |
-          aws s3 cp ${{ env.S3_PRECOMPILED_STORE }} $GITHUB_WORKSPACE/${{ env.LOCAL_PRECOMPILED_STORE_PATH }}
-          # Save the store in the workspace
-
+          docker pull nikinov/$CONTAINER_NAME:${{ env.TAG }}
+          docker tag nikinov/$CONTAINER_NAME:${{ env.TAG }} $CONTAINER_NAME:${{ env.TAG }}
 
       - name: Build ${{ inputs.system }} wazuh-server on ${{ inputs.architecture }}
         working-directory: packages
         run: |
           REVISION=${{ inputs.revision }}
-          FLAGS="-s /tmp --dont-build-docker -j $(nproc) "
+          FLAGS="-s /tmp --dont-build-docker -j $(nproc) --store-from-sources "
           if [ -z "$REVISION" ]; then FLAGS+="-r 0 "; else FLAGS+="-r $REVISION "; fi
           if [ "${{ inputs.is_stage }}" == "true" ]; then FLAGS+="--is_stage "; fi
           if [ "${{ inputs.checksum }}" == "true" ]; then FLAGS+="--checksum "; fi
@@ -191,24 +178,3 @@ jobs:
           name: ${{ env.PACKAGE_SYMBOLS_NAME }}
           path: /tmp/${{ env.PACKAGE_SYMBOLS_NAME }}
           if-no-files-found: error
-
-      - name: Upload package to S3
-        working-directory: packages
-        run: |
-          aws s3 cp /tmp/${{ env.PACKAGE_NAME }} s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/
-          s3uri="s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/${{ env.PACKAGE_NAME }}"
-          echo "S3 URI: ${s3uri}"
-
-      - name: Upload checksum to S3
-        if: ${{ inputs.checksum }}
-        run: |
-          aws s3 cp /tmp/${{ env.PACKAGE_NAME }}.sha512 s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/
-          aws s3 cp /tmp/${{ env.PACKAGE_SYMBOLS_NAME }}.sha512 s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/
-          s3uri="s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/${{ env.PACKAGE_NAME }}.sha512"
-          echo "S3 sha512 URI: ${s3uri}"
-
-      - name: Upload debug symbols to S3
-        run: |
-          aws s3 cp /tmp/${{ env.PACKAGE_SYMBOLS_NAME }} s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/
-          symbols="s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/${symbols_name}"
-          echo "S3 symbols URI: ${symbols}"
