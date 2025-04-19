@@ -118,10 +118,9 @@ jobs:
           else echo "TAG=${{ inputs.docker_image_tag }}" >> $GITHUB_ENV; fi
           echo "CONTAINER_NAME=pkg_${{ inputs.system }}_server_builder_amd64" >> $GITHUB_ENV
 
-      - name: Pull Docker image from Docker Hub
+      - name: Download docker image for package building
         run: |
-          docker pull nikinov/$CONTAINER_NAME:${{ env.TAG }}
-          docker tag nikinov/$CONTAINER_NAME:${{ env.TAG }} $CONTAINER_NAME:${{ env.TAG }}
+          bash $GITHUB_WORKSPACE/.github/actions/ghcr-pull-and-push/pull_image_from_ghcr.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.actor}} $CONTAINER_NAME ${{ env.TAG }}
 
       - name: Build ${{ inputs.system }} wazuh-server on ${{ inputs.architecture }}
         working-directory: packages
