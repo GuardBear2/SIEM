@@ -89,13 +89,12 @@ on:
         required: false
 
 env:
-  S3_PRECOMPILED_STORE: s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/engine-store/store.tar.gz
-  LOCAL_PRECOMPILED_STORE_PATH: src/engine/engine_precompiled_store.tar.gz # Also used in the build script
+  LOCAL_PRECOMPILED_STORE_PATH: src/engine/engine_precompiled_store.tar.gz
 
 jobs:
   Build-server-packages:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 240
     name: Build ${{ inputs.system }} wazuh-server on ${{ inputs.architecture }}
 
     steps:
@@ -121,20 +120,34 @@ jobs:
 
       - name: Download docker image for package building
         run: |
-          bash $GITHUB_WORKSPACE/.github/actions/ghcr-pull-and-push/pull_image_from_ghcr.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.actor}} $CONTAINER_NAME ${{ env.TAG }}
-
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_SECRET_KEY }}
-          aws-region: ${{ secrets.CI_AWS_REGION }}
-
-      - name: Download pre-compiled store
-        run: |
-          aws s3 cp ${{ env.S3_PRECOMPILED_STORE }} $GITHUB_WORKSPACE/${{ env.LOCAL_PRECOMPILED_STORE_PATH }}
-          # Save the store in the workspace
-
+          mkdir -p $GITHUB_WORKSPACE/.github/actions/use-local-image
+          cat > $GITHUB_WORKSPACE/.github/actions/use-local-image/use_local_image.sh << 'EOF'
+          #!/bin/bash
+          # Script to pull Docker image from GitHub Container Registry
+          
+          GITHUB_TOKEN=$1
+          GITHUB_USER=$2
+          CONTAINER_NAME=$3
+          DOCKER_IMAGE_TAG=$4
+          GITHUB_OWNER="nikinov"
+          
+          echo "Logging in to GitHub Container Registry"
+          echo $GITHUB_TOKEN | docker login ghcr.io -u $GITHUB_USER --password-stdin
+          
+          echo "Pulling Docker image from GitHub Container Registry: ghcr.io/${GITHUB_OWNER}/${CONTAINER_NAME}:${DOCKER_IMAGE_TAG}"
+          docker pull ghcr.io/${GITHUB_OWNER}/${CONTAINER_NAME}:${DOCKER_IMAGE_TAG}
+          
+          if [ $? -ne 0 ]; then
+            echo "Error: Failed to pull Docker image ghcr.io/${GITHUB_OWNER}/${CONTAINER_NAME}:${DOCKER_IMAGE_TAG}"
+            exit 1
+          fi
+          
+          # Tag the image with the expected name
+          echo "Tagging image as ${CONTAINER_NAME}:${DOCKER_IMAGE_TAG}"
+          docker image tag ghcr.io/${GITHUB_OWNER}/${CONTAINER_NAME}:${DOCKER_IMAGE_TAG} ${CONTAINER_NAME}:${DOCKER_IMAGE_TAG}
+          EOF
+          chmod +x $GITHUB_WORKSPACE/.github/actions/use-local-image/use_local_image.sh
+          bash $GITHUB_WORKSPACE/.github/actions/use-local-image/use_local_image.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.actor}} $CONTAINER_NAME ${{ env.TAG }}
 
       - name: Build ${{ inputs.system }} wazuh-server on ${{ inputs.architecture }}
         working-directory: packages
@@ -146,9 +159,42 @@ jobs:
           if [ "${{ inputs.checksum }}" == "true" ]; then FLAGS+="--checksum "; fi
           if [ "${{ inputs.debug}}" == "true" ]; then FLAGS+="--debug "; fi
           # Every call to this workflow will be internally managed as amd64, which is synonymous with x86_64
+          FLAGS+="--sources $GITHUB_WORKSPACE "
           echo "generate_package.sh -a amd64 --tag ${{ env.TAG }} --system ${{ inputs.system }} $FLAGS"
-          bash generate_package.sh -a amd64 --tag ${{ env.TAG }} --system ${{ inputs.system }} $FLAGS
-
+          
+          # Variables for the Docker container
+          CONTAINER_NAME=pkg_${{ inputs.system }}_server_builder_amd64
+          DOCKERFILE_PATH=$GITHUB_WORKSPACE/packages/${{ inputs.system }}s/amd64
+          
+          # Fix line endings (convert CRLF to LF)
+          find $GITHUB_WORKSPACE/packages -type f -name "*.sh" -exec sed -i 's/\r$//' {} \;
+          
+          # Create a fix script to run inside container
+          cat > $GITHUB_WORKSPACE/packages/fix_and_build.sh << 'EOL'
+          #!/bin/bash
+          # Fix line endings in helper scripts inside container
+          sed -i 's/\r$//' /usr/local/bin/helper_function.sh
+          sed -i 's/\r$//' /tmp/gen_permissions.sh
+          # Run the build script
+          /wazuh-local-src/packages/build.sh $1 $2 $3 $4 $5 $6
+          EOL
+          
+          chmod +x $GITHUB_WORKSPACE/packages/fix_and_build.sh
+          
+          # Run the container with the fix-and-build script
+          docker run -t --rm \
+            -v /tmp:/var/local/wazuh:Z \
+            -e SYSTEM=${{ inputs.system }} \
+            -e ARCHITECTURE_TARGET=amd64 \
+            -e INSTALLATION_PATH=/ \
+            -e IS_STAGE=${{ inputs.is_stage || 'no' }} \
+            -e WAZUH_BRANCH= \
+            -v $GITHUB_WORKSPACE:/wazuh-local-src:Z \
+            --entrypoint /bin/bash \
+            $CONTAINER_NAME:${{ env.TAG }} \
+            -c "/wazuh-local-src/packages/fix_and_build.sh 0 $(nproc) ${{ inputs.debug && 'yes' || 'no' }} no ${{ inputs.checksum && 'yes' || 'no' }} no"
+          
+          # Find the built packages
           if [ "${{ inputs.system }}" == "deb" ]; then
             SYMBOLS_TAG="dbg"
           else
@@ -162,7 +208,7 @@ jobs:
               PACKAGE_NAME="$file"
             fi
           done
-
+          
           echo "PACKAGE_NAME=${PACKAGE_NAME}" | tee -a $GITHUB_ENV
           echo "PACKAGE_SYMBOLS_NAME=${PACKAGE_SYMBOLS_NAME}" | tee -a $GITHUB_ENV
 
@@ -191,24 +237,3 @@ jobs:
           name: ${{ env.PACKAGE_SYMBOLS_NAME }}
           path: /tmp/${{ env.PACKAGE_SYMBOLS_NAME }}
           if-no-files-found: error
-
-      - name: Upload package to S3
-        working-directory: packages
-        run: |
-          aws s3 cp /tmp/${{ env.PACKAGE_NAME }} s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/
-          s3uri="s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/${{ env.PACKAGE_NAME }}"
-          echo "S3 URI: ${s3uri}"
-
-      - name: Upload checksum to S3
-        if: ${{ inputs.checksum }}
-        run: |
-          aws s3 cp /tmp/${{ env.PACKAGE_NAME }}.sha512 s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/
-          aws s3 cp /tmp/${{ env.PACKAGE_SYMBOLS_NAME }}.sha512 s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/
-          s3uri="s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/${{ env.PACKAGE_NAME }}.sha512"
-          echo "S3 sha512 URI: ${s3uri}"
-
-      - name: Upload debug symbols to S3
-        run: |
-          aws s3 cp /tmp/${{ env.PACKAGE_SYMBOLS_NAME }} s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/
-          symbols="s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages/${symbols_name}"
-          echo "S3 symbols URI: ${symbols}"
