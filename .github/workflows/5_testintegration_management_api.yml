@@ -18,6 +18,7 @@ on:
       - ".github/workflows/5_testintegration_api.yml"
       - "apis/server_management/**"
       - "tests/integration/test_api/**"
+  push:
 
 env:
     PACKAGE_REFERENCE: ${{ inputs.package_reference || github.head_ref || github.sha }}
