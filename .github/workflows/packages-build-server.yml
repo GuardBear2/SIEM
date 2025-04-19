@@ -166,16 +166,22 @@ jobs:
           CONTAINER_NAME=pkg_${{ inputs.system }}_server_builder_amd64
           DOCKERFILE_PATH=$GITHUB_WORKSPACE/packages/${{ inputs.system }}s/amd64
           
-          # Copy necessary files
-          cp $GITHUB_WORKSPACE/packages/build.sh $DOCKERFILE_PATH/
-          cp $GITHUB_WORKSPACE/packages/${{ inputs.system }}s/utils/* $DOCKERFILE_PATH/
-          cp $GITHUB_WORKSPACE/src/engine/vcpkg.json $DOCKERFILE_PATH/
-          cp $GITHUB_WORKSPACE/src/engine/vcpkg-configuration.json $DOCKERFILE_PATH/
-          
           # Fix line endings (convert CRLF to LF)
           find $GITHUB_WORKSPACE/packages -type f -name "*.sh" -exec sed -i 's/\r$//' {} \;
           
-          # Run the container with explicit build command
+          # Create a fix script to run inside container
+          cat > $GITHUB_WORKSPACE/packages/fix_and_build.sh << 'EOL'
+          #!/bin/bash
+          # Fix line endings in helper scripts inside container
+          sed -i 's/\r$//' /usr/local/bin/helper_function.sh
+          sed -i 's/\r$//' /tmp/gen_permissions.sh
+          # Run the build script
+          /wazuh-local-src/packages/build.sh $1 $2 $3 $4 $5 $6
+          EOL
+          
+          chmod +x $GITHUB_WORKSPACE/packages/fix_and_build.sh
+          
+          # Run the container with the fix-and-build script
           docker run -t --rm \
             -v /tmp:/var/local/wazuh:Z \
             -e SYSTEM=${{ inputs.system }} \
@@ -186,7 +192,7 @@ jobs:
             -v $GITHUB_WORKSPACE:/wazuh-local-src:Z \
             --entrypoint /bin/bash \
             $CONTAINER_NAME:${{ env.TAG }} \
-            -c "/wazuh-local-src/packages/build.sh 0 $(nproc) ${{ inputs.debug && 'yes' || 'no' }} no ${{ inputs.checksum && 'yes' || 'no' }} no"
+            -c "/wazuh-local-src/packages/fix_and_build.sh 0 $(nproc) ${{ inputs.debug && 'yes' || 'no' }} no ${{ inputs.checksum && 'yes' || 'no' }} no"
           
           # Find the built packages
           if [ "${{ inputs.system }}" == "deb" ]; then
