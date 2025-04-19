@@ -172,6 +172,9 @@ jobs:
           cp $GITHUB_WORKSPACE/src/engine/vcpkg.json $DOCKERFILE_PATH/
           cp $GITHUB_WORKSPACE/src/engine/vcpkg-configuration.json $DOCKERFILE_PATH/
           
+          # Fix line endings (convert CRLF to LF)
+          find $GITHUB_WORKSPACE/packages -type f -name "*.sh" -exec sed -i 's/\r$//' {} \;
+          
           # Run the container with explicit build command
           docker run -t --rm \
             -v /tmp:/var/local/wazuh:Z \
