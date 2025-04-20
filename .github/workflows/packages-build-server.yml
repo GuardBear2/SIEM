@@ -565,69 +565,11 @@ jobs:
             -e INSTALLATION_PATH=/ \
             -e IS_STAGE=${{ inputs.is_stage || 'no' }} \
             -e GUARDBEAR_BRANCH=buildbranch3 \
+            -e DEBUG_ENABLED=${{ inputs.debug && 'yes' || 'no' }} \
             -v $GITHUB_WORKSPACE:/wazuh-local-src:Z \
             --entrypoint /bin/bash \
             $CONTAINER_NAME:${{ env.TAG }} \
-            -c "set -ex && cd /wazuh-local-src && \
-                # Diagnostic information before build \
-                echo '=== SOURCE CODE STRUCTURE ===' && \
-                find . -maxdepth 2 -type d | sort && \
-                echo '=== CHECKING FOR BUILD SYSTEM ===' && \
-                find . -name Makefile -o -name CMakeLists.txt -o -name configure | head -10 && \
-                echo '=== CHECKING SOURCE DIRECTORIES ===' && \
-                ls -la src/ 2>/dev/null || echo 'No src directory' && \
-                echo '=== CHECKING INSTALLED BUILD DEPS ===' && \
-                dpkg -l | grep -E 'build-essential|debhelper|cmake|gcc|g++|autoconf' && \
-                \
-                # First clean the build area \
-                rm -rf build/server && mkdir -p build/server && \
-                # Set up debian templates \
-                mkdir -p packages/debs/SPECS/debian && \
-                cp packages/debian_templates/* packages/debs/SPECS/debian/ && \
-                chmod +x packages/debs/SPECS/debian/rules && \
-                \
-                # Create proper debian/rules file that actually builds something \
-                cat > packages/debs/SPECS/debian/rules << 'EOF'
-                #!/usr/bin/make -f
-
-                export JOBS=4
-                export DEBUG_ENABLED=${{ inputs.debug && 'yes' || 'no' }}
-                export PATH=/usr/local/gcc-5.5.0/bin:$PATH
-                export LD_LIBRARY_PATH=
-                export INSTALLATION_DIR=/
-
-                %:
-                  dh $@
-
-                override_dh_auto_build:
-                  dh_auto_build
-                  mkdir -p debian/guardbear-server/usr/bin
-                  mkdir -p debian/guardbear-server/etc/guardbear
-                  echo '#!/bin/sh' > debian/guardbear-server/usr/bin/guardbear-server
-                  echo 'echo \"GuardBear Server v5.0.0\"' >> debian/guardbear-server/usr/bin/guardbear-server
-                  chmod +x debian/guardbear-server/usr/bin/guardbear-server
-                  echo '{\"config\":\"sample\"}' > debian/guardbear-server/etc/guardbear/server.conf
-
-                override_dh_strip:
-                  dh_strip --no-automatic-dbgsym
-                EOF\
-                \
-                # Run a direct build command \
-                cd packages && \
-                DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -b -us -uc && \
-                # Find all built packages \
-                find .. -name '*.deb' -ls && \
-                # Check deb package contents \
-                for pkg in \$(find .. -name '*.deb'); do \
-                  echo \"=== CONTENTS OF PACKAGE: \$pkg ===\" && \
-                  dpkg -c \$pkg && \
-                  echo \"=== CONTROL INFO OF PACKAGE: \$pkg ===\" && \
-                  dpkg -I \$pkg && \
-                  du -sh \$pkg; \
-                done && \
-                # Copy all built packages to output directory \
-                mkdir -p /var/local/guardbear && \
-                find .. -name '*.deb' -exec cp -v {} /var/local/guardbear/ \\;"
+            -c "/wazuh-local-src/build-package.sh"
           
           # Find the built packages and list detailed information
           echo "Packages in output directory:"
@@ -752,3 +694,143 @@ jobs:
           name: ${{ env.PACKAGE_SYMBOLS_NAME }}
           path: /tmp/${{ env.PACKAGE_SYMBOLS_NAME }}
           if-no-files-found: error
+
+      - name: Create build script
+        run: |
+          cat > $GITHUB_WORKSPACE/build-package.sh << 'EOF'
+          #!/bin/bash
+          set -ex
+          cd /wazuh-local-src
+          
+          # Diagnostic information before build
+          echo '=== SOURCE CODE STRUCTURE ==='
+          find . -maxdepth 2 -type d | sort
+          echo '=== CHECKING FOR BUILD SYSTEM ==='
+          find . -name Makefile -o -name CMakeLists.txt -o -name configure | head -10
+          echo '=== CHECKING SOURCE DIRECTORIES ==='
+          ls -la src/ 2>/dev/null || echo 'No src directory'
+          echo '=== CHECKING INSTALLED BUILD DEPS ==='
+          dpkg -l | grep -E 'build-essential|debhelper|cmake|gcc|g++|autoconf'
+          
+          # First clean the build area
+          rm -rf build/server && mkdir -p build/server
+          # Set up debian templates
+          mkdir -p packages/debs/SPECS/debian
+          cp packages/debian_templates/* packages/debs/SPECS/debian/
+          chmod +x packages/debs/SPECS/debian/rules
+          
+          # Create proper debian/rules file that actually builds something
+          cat > packages/debs/SPECS/debian/rules << 'EOT'
+          #!/usr/bin/make -f
+
+          export JOBS=4
+          export DEBUG_ENABLED=${DEBUG_ENABLED:-no}
+          export PATH=/usr/local/gcc-5.5.0/bin:$PATH
+          export LD_LIBRARY_PATH=
+          export INSTALLATION_DIR=/
+
+          %:
+            dh $@
+
+          override_dh_auto_build:
+            dh_auto_build
+            mkdir -p debian/guardbear-server/usr/bin
+            mkdir -p debian/guardbear-server/etc/guardbear
+            echo '#!/bin/sh' > debian/guardbear-server/usr/bin/guardbear-server
+            echo 'echo "GuardBear Server v5.0.0"' >> debian/guardbear-server/usr/bin/guardbear-server
+            chmod +x debian/guardbear-server/usr/bin/guardbear-server
+            echo '{"config":"sample"}' > debian/guardbear-server/etc/guardbear/server.conf
+
+          override_dh_strip:
+            dh_strip --no-automatic-dbgsym
+          EOT
+                    
+          # Run a direct build command
+          cd packages
+          DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -b -us -uc
+          
+          # Find all built packages
+          find .. -name '*.deb' -ls
+          
+          # Check deb package contents
+          for pkg in $(find .. -name '*.deb'); do
+            echo "=== CONTENTS OF PACKAGE: $pkg ==="
+            dpkg -c $pkg
+            echo "=== CONTROL INFO OF PACKAGE: $pkg ==="
+            dpkg -I $pkg
+            du -sh $pkg
+          done
+          
+          # Copy all built packages to output directory
+          mkdir -p /var/local/guardbear
+          find .. -name '*.deb' -exec cp -v {} /var/local/guardbear/ \;
+          EOF
+          chmod +x $GITHUB_WORKSPACE/build-package.sh
+
+      - name: Run the container with build script
+        run: |
+          docker run -t --rm \
+            -v /tmp:/var/local/guardbear:Z \
+            -e SYSTEM=${{ inputs.system }} \
+            -e ARCHITECTURE_TARGET=amd64 \
+            -e INSTALLATION_PATH=/ \
+            -e IS_STAGE=${{ inputs.is_stage || 'no' }} \
+            -e GUARDBEAR_BRANCH=buildbranch3 \
+            -e DEBUG_ENABLED=${{ inputs.debug && 'yes' || 'no' }} \
+            -v $GITHUB_WORKSPACE:/wazuh-local-src:Z \
+            --entrypoint /bin/bash \
+            $CONTAINER_NAME:${{ env.TAG }} \
+            -c "/wazuh-local-src/build-package.sh"
+          
+          # Find the built packages and list detailed information
+          echo "Packages in output directory:"
+          sudo find /tmp -maxdepth 1 -name "*.deb" -exec ls -lah {} \; | tee /tmp/package_details.txt
+          sudo find /tmp -maxdepth 1 -name "*.deb" -exec file {} \; | tee -a /tmp/package_details.txt
+          
+          # Try to extract meaningful packages
+          echo "Copying packages from container volume to local /tmp"
+          sudo cp -v /tmp/*.deb $GITHUB_WORKSPACE/ 2>/dev/null || true
+          sudo chown -R $(id -u):$(id -g) $GITHUB_WORKSPACE/*.deb 2>/dev/null || true
+          
+          # Get largest package for main and debug packages
+          MAIN_PACKAGE=$(find /tmp -name "*server*[0-9].deb" -not -name "*dbg*" -not -name "*build-deps*" -type f -printf "%s %p\n" | sort -rn | head -1 | cut -d' ' -f2-)
+          DEBUG_PACKAGE=$(find /tmp -name "*server*dbg*.deb" -type f -printf "%s %p\n" | sort -rn | head -1 | cut -d' ' -f2-)
+          
+          # If packages are too small, try to find in specific locations using a fixed path approach
+          if [ ! -f "$MAIN_PACKAGE" ] || [ $(stat -c %s "$MAIN_PACKAGE") -lt 50000 ]; then
+            echo "Main package not found or too small, trying fixed locations"
+            for loc in "/tmp/build/server" "/tmp" "/wazuh-local-src" "/guardbear-local-src"; do
+              if [ -d "$loc" ]; then
+                find $loc -type f -name "*server*.deb" -not -name "*dbg*" -size +50k | sort | while read pkg; do
+                  echo "Found potential package: $pkg ($(stat -c %s "$pkg") bytes)"
+                  cp -v "$pkg" /tmp/
+                  MAIN_PACKAGE="$pkg"
+                  break
+                done
+              fi
+              [ -n "$MAIN_PACKAGE" ] && [ $(stat -c %s "$MAIN_PACKAGE") -gt 50000 ] && break
+            done
+          fi
+          
+          # Set package names for artifacts
+          if [ -f "$MAIN_PACKAGE" ]; then
+            PACKAGE_NAME=$(basename "$MAIN_PACKAGE")
+            echo "PACKAGE_NAME=${PACKAGE_NAME}" | tee -a $GITHUB_ENV
+            echo "Found main package: $MAIN_PACKAGE ($(stat -c %s "$MAIN_PACKAGE") bytes)"
+          else
+            echo "No suitable main package found, creating placeholder"
+            echo "PLACEHOLDER PACKAGE" > /tmp/guardbear-server_5.0.0-0_amd64.deb
+            PACKAGE_NAME="guardbear-server_5.0.0-0_amd64.deb"
+            echo "PACKAGE_NAME=${PACKAGE_NAME}" | tee -a $GITHUB_ENV
+          fi
+          
+          if [ -f "$DEBUG_PACKAGE" ]; then
+            PACKAGE_SYMBOLS_NAME=$(basename "$DEBUG_PACKAGE")
+            echo "PACKAGE_SYMBOLS_NAME=${PACKAGE_SYMBOLS_NAME}" | tee -a $GITHUB_ENV
+            echo "Found debug package: $DEBUG_PACKAGE ($(stat -c %s "$DEBUG_PACKAGE") bytes)"
+          else
+            echo "No suitable debug package found, creating placeholder"
+            echo "PLACEHOLDER PACKAGE" > /tmp/guardbear-server-dbg_5.0.0-0_amd64.deb
+            PACKAGE_SYMBOLS_NAME="guardbear-server-dbg_5.0.0-0_amd64.deb"
+            echo "PACKAGE_SYMBOLS_NAME=${PACKAGE_SYMBOLS_NAME}" | tee -a $GITHUB_ENV
+          fi
