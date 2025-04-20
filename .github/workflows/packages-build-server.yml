@@ -397,8 +397,8 @@ jobs:
           mkdir -p /var/local/guardbear
           chmod 777 /var/local/guardbear
           
-          # Empty out the output directory first to avoid copying placeholder files back onto themselves
-          rm -f /var/local/guardbear/*
+          # Empty out any existing .deb files from the output directory
+          rm -f /var/local/guardbear/*.deb 2>/dev/null || true
           
           # Run the build script to build the package
           echo "Running build script..."
