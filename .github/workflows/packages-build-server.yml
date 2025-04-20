@@ -188,6 +188,10 @@ jobs:
             ln -s /wazuh-local-src /guardbear-local-src
           fi
           
+          # Configure Git to allow these directories (fixes dubious ownership error)
+          git config --global --add safe.directory /wazuh-local-src
+          git config --global --add safe.directory /guardbear-local-src
+          
           # Run the build script with all arguments passed to this script
           /wazuh-local-src/packages/build.sh "$@"
           EOL

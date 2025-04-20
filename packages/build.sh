@@ -89,10 +89,11 @@ if [ ! -d "/guardbear-local-src" ] ; then
     git clone --branch "${GUARDBEAR_BRANCH}" --recurse-submodules https://github.com/GuardBear2/SIEM.git guardbear
     cd guardbear
     git submodule update --init --recursive
-    short_commit_hash=$(git rev-parse --short HEAD)
+    short_commit_hash=$(git rev-parse --short HEAD || echo "unknown")
     cd ..
 else
-    short_commit_hash="$(cd /guardbear-local-src && git config --global --add safe.directory /guardbear-local-src && git rev-parse --short HEAD)"
+    # Add fallback in case git rev-parse fails
+    short_commit_hash=$(cd /guardbear-local-src && git config --global --add safe.directory /guardbear-local-src && git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 fi
 
 # Build directories
