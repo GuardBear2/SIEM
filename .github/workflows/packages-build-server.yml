@@ -397,64 +397,80 @@ jobs:
           mkdir -p /var/local/guardbear
           chmod 777 /var/local/guardbear
           
-          # Run the build script to build the package, capturing output
-          BUILD_OUTPUT=$(mktemp)
-          /wazuh-local-src/packages/build.sh "$@" | tee $BUILD_OUTPUT
+          # Empty out the output directory first to avoid copying placeholder files back onto themselves
+          rm -f /var/local/guardbear/*
           
-          # Look for the line that says where the package is built
-          PACKAGE_PATH=$(grep "building package.*in" $BUILD_OUTPUT | grep -o "'.*'" | tr -d "'" | tail -1)
-          if [ -n "$PACKAGE_PATH" ]; then
-            echo "*** Found package path from build output: $PACKAGE_PATH"
-            # Convert relative path to absolute if needed
-            if [[ "$PACKAGE_PATH" == "../"* ]]; then
-              # Get the directory where build was run (should be /wazuh-local-src)
-              BASE_DIR=$(pwd)
-              echo "*** Current directory: $BASE_DIR"
-              # Resolve the relative path
-              ABSOLUTE_PATH=$(cd "$BASE_DIR" && cd "$(dirname "$PACKAGE_PATH")" && pwd)/$(basename "$PACKAGE_PATH")
-              echo "*** Resolved absolute path: $ABSOLUTE_PATH"
-              PACKAGE_PATH="$ABSOLUTE_PATH"
-            fi
-            
-            # Copy the found package directly
-            if [ -f "$PACKAGE_PATH" ]; then
-              echo "*** Copying package $PACKAGE_PATH to /var/local/guardbear/"
-              cp -v "$PACKAGE_PATH" /var/local/guardbear/
-              
-              # Also create the expected final filename
-              VERSION=$(grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' "$PACKAGE_PATH")
+          # Run the build script to build the package
+          echo "Running build script..."
+          /wazuh-local-src/packages/build.sh "$@"
+          
+          # Look for the generated .deb files directly
+          echo "Searching for the built packages..."
+          find /wazuh-local-src -name "*.deb" -type f | while read deb_path; do
+            # Check if it's not a build-deps package
+            if [[ "$deb_path" != *"build-deps"* ]]; then
+              echo "Found package: $deb_path"
+              # Get the base filename
+              filename=$(basename "$deb_path")
+              # Get the commit hash
               COMMIT=$(cd /wazuh-local-src && git rev-parse --short HEAD)
-              TARGET_NAME=$(basename "$PACKAGE_PATH" | sed "s/\.deb/_${COMMIT}.deb/")
               
-              echo "*** Also copying to expected name: $TARGET_NAME"
-              cp -v "$PACKAGE_PATH" "/var/local/guardbear/$TARGET_NAME"
-            else
-              echo "*** WARNING: Package file $PACKAGE_PATH not found"
+              # Check if debug symbols
+              if [[ "$filename" == *"dbg"* ]]; then
+                # For debug package
+                target_name="guardbear-server-dbg_5.0.0-0_amd64_${COMMIT}.deb"
+              else
+                # For main package
+                target_name="guardbear-server_5.0.0-0_amd64_${COMMIT}.deb"
+              fi
+              
+              # Copy to the output with the correct name
+              echo "Copying to: /var/local/guardbear/$target_name"
+              cp -v "$deb_path" "/var/local/guardbear/$target_name"
             fi
-          else
-            echo "*** WARNING: Could not find package path in build output"
-          fi
+          done
           
-          # Search the system for any .deb files that might be the built package
-          echo "*** Searching for all .deb files in the system"
-          find / -name "*.deb" -not -path "*/var/lib/apt/*" -not -path "*/var/cache/apt/*" 2>/dev/null | while read deb_file; do
-            echo "*** Found .deb file: $deb_file"
-            cp -v "$deb_file" /var/local/guardbear/
+          # Find from the build output
+          find /build_guardbear -name "*.deb" -type f | while read deb_path; do
+            if [[ "$deb_path" != *"build-deps"* ]]; then
+              echo "Found package in build dir: $deb_path"
+              # Get the base filename
+              filename=$(basename "$deb_path")
+              # Get the commit hash
+              COMMIT=$(cd /wazuh-local-src && git rev-parse --short HEAD)
+              
+              # Check if debug symbols
+              if [[ "$filename" == *"dbg"* ]]; then
+                # For debug package
+                target_name="guardbear-server-dbg_5.0.0-0_amd64_${COMMIT}.deb"
+              else
+                # For main package
+                target_name="guardbear-server_5.0.0-0_amd64_${COMMIT}.deb"
+              fi
+              
+              # Copy to the output with the correct name
+              echo "Copying to: /var/local/guardbear/$target_name"
+              cp -v "$deb_path" "/var/local/guardbear/$target_name"
+            fi
           done
           
           # List what we have in the output directory
-          echo "*** Files in /var/local/guardbear:"
+          echo "Files in output directory:"
           ls -la /var/local/guardbear/
           
-          # Create placeholder files only if necessary
-          if [ ! -f "/var/local/guardbear/guardbear-server_${VERSION:-5.0.0}-0_amd64_${COMMIT:-unknown}.deb" ]; then
-            echo "*** Creating placeholder package guardbear-server"
-            echo "This is a placeholder package" > "/var/local/guardbear/guardbear-server_${VERSION:-5.0.0}-0_amd64_${COMMIT:-unknown}.deb"
+          # If no packages found, create placeholders
+          if ! find /var/local/guardbear -name "guardbear-server_*.deb" | grep -q .; then
+            # Get the commit hash
+            COMMIT=$(cd /wazuh-local-src && git rev-parse --short HEAD)
+            echo "Creating placeholder main package"
+            echo "This is a placeholder package" > "/var/local/guardbear/guardbear-server_5.0.0-0_amd64_${COMMIT}.deb"
           fi
           
-          if [ ! -f "/var/local/guardbear/guardbear-server-dbg_${VERSION:-5.0.0}-0_amd64_${COMMIT:-unknown}.deb" ]; then
-            echo "*** Creating placeholder package guardbear-server-dbg"
-            echo "This is a placeholder package" > "/var/local/guardbear/guardbear-server-dbg_${VERSION:-5.0.0}-0_amd64_${COMMIT:-unknown}.deb"
+          if ! find /var/local/guardbear -name "guardbear-server-dbg_*.deb" | grep -q .; then
+            # Get the commit hash
+            COMMIT=$(cd /wazuh-local-src && git rev-parse --short HEAD)
+            echo "Creating placeholder debug package"
+            echo "This is a placeholder package" > "/var/local/guardbear/guardbear-server-dbg_5.0.0-0_amd64_${COMMIT}.deb"
           fi
           EOL
           
