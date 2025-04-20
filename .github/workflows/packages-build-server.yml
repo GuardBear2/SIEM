@@ -352,7 +352,7 @@ jobs:
           # Create a fix script to run inside container
           cat > $GITHUB_WORKSPACE/packages/fix_and_build.sh << 'EOL'
           #!/bin/bash
-          set -e
+          set -ex
           # Fix line endings in helper scripts inside container
           if [ -f "/usr/local/bin/helper_function.sh" ]; then
             sed -i 's/\r$//' /usr/local/bin/helper_function.sh
@@ -400,62 +400,133 @@ jobs:
           # Empty out any existing .deb files from the output directory
           rm -f /var/local/guardbear/*.deb 2>/dev/null || true
           
-          # Run the build script to build the package
-          echo "Running build script..."
-          /wazuh-local-src/packages/build.sh "$@"
+          # Save current directory
+          START_DIR=$(pwd)
+          echo "Current directory: $START_DIR"
           
-          # Look for the generated .deb files directly
-          echo "Searching for the built packages..."
-          find /wazuh-local-src -name "*.deb" -type f | while read deb_path; do
-            # Check if it's not a build-deps package
-            if [[ "$deb_path" != *"build-deps"* ]]; then
-              echo "Found package: $deb_path"
-              # Get the base filename
-              filename=$(basename "$deb_path")
-              # Get the commit hash
-              COMMIT=$(cd /wazuh-local-src && git rev-parse --short HEAD)
-              
-              # Check if debug symbols
-              if [[ "$filename" == *"dbg"* ]]; then
-                # For debug package
-                target_name="guardbear-server-dbg_5.0.0-0_amd64_${COMMIT}.deb"
+          # Run the build script to build the package with verbose output capture
+          echo "Running build script..."
+          BUILD_OUTPUT=$(mktemp)
+          /wazuh-local-src/packages/build.sh "$@" > >(tee -a $BUILD_OUTPUT) 2> >(tee -a $BUILD_OUTPUT >&2)
+          
+          # Show the captured build output for analysis
+          echo "=== BUILD OUTPUT ==="
+          cat $BUILD_OUTPUT
+          echo "=== END BUILD OUTPUT ==="
+          
+          # Analyze the build output for package locations
+          echo "Analyzing build output for package paths..."
+          BUILD_DIRS=$(grep -i "building package.*in" $BUILD_OUTPUT | grep -o "'.*'" | tr -d "'" || true)
+          echo "Found build paths in output: $BUILD_DIRS"
+          
+          # Find any relative paths in current directory
+          for path in $BUILD_DIRS; do
+            if [[ "$path" == "../"* ]]; then
+              echo "Found relative path: $path"
+              ABSOLUTE_PATH="$START_DIR/$(realpath --relative-to="$START_DIR" "$path")"
+              echo "Resolved to absolute path: $ABSOLUTE_PATH"
+              if [ -f "$ABSOLUTE_PATH" ]; then
+                echo "File exists! Copying to output directory..."
+                cp -v "$ABSOLUTE_PATH" /var/local/guardbear/
               else
-                # For main package
-                target_name="guardbear-server_5.0.0-0_amd64_${COMMIT}.deb"
+                echo "File doesn't exist at the resolved path."
               fi
-              
-              # Copy to the output with the correct name
-              echo "Copying to: /var/local/guardbear/$target_name"
-              cp -v "$deb_path" "/var/local/guardbear/$target_name"
+            elif [ -f "$path" ]; then
+              echo "Found file at path: $path"
+              cp -v "$path" /var/local/guardbear/
             fi
           done
           
-          # Find from the build output
-          find /build_guardbear -name "*.deb" -type f | while read deb_path; do
-            if [[ "$deb_path" != *"build-deps"* ]]; then
-              echo "Found package in build dir: $deb_path"
-              # Get the base filename
-              filename=$(basename "$deb_path")
-              # Get the commit hash
-              COMMIT=$(cd /wazuh-local-src && git rev-parse --short HEAD)
-              
-              # Check if debug symbols
-              if [[ "$filename" == *"dbg"* ]]; then
-                # For debug package
-                target_name="guardbear-server-dbg_5.0.0-0_amd64_${COMMIT}.deb"
-              else
-                # For main package
-                target_name="guardbear-server_5.0.0-0_amd64_${COMMIT}.deb"
+          # Additional package detection heuristics
+          echo "Searching for newly built .deb files..."
+          # First try to get the modified time of the build script run
+          BUILD_TIME=$(date +%s)
+          
+          # Look for .deb files modified in the last 5 minutes (300 seconds)
+          echo "Finding recently modified .deb files (within 5 minutes)..."
+          find / -type f -name "*.deb" -not -path "/var/lib/apt/*" -not -path "/var/cache/apt/*" -mmin -5 -ls 2>/dev/null | tee /tmp/recent_debs.txt
+          
+          echo "Checking file sizes for all .deb files..."
+          find / -type f -name "*.deb" -size +1M -not -path "/var/lib/apt/*" -not -path "/var/cache/apt/*" -ls 2>/dev/null | tee /tmp/large_debs.txt
+          
+          # Specific search in common build output locations
+          for location in "/wazuh-local-src" "/build_guardbear" "/tmp" "/wazuh-local-src/.." "$START_DIR" "$START_DIR/.." "/"; do
+            echo "Searching in $location"
+            find "$location" -name "*.deb" -type f -not -path "/var/lib/apt/*" -not -path "/var/cache/apt/*" -ls 2>/dev/null || true
+          done
+          
+          # Try to find files by type (regardless of extension)
+          echo "Searching for Debian package files by file type signature..."
+          find / -type f -size +500k -not -path "/var/lib/apt/*" -not -path "/var/cache/apt/*" -exec file {} \; | grep -i "debian" | tee /tmp/debian_files.txt
+          
+          # Look for exact specific pattern in build output
+          PACKAGE_PATHS=$(grep -o -E "building package ['\"].*['\"] in ['\"].*['\"]" $BUILD_OUTPUT | sed -r "s/building package ['\"].*['\"] in ['\"](.*)['\"]/\1/" || true)
+          echo "Extracted package paths: $PACKAGE_PATHS"
+          
+          # Try those paths
+          for path in $PACKAGE_PATHS; do
+            if [ -f "$path" ]; then
+              echo "Found package file at $path"
+              cp -v "$path" /var/local/guardbear/
+            else
+              echo "No file at $path"
+            fi
+          done
+          
+          # Try parsing dpkg-deb line
+          DPKG_DEB_LINES=$(grep "dpkg-deb: building package" $BUILD_OUTPUT || true)
+          if [ -n "$DPKG_DEB_LINES" ]; then
+            echo "Found dpkg-deb lines: $DPKG_DEB_LINES"
+            PACKAGE_PATHS=$(echo "$DPKG_DEB_LINES" | grep -o "in '[^']*'" | sed "s/in '//;s/'//")
+            echo "Extracted package paths from dpkg-deb: $PACKAGE_PATHS"
+            
+            for path in $PACKAGE_PATHS; do
+              # If path is relative, make it absolute
+              if [[ "$path" == "../"* ]]; then
+                CURRENT_DIR=$(pwd)
+                # cd to current dir and resolve the path
+                cd "$CURRENT_DIR"
+                ABSOLUTE_PATH=$(realpath "$path")
+                echo "Resolved relative path $path to $ABSOLUTE_PATH"
+                path="$ABSOLUTE_PATH"
               fi
               
-              # Copy to the output with the correct name
-              echo "Copying to: /var/local/guardbear/$target_name"
-              cp -v "$deb_path" "/var/local/guardbear/$target_name"
+              if [ -f "$path" ]; then
+                echo "Found package at path: $path"
+                ls -lah "$path"
+                file "$path"
+                cp -v "$path" /var/local/guardbear/
+              else
+                echo "No file at $path"
+                # Try to search for the file by basename
+                basename=$(basename "$path")
+                echo "Searching for basename: $basename"
+                find / -name "$basename" -type f -not -path "/var/lib/apt/*" -not -path "/var/cache/apt/*" 2>/dev/null | while read found_path; do
+                  echo "Found file with matching name: $found_path"
+                  cp -v "$found_path" /var/local/guardbear/
+                done
+              fi
+            done
+          fi
+          
+          # Copy all recently built .deb files found
+          cat /tmp/recent_debs.txt | grep -v "build-deps" | awk '{print $NF}' | while read package_path; do
+            if [ -f "$package_path" ]; then
+              echo "Copying recently built package: $package_path"
+              cp -v "$package_path" /var/local/guardbear/
+            fi
+          done
+          
+          # Copy all large .deb files found
+          cat /tmp/large_debs.txt | grep -v "build-deps" | awk '{print $NF}' | while read package_path; do
+            if [ -f "$package_path" ]; then
+              echo "Copying large package: $package_path"
+              cp -v "$package_path" /var/local/guardbear/
             fi
           done
           
           # List what we have in the output directory
-          echo "Files in output directory:"
+          echo "Files in output directory after all searches:"
           ls -la /var/local/guardbear/
           
           # If no packages found, create placeholders
@@ -528,16 +599,32 @@ jobs:
 
       - name: Test install built server
         run: |
-          if [ -z "${{ env.PACKAGE_NAME }}" ]; then echo "No package found matching the pattern!"; exit 1; fi
+          # Debug the available packages
+          echo "Listing all .deb files in /tmp with sizes:"
+          find /tmp -name "*.deb" -ls 2>/dev/null || true
+          
+          # Look for large .deb packages specifically
+          echo "Looking for large .deb files (>1MB):"
+          find /tmp -name "*.deb" -size +1M -ls 2>/dev/null || true
+          
+          if [ -z "${{ env.PACKAGE_NAME }}" ]; then 
+            echo "No package found matching the pattern!"; 
+            exit 1;
+          fi
           
           echo "Testing package: ${{ env.PACKAGE_NAME }}"
+          echo "Package size: $(wc -c < /tmp/${{ env.PACKAGE_NAME }}) bytes"
+          echo "File type: $(file /tmp/${{ env.PACKAGE_NAME }})"
+          
           # Sort packages by size and select the largest non-debug package
           if [ $(wc -c < /tmp/${{ env.PACKAGE_NAME }}) -lt 1000 ]; then
             echo "Detected placeholder package, looking for real packages by size..."
             # Find the real package by looking for larger files
-            REAL_PACKAGE=$(find /tmp -name "*server*.deb" -not -name "*dbg*" -not -name "*build-deps*" -size +1000c -ls | sort -nrk7 | head -1 | awk '{print $NF}')
+            REAL_PACKAGE=$(find /tmp -name "*server*.deb" -not -name "*dbg*" -not -name "*build-deps*" -size +100k -ls 2>/dev/null | sort -nrk7 | head -1 | awk '{print $NF}')
             if [ -n "$REAL_PACKAGE" ]; then
               echo "Found real package by size: $REAL_PACKAGE"
+              echo "Package size: $(wc -c < $REAL_PACKAGE) bytes"
+              echo "File type: $(file $REAL_PACKAGE)"
               # Update the environment variable for subsequent steps
               PACKAGE_NAME=$(basename "$REAL_PACKAGE")
               echo "PACKAGE_NAME=${PACKAGE_NAME}" >> $GITHUB_ENV
