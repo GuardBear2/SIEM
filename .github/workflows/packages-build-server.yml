@@ -152,6 +152,59 @@ jobs:
       - name: Build ${{ inputs.system }} wazuh-server on ${{ inputs.architecture }}
         working-directory: packages
         run: |
+          # Create debian template files needed for packaging
+          mkdir -p $GITHUB_WORKSPACE/packages/debian_templates
+          
+          cat > $GITHUB_WORKSPACE/packages/debian_templates/changelog << 'EOF'
+          guardbear-server (5.0.0-RELEASE) stable; urgency=low
+          
+            * More info: https://documentation.guardbear.io/current/release-notes/
+          
+           -- GuardBear, Inc <info@guardbear.io>  $(date -R)
+          EOF
+          
+          cat > $GITHUB_WORKSPACE/packages/debian_templates/control << 'EOF'
+          Source: guardbear-server
+          Section: admin
+          Priority: optional
+          Maintainer: GuardBear, Inc <info@guardbear.io>
+          Build-Depends: debhelper (>= 9), make, gcc, libc6-dev
+          Standards-Version: 4.0.0
+          Homepage: https://www.guardbear.io
+          
+          Package: guardbear-server
+          Architecture: any
+          Depends: ${shlibs:Depends}, ${misc:Depends}
+          Description: GuardBear SIEM server
+           GuardBear Server - Security Information and Event Management
+          EOF
+          
+          cat > $GITHUB_WORKSPACE/packages/debian_templates/rules << 'EOF'
+          #!/usr/bin/make -f
+          
+          export JOBS=4
+          export DEBUG_ENABLED=no
+          export PATH=/usr/local/gcc-5.5.0/bin:$PATH
+          export LD_LIBRARY_PATH=
+          export INSTALLATION_DIR=/
+          
+          %:
+          	dh $@
+          
+          override_dh_auto_build:
+          	dh_auto_build
+          	echo "Building GuardBear Server"
+          
+          override_dh_strip:
+          	dh_strip --no-automatic-dbgsym
+          EOF
+          
+          cat > $GITHUB_WORKSPACE/packages/debian_templates/script_template << 'EOF'
+          #!/bin/sh
+          DIR="/"
+          exit 0
+          EOF
+          
           REVISION=${{ inputs.revision }}
           FLAGS="-s /tmp --dont-build-docker -j $(nproc) "
           if [ -z "$REVISION" ]; then FLAGS+="-r 0 "; else FLAGS+="-r $REVISION "; fi
@@ -192,6 +245,23 @@ jobs:
           git config --global --add safe.directory /wazuh-local-src
           git config --global --add safe.directory /guardbear-local-src
           
+          # Create necessary directory structure for the build
+          mkdir -p /wazuh-local-src/packages/debs/SPECS/debian
+          mkdir -p /wazuh-local-src/packages/rpms/SPECS
+          
+          # Copy template files
+          cp /wazuh-local-src/packages/debian_templates/changelog /wazuh-local-src/packages/debs/SPECS/debian/
+          cp /wazuh-local-src/packages/debian_templates/control /wazuh-local-src/packages/debs/SPECS/debian/
+          cp /wazuh-local-src/packages/debian_templates/rules /wazuh-local-src/packages/debs/SPECS/debian/
+          
+          # Create script files
+          for script in preinst postinst prerm postrm; do
+            cp /wazuh-local-src/packages/debian_templates/script_template /wazuh-local-src/packages/debs/SPECS/debian/$script
+            chmod +x /wazuh-local-src/packages/debs/SPECS/debian/$script
+          done
+          
+          chmod +x /wazuh-local-src/packages/debs/SPECS/debian/rules
+          
           # Run the build script with all arguments passed to this script
           /wazuh-local-src/packages/build.sh "$@"
           EOL
@@ -200,7 +270,7 @@ jobs:
           
           # Run the container with the fix-and-build script
           docker run -t --rm \
-            -v /tmp:/var/local/wazuh:Z \
+            -v /tmp:/var/local/guardbear:Z \
             -e SYSTEM=${{ inputs.system }} \
             -e ARCHITECTURE_TARGET=amd64 \
             -e INSTALLATION_PATH=/ \

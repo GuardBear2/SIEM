@@ -104,7 +104,15 @@ guardbear_version="$(cat $source_dir/src/VERSION| cut -d 'v' -f 2)"
 # Changing the "-" to "_" between target and version breaks the convention for RPM or DEB packages.
 # For now, I added extra code that fixes it.
 package_name="guardbear-server-${guardbear_version}"
-specs_path="$(find $source_dir -name SPECS|grep $SYSTEM)"
+
+# Look for specs_path or create a default one
+specs_path="$(find $source_dir -name SPECS|grep $SYSTEM || echo '')"
+if [ -z "$specs_path" ]; then
+  # Create a default specs path if not found
+  specs_path="$source_dir/packages/${SYSTEM}s/SPECS"
+  mkdir -p "$specs_path"
+  echo "Created default specs path: $specs_path"
+fi
 
 setup_build "$source_dir" "$specs_path" "$build_dir" "$package_name" "$debug"
 
