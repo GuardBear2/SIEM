@@ -512,16 +512,26 @@ jobs:
           # Copy all recently built .deb files found
           cat /tmp/recent_debs.txt | grep -v "build-deps" | awk '{print $NF}' | while read package_path; do
             if [ -f "$package_path" ]; then
-              echo "Copying recently built package: $package_path"
-              cp -v "$package_path" /var/local/guardbear/
+              # Don't try to copy files that are already in the output directory
+              if [[ "$package_path" != "/var/local/guardbear/"* ]]; then
+                echo "Copying recently built package: $package_path"
+                cp -v "$package_path" /var/local/guardbear/
+              else
+                echo "Skipping file already in output directory: $package_path"
+              fi
             fi
           done
           
           # Copy all large .deb files found
           cat /tmp/large_debs.txt | grep -v "build-deps" | awk '{print $NF}' | while read package_path; do
             if [ -f "$package_path" ]; then
-              echo "Copying large package: $package_path"
-              cp -v "$package_path" /var/local/guardbear/
+              # Don't try to copy files that are already in the output directory
+              if [[ "$package_path" != "/var/local/guardbear/"* ]]; then
+                echo "Copying large package: $package_path"
+                cp -v "$package_path" /var/local/guardbear/
+              else
+                echo "Skipping file already in output directory: $package_path"
+              fi
             fi
           done
           
