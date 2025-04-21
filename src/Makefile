@@ -969,7 +969,7 @@ external-precompiled/%.tar.gz:
 endif
 
 # Shared tools
-HTTP_REQUEST_URL := https://github.com/guardbear/guardbear-http-request/tarball/$(HTTP_REQUEST_BRANCH)
+HTTP_REQUEST_URL := https://github.com/guardbear/wazuh-http-request/tarball/$(HTTP_REQUEST_BRANCH)
 
 shared_modules/http-request.tar.gz:
 	find $(patsubst %.tar.gz,%,$@) -type f -exec false {} + &&\
