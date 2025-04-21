@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 from pathlib import Path
 import shared.resource_handler as rs
 import sys
@@ -85,7 +85,7 @@ class Result:
         return out
 
 
-ASSETS_IN_SYSTEM = ["decoder/core-wazuh-message/0", "decoder/integrations/0",
+ASSETS_IN_SYSTEM = ["decoder/core-guardbear-message/0", "decoder/integrations/0",
                     "rule/enrichment/0", "output/file-output-integrations/0"]
 
 
@@ -146,7 +146,7 @@ def print_traces_report(asset_traces_by_stage: dict):
 
 
 def get_asset(engine_api_socket, asset_name) -> dict:
-    namespace = "wazuh"
+    namespace = "guardbear"
     if asset_name in ASSETS_IN_SYSTEM:
         namespace = "system"
 
@@ -339,7 +339,7 @@ def run_test(test_parent_path: Path, engine_api_socket: str, debug_mode: str, ta
         if input_file.parent != test_dir:
             test_name = f"{test_parent_name}-{input_file.parent.name}"
 
-        ns = "wazuh system" if target == 'rule' else "wazuh"
+        ns = "guardbear system" if target == 'rule' else "guardbear"
         engine_test_command = f"engine-test -c {engine_test_conf.resolve().as_posix()} "
         engine_test_command += f"run {test_name} --api-socket {engine_api_socket} -n {ns} {debug_mode} -j"
         command = f"cat {input_file.resolve().as_posix()} | {engine_test_command}"
@@ -356,7 +356,7 @@ def decoder_health_test(env_path: Path, debug_mode: str, output_file: Path, inte
     if not conf_path.is_file():
         sys.exit(f"Configuration file not found: {conf_path}")
 
-    bin_path = (env_path / "wazuh-engine").resolve()
+    bin_path = (env_path / "guardbear-engine").resolve()
     if not bin_path.is_file():
         sys.exit(f"Engine binary not found: {bin_path}")
 
@@ -427,7 +427,7 @@ def rule_health_test(env_path: Path, debug_mode: str, output_file: Path, ruleset
     if not conf_path.is_file():
         sys.exit(f"Configuration file not found: {conf_path}")
 
-    bin_path = (env_path / "wazuh-engine").resolve()
+    bin_path = (env_path / "guardbear-engine").resolve()
     if not bin_path.is_file():
         sys.exit(f"Engine binary not found: {bin_path}")
 
@@ -496,7 +496,7 @@ def run(args):
     rule_folder = args.get('rule_folder')
     target = args.get('target')
     output_file = args.get('output_file')
-    skip = args.get('skip', ['wazuh-core'])
+    skip = args.get('skip', ['guardbear-core'])
     debug_mode = "-dd"
 
     provided_args = sum(

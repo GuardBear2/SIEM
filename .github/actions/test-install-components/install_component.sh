@@ -1,8 +1,8 @@
-#!/bin/bash
+﻿#!/bin/bash
 package_name=$1
 target=$2
 
-echo "Installing Wazuh $target."
+echo "Installing GuardBear $target."
 
 if [ -n "$(command -v yum)" ]; then
     install="yum install -y --nogpgcheck"
@@ -19,5 +19,5 @@ if [ "${ARCH}" = "i386" ] || [ "${ARCH}" = "armv7hl" ]; then
     linux="linux32"
 fi
 
-WAZUH_MANAGER="10.0.0.2" $linux $install "/packages/$package_name"| tee /packages/status.log
-grep -i " installed.*wazuh-$target" $installed_log| tee -a /packages/status.log
+GUARDBEAR_MANAGER="10.0.0.2" $linux $install "/packages/$package_name"| tee /packages/status.log
+grep -i " installed.*guardbear-$target" $installed_log| tee -a /packages/status.log

@@ -1,4 +1,4 @@
-name: Engine indexer connector test
+﻿name: Engine indexer connector test
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ on:
       - ".github/actions/compile_and_test/action.yml"
       - ".github/actions/indexer_connector_deps/action.yml"
       - "src/engine/source/indexerconnector/**"
-      - "src/engine/source/wazuh-http-request/**"
+      - "src/engine/source/guardbear-http-request/**"
 env:
   BUILD_PRESET: ${{ github.event.inputs.build_preset || 'release' }}
   ENGINE_DIR: ${{github.workspace}}/src/engine

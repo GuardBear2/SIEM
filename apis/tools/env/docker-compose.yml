@@ -1,32 +1,32 @@
-name: dev-wazuh
+﻿name: dev-guardbear
 
 services:
-  wazuh-manager:
+  guardbear-manager:
     build:
-      context: ./wazuh-server
+      context: ./guardbear-server
       target: server
-    image: dev-wazuh-server
-    container_name: wazuh-manager
-    hostname: wazuh-manager
+    image: dev-guardbear-server
+    container_name: guardbear-manager
+    hostname: guardbear-manager
     volumes:
       # Server certificates
-      - ./certs/root-ca.pem:/etc/wazuh-server/certs/root-ca.pem
-      - ./certs/wazuh-manager.pem:/etc/wazuh-server/certs/server.pem
-      - ./certs/wazuh-manager.key:/etc/wazuh-server/certs/server-key.pem
+      - ./certs/root-ca.pem:/etc/guardbear-server/certs/root-ca.pem
+      - ./certs/guardbear-manager.pem:/etc/guardbear-server/certs/server.pem
+      - ./certs/guardbear-manager.key:/etc/guardbear-server/certs/server-key.pem
       # Indexer certificates
-      - ./certs/wazuh-indexer.pem:/etc/wazuh-server/certs/indexer.pem
-      - ./certs/wazuh-indexer-key.pem:/etc/wazuh-server/certs/indexer-key.pem
+      - ./certs/guardbear-indexer.pem:/etc/guardbear-server/certs/indexer.pem
+      - ./certs/guardbear-indexer-key.pem:/etc/guardbear-server/certs/indexer-key.pem
       # Default configuration
-      - ./wazuh-server/wazuh-server.yml:/tmp/wazuh-server.yml
+      - ./guardbear-server/guardbear-server.yml:/tmp/guardbear-server.yml
       # Source code mappings
-      - ../../../framework/scripts/wazuh_server.py:/usr/share/wazuh-server/framework/scripts/wazuh-server.py
-      - ../../server_management/scripts/wazuh_server_management_apid.py:/usr/share/wazuh-server/apis/scripts/wazuh-server-management-apid.py
-      - ../../communications/scripts/wazuh_comms_apid.py:/usr/share/wazuh-server/apis/scripts/wazuh-comms-apid.py
-      - ../../../framework/wazuh:/usr/share/wazuh-server/framework/python/lib/python${WAZUH_PYTHON_VERSION}/site-packages/wazuh
-      - ../../server_management/server_management_api:/usr/share/wazuh-server/framework/python/lib/python${WAZUH_PYTHON_VERSION}/site-packages/server_management_api
-      - ../../communications/comms_api:/usr/share/wazuh-server/framework/python/lib/python${WAZUH_PYTHON_VERSION}/site-packages/comms_api
+      - ../../../framework/scripts/guardbear_server.py:/usr/share/guardbear-server/framework/scripts/guardbear-server.py
+      - ../../server_management/scripts/guardbear_server_management_apid.py:/usr/share/guardbear-server/apis/scripts/guardbear-server-management-apid.py
+      - ../../communications/scripts/guardbear_comms_apid.py:/usr/share/guardbear-server/apis/scripts/guardbear-comms-apid.py
+      - ../../../framework/guardbear:/usr/share/guardbear-server/framework/python/lib/python${GUARDBEAR_PYTHON_VERSION}/site-packages/guardbear
+      - ../../server_management/server_management_api:/usr/share/guardbear-server/framework/python/lib/python${GUARDBEAR_PYTHON_VERSION}/site-packages/server_management_api
+      - ../../communications/comms_api:/usr/share/guardbear-server/framework/python/lib/python${GUARDBEAR_PYTHON_VERSION}/site-packages/comms_api
       # Vulnerability Detector feed
-      - vd_feed:/var/lib/wazuh-server/queue
+      - vd_feed:/var/lib/guardbear-server/queue
     ports:
       # Management API
       - 55000:55000
@@ -34,38 +34,38 @@ services:
       - 27000:27000
     entrypoint:
       - /scripts/entrypoint.sh
-      - wazuh-manager
+      - guardbear-manager
       - manager-node
       - manager
     depends_on:
-      - wazuh-indexer
+      - guardbear-indexer
 
-  wazuh-worker1:
-    image: dev-wazuh-server
-    hostname: wazuh-worker1
-    container_name: wazuh-worker1
+  guardbear-worker1:
+    image: dev-guardbear-server
+    hostname: guardbear-worker1
+    container_name: guardbear-worker1
     volumes:
       # Server certificates
-      - ./certs/root-ca.pem:/etc/wazuh-server/certs/root-ca.pem
-      - ./certs/wazuh-worker1.pem:/etc/wazuh-server/certs/server.pem
-      - ./certs/wazuh-worker1.key:/etc/wazuh-server/certs/server-key.pem
+      - ./certs/root-ca.pem:/etc/guardbear-server/certs/root-ca.pem
+      - ./certs/guardbear-worker1.pem:/etc/guardbear-server/certs/server.pem
+      - ./certs/guardbear-worker1.key:/etc/guardbear-server/certs/server-key.pem
       # Indexer certificates
-      - ./certs/wazuh-indexer.pem:/etc/wazuh-server/certs/indexer.pem
-      - ./certs/wazuh-indexer-key.pem:/etc/wazuh-server/certs/indexer-key.pem
+      - ./certs/guardbear-indexer.pem:/etc/guardbear-server/certs/indexer.pem
+      - ./certs/guardbear-indexer-key.pem:/etc/guardbear-server/certs/indexer-key.pem
       # Default configuration
-      - ./wazuh-server/wazuh-server.yml:/tmp/wazuh-server.yml
+      - ./guardbear-server/guardbear-server.yml:/tmp/guardbear-server.yml
       # Source code mappings
-      - ../../../framework/scripts/wazuh_server.py:/usr/share/wazuh-server/framework/scripts/wazuh-server.py
-      - ../../server_management/scripts/wazuh_server_management_apid.py:/usr/share/wazuh-server/apis/scripts/wazuh-server-management-apid.py
-      - ../../communications/scripts/wazuh_comms_apid.py:/usr/share/wazuh-server/apis/scripts/wazuh-comms-apid.py
-      - ../../../framework/wazuh:/usr/share/wazuh-server/framework/python/lib/python${WAZUH_PYTHON_VERSION}/site-packages/wazuh
-      - ../../server_management/server_management_api:/usr/share/wazuh-server/framework/python/lib/python${WAZUH_PYTHON_VERSION}/site-packages/server_management_api
-      - ../../communications/comms_api:/usr/share/wazuh-server/framework/python/lib/python${WAZUH_PYTHON_VERSION}/site-packages/comms_api
+      - ../../../framework/scripts/guardbear_server.py:/usr/share/guardbear-server/framework/scripts/guardbear-server.py
+      - ../../server_management/scripts/guardbear_server_management_apid.py:/usr/share/guardbear-server/apis/scripts/guardbear-server-management-apid.py
+      - ../../communications/scripts/guardbear_comms_apid.py:/usr/share/guardbear-server/apis/scripts/guardbear-comms-apid.py
+      - ../../../framework/guardbear:/usr/share/guardbear-server/framework/python/lib/python${GUARDBEAR_PYTHON_VERSION}/site-packages/guardbear
+      - ../../server_management/server_management_api:/usr/share/guardbear-server/framework/python/lib/python${GUARDBEAR_PYTHON_VERSION}/site-packages/server_management_api
+      - ../../communications/comms_api:/usr/share/guardbear-server/framework/python/lib/python${GUARDBEAR_PYTHON_VERSION}/site-packages/comms_api
       # Vulnerability Detector feed
-      - vd_feed:/var/lib/wazuh-server/queue
+      - vd_feed:/var/lib/guardbear-server/queue
     depends_on:
-      - wazuh-manager
-      - wazuh-indexer
+      - guardbear-manager
+      - guardbear-indexer
     ports:
       # Management API
       - 55001:55000
@@ -73,36 +73,36 @@ services:
       - 27001:27000
     entrypoint:
       - /scripts/entrypoint.sh
-      - wazuh-manager
+      - guardbear-manager
       - worker1
       - worker
 
-  wazuh-worker2:
-    image: dev-wazuh-server
-    hostname: wazuh-worker2
-    container_name: wazuh-worker2
+  guardbear-worker2:
+    image: dev-guardbear-server
+    hostname: guardbear-worker2
+    container_name: guardbear-worker2
     volumes:
       # Server certificates
-      - ./certs/root-ca.pem:/etc/wazuh-server/certs/root-ca.pem
-      - ./certs/wazuh-worker2.pem:/etc/wazuh-server/certs/server.pem
-      - ./certs/wazuh-worker2.key:/etc/wazuh-server/certs/server-key.pem
+      - ./certs/root-ca.pem:/etc/guardbear-server/certs/root-ca.pem
+      - ./certs/guardbear-worker2.pem:/etc/guardbear-server/certs/server.pem
+      - ./certs/guardbear-worker2.key:/etc/guardbear-server/certs/server-key.pem
       # Indexer certificates
-      - ./certs/wazuh-indexer.pem:/etc/wazuh-server/certs/indexer.pem
-      - ./certs/wazuh-indexer-key.pem:/etc/wazuh-server/certs/indexer-key.pem
+      - ./certs/guardbear-indexer.pem:/etc/guardbear-server/certs/indexer.pem
+      - ./certs/guardbear-indexer-key.pem:/etc/guardbear-server/certs/indexer-key.pem
       # Default configuration
-      - ./wazuh-server/wazuh-server.yml:/tmp/wazuh-server.yml
+      - ./guardbear-server/guardbear-server.yml:/tmp/guardbear-server.yml
       # Source code mappings
-      - ../../../framework/scripts/wazuh_server.py:/usr/share/wazuh-server/framework/scripts/wazuh-server.py
-      - ../../server_management/scripts/wazuh_server_management_apid.py:/usr/share/wazuh-server/apis/scripts/wazuh-server-management-apid.py
-      - ../../communications/scripts/wazuh_comms_apid.py:/usr/share/wazuh-server/apis/scripts/wazuh-comms-apid.py
-      - ../../../framework/wazuh:/usr/share/wazuh-server/framework/python/lib/python${WAZUH_PYTHON_VERSION}/site-packages/wazuh
-      - ../../server_management/server_management_api:/usr/share/wazuh-server/framework/python/lib/python${WAZUH_PYTHON_VERSION}/site-packages/server_management_api
-      - ../../communications/comms_api:/usr/share/wazuh-server/framework/python/lib/python${WAZUH_PYTHON_VERSION}/site-packages/comms_api
+      - ../../../framework/scripts/guardbear_server.py:/usr/share/guardbear-server/framework/scripts/guardbear-server.py
+      - ../../server_management/scripts/guardbear_server_management_apid.py:/usr/share/guardbear-server/apis/scripts/guardbear-server-management-apid.py
+      - ../../communications/scripts/guardbear_comms_apid.py:/usr/share/guardbear-server/apis/scripts/guardbear-comms-apid.py
+      - ../../../framework/guardbear:/usr/share/guardbear-server/framework/python/lib/python${GUARDBEAR_PYTHON_VERSION}/site-packages/guardbear
+      - ../../server_management/server_management_api:/usr/share/guardbear-server/framework/python/lib/python${GUARDBEAR_PYTHON_VERSION}/site-packages/server_management_api
+      - ../../communications/comms_api:/usr/share/guardbear-server/framework/python/lib/python${GUARDBEAR_PYTHON_VERSION}/site-packages/comms_api
       # Vulnerability Detector feed
-      - vd_feed:/var/lib/wazuh-server/queue
+      - vd_feed:/var/lib/guardbear-server/queue
     depends_on:
-      - wazuh-manager
-      - wazuh-indexer
+      - guardbear-manager
+      - guardbear-indexer
     ports:
       # Management API
       - 55002:55000
@@ -110,25 +110,25 @@ services:
       - 27002:27000
     entrypoint:
       - /scripts/entrypoint.sh
-      - wazuh-manager
+      - guardbear-manager
       - worker2
       - worker
 
-  wazuh-indexer:
+  guardbear-indexer:
     build:
-      context: ./wazuh-indexer
-    image: dev-wazuh-indexer
-    hostname: wazuh-indexer
-    container_name: wazuh-indexer
+      context: ./guardbear-indexer
+    image: dev-guardbear-indexer
+    hostname: guardbear-indexer
+    container_name: guardbear-indexer
     volumes:
       - ./certs/root-ca.pem:/usr/share/opensearch/config/root-ca.pem
-      - ./certs/wazuh-indexer.pem:/usr/share/opensearch/config/indexer.pem
-      - ./certs/wazuh-indexer.key:/usr/share/opensearch/config/indexer.key
-      - ./certs/wazuh-indexer-key.pem:/usr/share/opensearch/config/indexer-key.pem
+      - ./certs/guardbear-indexer.pem:/usr/share/opensearch/config/indexer.pem
+      - ./certs/guardbear-indexer.key:/usr/share/opensearch/config/indexer.key
+      - ./certs/guardbear-indexer-key.pem:/usr/share/opensearch/config/indexer-key.pem
     ports:
       - 9200:9200
     environment:
-      - node.name=wazuh-indexer
+      - node.name=guardbear-indexer
       - discovery.type=single-node
       - plugins.security.ssl.transport.pemcert_filepath=indexer.pem
       - plugins.security.ssl.transport.pemkey_filepath=indexer-key.pem
@@ -153,25 +153,25 @@ services:
     entrypoint:
       - /scripts/entrypoint.sh
     depends_on:
-      - wazuh-manager
-      - wazuh-worker1
-      - wazuh-worker2
+      - guardbear-manager
+      - guardbear-worker1
+      - guardbear-worker2
 
-  wazuh-agent:
+  guardbear-agent:
     build:
-      context: ./wazuh-agent
+      context: ./guardbear-agent
       target: agent
-    image: dev-wazuh-agent
-    container_name: wazuh-agent
+    image: dev-guardbear-agent
+    container_name: guardbear-agent
     volumes:
-      - ./wazuh-agent/wazuh-agent.yml:/etc/wazuh-agent/wazuh-agent.yml
+      - ./guardbear-agent/guardbear-agent.yml:/etc/guardbear-agent/guardbear-agent.yml
     environment:
-      USER: wazuh
-      PASSWORD: wazuh
+      USER: guardbear
+      PASSWORD: guardbear
     depends_on:
-      - wazuh-manager
-      - wazuh-worker1
-      - wazuh-worker2
+      - guardbear-manager
+      - guardbear-worker1
+      - guardbear-worker2
       - nginx-lb
 
 volumes:

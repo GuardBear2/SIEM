@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 from google.protobuf.json_format import ParseDict
 
 from api_communication.client import APIClient
@@ -17,7 +17,7 @@ def run(args):
 
     # Create the request
     request = erouter.QueuePost_Request()
-    request.wazuh_event = event
+    request.guardbear_event = event
 
     # Send the request
     error, response = client.send_recv(request)

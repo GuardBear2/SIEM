@@ -1,4 +1,4 @@
-
+﻿
   - Masz do wyboru trzy metody instalacji: serwer, agent oraz lokalna.
 
     - Jeśli wybierzesz 'serwer', bęziesz miał możliwość analizy
@@ -25,4 +25,4 @@
   - Wybierz 'lokalna' jeśli masz tylko jeden system do monitorowania.
 
   - Więcej informacji na:
-    https://documentation.wazuh.com
+    https://documentation.guardbear.com

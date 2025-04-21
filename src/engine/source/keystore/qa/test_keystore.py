@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from subprocess import Popen, PIPE
@@ -9,8 +9,8 @@ import pytest
 from pathlib import Path
 
 LOGGER = logging.getLogger(__name__)
-KEYSTORE_BINARY = "./wazuh-keystore"
-KEYSTORE_TESTTOOL_BINARY = "./wazuh-keystore_tool"
+KEYSTORE_BINARY = "./guardbear-keystore"
+KEYSTORE_TESTTOOL_BINARY = "./guardbear-keystore_tool"
 KEYSTORE_DB_PATH = "./keystore"
 
 # Helper methods

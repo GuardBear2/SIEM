@@ -1,6 +1,6 @@
-/*
- * Wazuh keystore
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear keystore
+ * Copyright (C) 2015, GuardBear Inc.
  * January 25, 2024.
  *
  * This program is free software; you can redistribute it
@@ -94,7 +94,7 @@ public:
      */
     static void showHelp()
     {
-        std::cout << "\nUsage: wazuh-keystore <option(s)>\n"
+        std::cout << "\nUsage: guardbear-keystore <option(s)>\n"
                   << "Options:\n"
                   << "\t-h \t\t\tShow this help message\n"
                   << "\t-f COLUMN_FAMILY\tSpecifies the target column family for the insertion.\n"
@@ -103,11 +103,11 @@ public:
                   << "\t-vp VALUE_PATH\t\tPath to a file containing the value to read (single line). Only use one value option at the time.\n"
                   << "\tNOTE: if both value parameters are empty, stdin will be read.\n"
                   << "\nExample:"
-                  << "\n\t./wazuh-keystore -f indexer -k username -v admin\n"
-                  << "\n\t./wazuh-keystore -f indexer -k password -vp /path/to/file.txt\n"
-                  << "\n\t./wazuh-keystore -f indexer -k password < /path/to/file.txt\n"
-                  << "\n\techo 'pass' | ./wazuh-keystore -f indexer -k password\n"
-                  << "\n\tcat /path/to/file.txt | ./wazuh-keystore -f indexer -k password\n"
+                  << "\n\t./guardbear-keystore -f indexer -k username -v admin\n"
+                  << "\n\t./guardbear-keystore -f indexer -k password -vp /path/to/file.txt\n"
+                  << "\n\t./guardbear-keystore -f indexer -k password < /path/to/file.txt\n"
+                  << "\n\techo 'pass' | ./guardbear-keystore -f indexer -k password\n"
+                  << "\n\tcat /path/to/file.txt | ./guardbear-keystore -f indexer -k password\n"
                   << std::endl;
     }
 

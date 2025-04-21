@@ -1,4 +1,4 @@
----
+﻿---
 test_name: GET /cluster/healthcheck
 
 marks:
@@ -882,12 +882,12 @@ stages:
           total_affected_items: !anyint
           total_failed_items: 0
 
-  - name: Read logs with filters -> tag=wazuh-analysisd, limit=1 {node_id}
+  - name: Read logs with filters -> tag=guardbear-analysisd, limit=1 {node_id}
     request:
       verify: False
       <<: *get_cluster_logs
       params:
-        tag: wazuh-analysisd
+        tag: guardbear-analysisd
         limit: 1
     response:
       status_code: 200
@@ -900,12 +900,12 @@ stages:
           total_affected_items: !anyint
           total_failed_items: 0
 
-  - name: Read logs with filters -> tag=wazuh-syscheckd, limit=2 {node_id}
+  - name: Read logs with filters -> tag=guardbear-syscheckd, limit=2 {node_id}
     request:
       verify: False
       <<: *get_cluster_logs
       params:
-        tag: wazuh-syscheckd
+        tag: guardbear-syscheckd
         limit: 2
     response:
       status_code: 200
@@ -914,19 +914,19 @@ stages:
         data:
           affected_items:
             - <<: *cluster_log
-              tag: wazuh-syscheckd
+              tag: guardbear-syscheckd
             - <<: *cluster_log
-              tag: wazuh-syscheckd
+              tag: guardbear-syscheckd
           failed_items: []
           total_affected_items: !anyint
           total_failed_items: 0
 
-  - name: Read logs with filters -> tag=wazuh-unknown-daemon {node_id}
+  - name: Read logs with filters -> tag=guardbear-unknown-daemon {node_id}
     request:
       verify: False
       <<: *get_cluster_logs
       params:
-        tag: wazuh-unknown-daemon
+        tag: guardbear-unknown-daemon
     response:
       status_code: 200
       json:
@@ -956,19 +956,19 @@ stages:
           total_affected_items: !anyint
           total_failed_items: 0
 
-  - name: Read logs with filters by query (tag=wazuh-syscheckd, level=info) {node_id}
+  - name: Read logs with filters by query (tag=guardbear-syscheckd, level=info) {node_id}
     request:
       verify: False
       <<: *get_cluster_logs
       params:
-        q: tag=wazuh-syscheckd;level=info
+        q: tag=guardbear-syscheckd;level=info
     response:
       status_code: 200
       verify_response_with:
         - function: tavern_utils:test_expected_value
           extra_kwargs:
             key: "tag"
-            expected_values: "wazuh-syscheckd"
+            expected_values: "guardbear-syscheckd"
         - function: tavern_utils:test_expected_value
           extra_kwargs:
             key: "level"

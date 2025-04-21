@@ -1,4 +1,4 @@
-  - Imaš tri instalacione opcije: server, agent ili lokalnu.
+﻿  - Imaš tri instalacione opcije: server, agent ili lokalnu.
 
     - Ako izabereš 'server', moćićeš da analiziraš sve
       logove, napraviš e-mail notifikacije i reakcije,
@@ -23,4 +23,4 @@
   - Izaberi 'lokalnu' ako pratiš samo jedan sistem.
 
   - Više obaveštenja na:
-    https://documentation.wazuh.com
+    https://documentation.guardbear.com

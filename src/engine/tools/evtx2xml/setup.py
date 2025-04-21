@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+﻿from setuptools import setup, find_packages
 
 setup(
     name='evtx2xml',
@@ -13,7 +13,7 @@ setup(
             'evtx2xml=evtx2xml.evtx_to_xml:main',
         ],
     },
-    url='https://github.com/wazuh/wazuh',
-    author='Wazuh  Inc.',
+    url='https://github.com/guardbear/guardbear',
+    author='GuardBear  Inc.',
     description='A tool to convert EVTX files to XML',
 )

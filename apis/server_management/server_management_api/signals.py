@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 import asyncio
 import contextlib
@@ -10,11 +10,11 @@ from functools import wraps
 from typing import Callable
 
 from connexion import ConnexionMiddleware
-from wazuh.core import common
-from wazuh.core.cluster.utils import running_in_master_node
-from wazuh.core.config.client import CentralizedConfig
-from wazuh.core.configuration import update_check_is_enabled
-from wazuh.core.manager import query_update_check_service
+from guardbear.core import common
+from guardbear.core.cluster.utils import running_in_master_node
+from guardbear.core.config.client import CentralizedConfig
+from guardbear.core.configuration import update_check_is_enabled
+from guardbear.core.manager import query_update_check_service
 
 from server_management_api.constants import (
     INSTALLATION_UID_KEY,
@@ -24,7 +24,7 @@ from server_management_api.constants import (
 
 ONE_DAY_SLEEP = 60 * 60 * 24
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('guardbear-api')
 
 cti_context = {}
 
@@ -66,7 +66,7 @@ async def check_installation_uid() -> None:
         installation_uid = str(uuid.uuid4())
         with open(INSTALLATION_UID_PATH, 'w') as file:
             file.write(installation_uid)
-            os.chown(file.name, common.wazuh_uid(), common.wazuh_gid())
+            os.chown(file.name, common.guardbear_uid(), common.guardbear_gid())
             os.chmod(file.name, 0o660)
     cti_context[INSTALLATION_UID_KEY] = installation_uid
 
@@ -101,4 +101,4 @@ async def lifespan_handler(_: ConnexionMiddleware):
         task.cancel()
         await task
 
-    logger.info('Shutdown wazuh-server-management-apid server.')
+    logger.info('Shutdown guardbear-server-management-apid server.')

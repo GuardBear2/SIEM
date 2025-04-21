@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 
 import sys
 from pathlib import Path
@@ -120,7 +120,7 @@ def integration_validator(
             for entry in path.rglob('*.yml'):
                 original = resource_handler.load_file(entry)
                 if original['name'] in manifest['decoders']:
-                    if original['name'] != "decoder/core-wazuh-message/0":
+                    if original['name'] != "decoder/core-guardbear-message/0":
                         process_entry(entry, resource_handler, non_modifiables_fields, error_reporter)
 
     return error_reporter.has_errors()  # Return True if there are errors

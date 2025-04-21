@@ -1,6 +1,6 @@
-/*
- * Wazuh content manager
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear content manager
+ * Copyright (C) 2015, GuardBear Inc.
  * March 25, 2023.
  *
  * This program is free software; you can redistribute it
@@ -12,7 +12,7 @@
 #ifndef _SHARED_DEFS_H
 #define _SHARED_DEFS_H
 
-#define WM_CONTENTUPDATER "wazuh-modulesd:content-updater"
+#define WM_CONTENTUPDATER "guardbear-modulesd:content-updater"
 
 #include "loggerHelper.h"
 #endif // _SHARED_DEFS_H

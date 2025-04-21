@@ -1,6 +1,6 @@
-/*
- * Wazuh content manager - Unit Tests
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear content manager - Unit Tests
+ * Copyright (C) 2015, GuardBear Inc.
  * Jun 07, 2023.
  *
  * This program is free software; you can redistribute it

@@ -1,4 +1,4 @@
-# Engine clear tool
+﻿# Engine clear tool
 Is a command line tool for managing and clearing resources in an engine management system.
 
 1. [Directory structure](#directory-structure)
@@ -36,5 +36,5 @@ options:
   --api-sock API_SOCK   Path to the engine-api socket
   -f, --force           Force the execution of the command
   -n, --namespaces [NAMESPACES ...]
-                        Namespace to delete the resources from. Default:['user', 'wazuh', 'system']
+                        Namespace to delete the resources from. Default:['user', 'guardbear', 'system']
 ```

@@ -1,21 +1,21 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
 
-import wazuh.manager as manager
+import guardbear.manager as manager
 from connexion.lifecycle import ConnexionResponse
-from wazuh.core import configuration
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.manager import query_update_check_service
+from guardbear.core import configuration
+from guardbear.core.cluster.dapi.dapi import DistributedAPI
+from guardbear.core.manager import query_update_check_service
 
 from server_management_api.constants import INSTALLATION_UID_KEY, UPDATE_INFORMATION_KEY
 from server_management_api.controllers.util import json_response
 from server_management_api.signals import cti_context
 from server_management_api.util import only_master_endpoint, raise_if_exc
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('guardbear-api')
 
 
 @only_master_endpoint

@@ -1,8 +1,8 @@
-from typing import Tuple
+﻿from typing import Tuple
 
-from wazuh.core.batcher.batcher import BatcherProcess
-from wazuh.core.batcher.mux_demux import MuxDemuxManager
-from wazuh.core.config.models.comms_api import BatcherConfig
+from guardbear.core.batcher.batcher import BatcherProcess
+from guardbear.core.batcher.mux_demux import MuxDemuxManager
+from guardbear.core.config.models.comms_api import BatcherConfig
 
 
 def create_batcher_process(config: BatcherConfig) -> Tuple[MuxDemuxManager, BatcherProcess]:

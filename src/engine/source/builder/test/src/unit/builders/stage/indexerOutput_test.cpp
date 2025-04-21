@@ -1,4 +1,4 @@
-#include <memory>
+﻿#include <memory>
 
 #include "builders/baseBuilders_test.hpp"
 #include "builders/stage/indexerOutput.hpp"
@@ -56,16 +56,16 @@ INSTANTIATE_TEST_SUITE_P(
                FAILURE()),
         // Invalid string
         StageT(R"({"index": "alerts"})", getIndexerOutputBuilder(getMockIndexerConnector()), FAILURE()),
-        StageT(R"({"index": "wazuh-Alerts"})", getIndexerOutputBuilder(getMockIndexerConnector()), FAILURE()),
-        StageT(R"({"index": "wazuh-alerts-#"})", getIndexerOutputBuilder(getMockIndexerConnector()), FAILURE()),
+        StageT(R"({"index": "guardbear-Alerts"})", getIndexerOutputBuilder(getMockIndexerConnector()), FAILURE()),
+        StageT(R"({"index": "guardbear-alerts-#"})", getIndexerOutputBuilder(getMockIndexerConnector()), FAILURE()),
         // Valid string
-        StageT(R"({"index": "wazuh-alerts-5.x"})",
+        StageT(R"({"index": "guardbear-alerts-5.x"})",
                getIndexerOutputBuilder(getMockIndexerConnector()),
                SUCCESS(
                    [](const BuildersMocks& mocks)
                    {
                        EXPECT_CALL(*mocks.ctx, runState());
-                       return base::Term<base::EngineOp>::create("write.output(wazuh-indexer/wazuh-alerts-5.x)", {});
+                       return base::Term<base::EngineOp>::create("write.output(guardbear-indexer/guardbear-alerts-5.x)", {});
                    }))
         // End
         ),
@@ -78,7 +78,7 @@ const std::string messageStr {R"({
     "event": {
         "original": "::1 - - [26/Dec/2016:16:16:29 +0200] \"GET /favicon.ico HTTP/1.1\" 404 209\n"
     },
-    "wazuh": {
+    "guardbear": {
         "agent": {
             "id": "001",
             "name": "agentSim",
@@ -106,7 +106,7 @@ protected:
         // Reset the mock
         ::testing::Mock::VerifyAndClearExpectations(&mockConnector);
         // Set success definition for builder creation
-        definition = json::Json(R"({"index": "wazuh-alerts"})");
+        definition = json::Json(R"({"index": "guardbear-alerts"})");
     }
 
     void TearDown() override
@@ -134,14 +134,14 @@ TEST_F(IndexerOutputOperationTest, output_success)
     // Check the expression
     ASSERT_TRUE(expression->isTerm());
     auto term = expression->getPtr<base::Term<base::EngineOp>>();
-    ASSERT_EQ(term->getName(), "write.output(wazuh-indexer/wazuh-alerts)");
+    ASSERT_EQ(term->getName(), "write.output(guardbear-indexer/guardbear-alerts)");
 
     // Check the operation
     auto operation = term->getFn();
     ASSERT_TRUE(operation);
 
     // Configure the behavior
-    EXPECT_CALL(*iConnector, publish(StartsWith(R"({"operation": "ADD", "index": "wazuh-alerts", "data": {)")));
+    EXPECT_CALL(*iConnector, publish(StartsWith(R"({"operation": "ADD", "index": "guardbear-alerts", "data": {)")));
 
     // Run the operation
     auto result = operation(event);
@@ -161,7 +161,7 @@ TEST_F(IndexerOutputOperationTest, output_fail)
     // Check the expression
     ASSERT_TRUE(expression->isTerm());
     auto term = expression->getPtr<base::Term<base::EngineOp>>();
-    ASSERT_EQ(term->getName(), "write.output(wazuh-indexer/wazuh-alerts)");
+    ASSERT_EQ(term->getName(), "write.output(guardbear-indexer/guardbear-alerts)");
 
     // Check the operation
     auto operation = term->getFn();

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 #
 # Download MaxMind databases
 #
@@ -35,7 +35,7 @@ download_and_extract() {
 
     # Enable the database
     echo "Enabling ${edition} database"
-    $ENGINE_DIR/wazuh-engine geo add /var/ossec/etc/${edition}.mmdb $type
+    $ENGINE_DIR/guardbear-engine geo add /var/ossec/etc/${edition}.mmdb $type
 
     rm $GEOIP_TMP_FILE
 }

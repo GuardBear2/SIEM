@@ -1,4 +1,4 @@
-name: Coverity-Scan
+﻿name: Coverity-Scan
 
 on:
   # Only for register the workflow
@@ -31,17 +31,17 @@ jobs:
       - name: Select project
         id: project
         env:
-          COVERITY_OSSEC_PROJECT: "wazuh%2Fossec-wazuh"
-          COVERITY_WAZUH_PROJECT: "wazuh%2Fwazuh"
+          COVERITY_OSSEC_PROJECT: "guardbear%2Fossec-guardbear"
+          COVERITY_GUARDBEAR_PROJECT: "guardbear%2Fguardbear"
         run: |
           if [ ${{ inputs.ossec_project }} == true ]; then
             echo "Using ossec project"
             echo 'PROJECT_NAME=${{ ENV.COVERITY_OSSEC_PROJECT }}' | tee -a $GITHUB_OUTPUT
             echo 'TOKEN=${{ secrets.COVERITY_SCAN_OSSEC_TOKEN }}' | tee -a $GITHUB_OUTPUT
           else
-            echo "Using wazuh project"
-            echo 'PROJECT_NAME=${{ ENV.COVERITY_WAZUH_PROJECT }}' | tee -a $GITHUB_OUTPUT
-            echo 'TOKEN=${{ secrets.COVERITY_SCAN_WAZUH_TOKEN }}' | tee -a $GITHUB_OUTPUT
+            echo "Using guardbear project"
+            echo 'PROJECT_NAME=${{ ENV.COVERITY_GUARDBEAR_PROJECT }}' | tee -a $GITHUB_OUTPUT
+            echo 'TOKEN=${{ secrets.COVERITY_SCAN_GUARDBEAR_TOKEN }}' | tee -a $GITHUB_OUTPUT
           fi
       - name: Get coverity
         id: coverity
@@ -78,10 +78,10 @@ jobs:
         with:
           # Input branch or same branch if not provided
           ref: ${{ github.event.inputs.base_branch }}
-          path: "wazuh"
+          path: "guardbear"
 
       - name: build
-        working-directory: wazuh/src
+        working-directory: guardbear/src
         id: build
         run: |
           VERSION="$(cat VERSION)-r$(cat REVISION)"
@@ -105,14 +105,14 @@ jobs:
 
       - name: Compression
         id: compress_result
-        working-directory: wazuh/src
+        working-directory: guardbear/src
         run: |
-          OUTPUT_FILE="wazuh.tgz"
+          OUTPUT_FILE="guardbear.tgz"
           echo "OUTPUT_FILE=$OUTPUT_FILE" | tee -a $GITHUB_OUTPUT
           tar zcf $OUTPUT_FILE cov-int
 
       - name: Upload to coverity
-        working-directory: wazuh/src
+        working-directory: guardbear/src
         env:
           URL_UPLOAD: "https://scan.coverity.com/builds?project=${{ steps.project.outputs.PROJECT_NAME }}"
           TOKEN: ${{ steps.project.outputs.TOKEN }}

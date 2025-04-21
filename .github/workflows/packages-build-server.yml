@@ -1,5 +1,5 @@
-run-name: Build ${{ inputs.system }} wazuh-server on ${{ inputs.architecture }} ${{ inputs.is_stage && '- is stage' || '' }} ${{ inputs.checksum && '- checksum' || '' }} ${{ inputs.debug && '- debug' || '' }} ${{ inputs.id }}
-name: Build Wazuh server
+﻿run-name: Build ${{ inputs.system }} guardbear-server on ${{ inputs.architecture }} ${{ inputs.is_stage && '- is stage' || '' }} ${{ inputs.checksum && '- checksum' || '' }} ${{ inputs.debug && '- debug' || '' }} ${{ inputs.id }}
+name: Build GuardBear server
 
 on:
   workflow_dispatch:
@@ -95,7 +95,7 @@ jobs:
   Build-server-packages:
     runs-on: ubuntu-latest
     timeout-minutes: 240
-    name: Build ${{ inputs.system }} wazuh-server on ${{ inputs.architecture }}
+    name: Build ${{ inputs.system }} guardbear-server on ${{ inputs.architecture }}
 
     steps:
       - name: Cancel previous runs
@@ -149,7 +149,7 @@ jobs:
           chmod +x $GITHUB_WORKSPACE/.github/actions/use-local-image/use_local_image.sh
           bash $GITHUB_WORKSPACE/.github/actions/use-local-image/use_local_image.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.actor}} $CONTAINER_NAME ${{ env.TAG }}
 
-      - name: Build ${{ inputs.system }} wazuh-server on ${{ inputs.architecture }}
+      - name: Build ${{ inputs.system }} guardbear-server on ${{ inputs.architecture }}
         working-directory: packages
         run: |
           REVISION=${{ inputs.revision }}
@@ -176,23 +176,23 @@ jobs:
           sed -i 's/\r$//' /usr/local/bin/helper_function.sh
           sed -i 's/\r$//' /tmp/gen_permissions.sh
           # Run the build script
-          /wazuh-local-src/packages/build.sh $1 $2 $3 $4 $5 $6
+          /guardbear-local-src/packages/build.sh $1 $2 $3 $4 $5 $6
           EOL
           
           chmod +x $GITHUB_WORKSPACE/packages/fix_and_build.sh
           
           # Run the container with the fix-and-build script
           docker run -t --rm \
-            -v /tmp:/var/local/wazuh:Z \
+            -v /tmp:/var/local/guardbear:Z \
             -e SYSTEM=${{ inputs.system }} \
             -e ARCHITECTURE_TARGET=amd64 \
             -e INSTALLATION_PATH=/ \
             -e IS_STAGE=${{ inputs.is_stage || 'no' }} \
-            -e WAZUH_BRANCH= \
-            -v $GITHUB_WORKSPACE:/wazuh-local-src:Z \
+            -e GUARDBEAR_BRANCH= \
+            -v $GITHUB_WORKSPACE:/guardbear-local-src:Z \
             --entrypoint /bin/bash \
             $CONTAINER_NAME:${{ env.TAG }} \
-            -c "/wazuh-local-src/packages/fix_and_build.sh 0 $(nproc) ${{ inputs.debug && 'yes' || 'no' }} no ${{ inputs.checksum && 'yes' || 'no' }} no"
+            -c "/guardbear-local-src/packages/fix_and_build.sh 0 $(nproc) ${{ inputs.debug && 'yes' || 'no' }} no ${{ inputs.checksum && 'yes' || 'no' }} no"
           
           # Find the built packages
           if [ "${{ inputs.system }}" == "deb" ]; then
@@ -200,8 +200,8 @@ jobs:
           else
             SYMBOLS_TAG="debuginfo"
           fi
-          # Find all files starting with 'wazuh-server' and ending with '.rpm or .deb'
-          for file in $(find /tmp -maxdepth 1 -type f -name 'wazuh-server*.${{ inputs.system }}' -exec basename {} 2>/dev/null \;); do
+          # Find all files starting with 'guardbear-server' and ending with '.rpm or .deb'
+          for file in $(find /tmp -maxdepth 1 -type f -name 'guardbear-server*.${{ inputs.system }}' -exec basename {} 2>/dev/null \;); do
             if [[ "$file" == *"$SYMBOLS_TAG"* ]]; then
               PACKAGE_SYMBOLS_NAME="$file"
             else
@@ -216,8 +216,8 @@ jobs:
         run: |
           if [ -z "${{ env.PACKAGE_NAME }}" ]; then echo "No package found matching the pattern!"; exit 1; fi
           sudo docker run -v $GITHUB_WORKSPACE/.github/actions/test-install-components/:/tests -v /tmp/:/packages --entrypoint '/tests/install_component.sh' $CONTAINER_NAME:${{ env.TAG }} $PACKAGE_NAME server
-          # Check if Wazuh was installed. The /tmp/status.log file was generated in the previous step.
-          if grep -iq " installed.*wazuh-server" /tmp/status.log ; then
+          # Check if GuardBear was installed. The /tmp/status.log file was generated in the previous step.
+          if grep -iq " installed.*guardbear-server" /tmp/status.log ; then
             echo "Installation successfully."
           else
             echo "The installation could not be completed. The package will not be uploaded.";

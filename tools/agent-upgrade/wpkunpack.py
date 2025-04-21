@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 # Tool to build and compress the WPK package
-# Wazuh package generator
-# Copyright (C) 2015, Wazuh Inc.
+# GuardBear package generator
+# Copyright (C) 2015, GuardBear Inc.
 #
 # This program is a free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public

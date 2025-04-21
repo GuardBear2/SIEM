@@ -1,4 +1,4 @@
-# Configuration
+﻿# Configuration
 yes="e"
 no="h"
 yesmatch="e"
@@ -10,9 +10,9 @@ help="yardım"
 
 # Global
 moreinfo="Daha fazla bilgi: "
-starting="Wazuh başlatılıyor"
+starting="GuardBear başlatılıyor"
 systemis="Sistem"
-modifiedinit="Wazuh'i önyüklemede başlatmak için başlangıç betiği değiştirildi."
+modifiedinit="GuardBear'i önyüklemede başlatmak için başlangıç betiği değiştirildi."
 noboot="Bilinmeyen sistem. Başlangıç betiği eklenmedi."
 
 # Part 1
@@ -28,7 +28,7 @@ localchose="Yerel kurulum seçildi"
 
 # Part 2
 settingupenv="Kurulum ortamı hazırlanıyor"
-wheretoinstall="Wazuh kurulacak yeri seçin"
+wheretoinstall="GuardBear kurulacak yeri seçin"
 installat="Kurulum buraya yapılacak: "
 deletedir="Kurulum dizini zaten var. Silinsin mi?"
 
@@ -43,8 +43,8 @@ usingsmtp="SMTP sunucu kullanılıyor: "
 whatsmtp="SMTP sunucunuzun IP adresi veya ismi nedir?"
 
 # Part 3.1/agent
-serverip="Wazuh sunucusunun IP adresi nedir?"
-serveraddr="Wazuh sunucusunun IP adresi veya ismi nedir?"
+serverip="GuardBear sunucusunun IP adresi nedir?"
+serveraddr="GuardBear sunucusunun IP adresi veya ismi nedir?"
 addingip="Sunucu IP adresi ekleniyor"
 addingname="Sunucu ismi ekleniyor"
 
@@ -91,21 +91,21 @@ yesrunauthd="Auth servisi çalıştırıyor"
 
 # Part 4
 installing="Sistem kuruluyor"
-startwazuh="Kurulumdan sonra Wazuh'u başlatmak istiyor musunuz?"
-nowazuhstart="Wazuh kurulumun sonunda başlamaz."
-yeswazuhstart="Wazuh kurulumun sonunda başlayacak."
+startguardbear="Kurulumdan sonra GuardBear'u başlatmak istiyor musunuz?"
+noguardbearstart="GuardBear kurulumun sonunda başlamaz."
+yesguardbearstart="GuardBear kurulumun sonunda başlayacak."
 runningmake="Makefile çalıştırılıyor"
 
 # Final
 configurationdone="Yapılandırma doğru olarak tamamlandı"
-tostart="Wazuh'i başlatmak için"
-tostop="Wazuh'i durdurmak için"
+tostart="GuardBear'i başlatmak için"
+tostop="GuardBear'i durdurmak için"
 configat="Yapılandırma buradan görülebilir veya değiştirilebilir:"
 addserveragent="Her bir aracıyı/istemciyi erişim için yetkilendirmeden önce eklemeniz gerekmektedir."
 presskey="Devam etmek için ENTER tuşuna basınız"
 
 # Update
-wanttoupdate="Bir Wazuh kurulumu mevcut. Güncellemek ister misiniz?"
+wanttoupdate="Bir GuardBear kurulumu mevcut. Güncellemek ister misiniz?"
 mustuninstall="Eski sürümler kaldırılmadan kurulum devam edemez. Çıkılıyor."
 unabletoupdate="Güncelleme gerçekleştirilemedi. Yeni kurulum yapılması gerekiyor."
 updatecompleted="Güncelleme tamamlandı."

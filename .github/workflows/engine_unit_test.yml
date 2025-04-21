@@ -1,4 +1,4 @@
-name: Engine Unit Test
+﻿name: Engine Unit Test
 
 on:
   # Triggers the workflow on pull request but only changes in the src/engine/ directory.
@@ -68,9 +68,9 @@ jobs:
 
       - name: Create install directory
         run: |
-          sudo mkdir -p /run/wazuh-server/
-          sudo chown $(whoami):$(whoami) /run/wazuh-server/
-          sudo chmod 0750 /run/wazuh-server/
+          sudo mkdir -p /run/guardbear-server/
+          sudo chown $(whoami):$(whoami) /run/guardbear-server/
+          sudo chmod 0750 /run/guardbear-server/
 
       - name: Unit Test
         # Run unit tests using CTest

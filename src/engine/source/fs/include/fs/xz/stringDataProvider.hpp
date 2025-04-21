@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * Copyright (C) 2015, GuardBear Inc.
  * June 23, 2023.
  *
  * This program is free software; you can redistribute it

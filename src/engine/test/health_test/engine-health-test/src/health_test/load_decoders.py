@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 from pathlib import Path
 from google.protobuf.json_format import ParseDict
 
@@ -35,7 +35,7 @@ def load_filters(ruleset_path: Path, engine_handler: EngineHandler) -> None:
 
 def load_integrations(ruleset_path: Path, engine_handler: EngineHandler) -> None:
     for integration_dir in (ruleset_path / 'integrations').iterdir():
-        ns = "system" if integration_dir.name == 'wazuh-core' else "wazuh"
+        ns = "system" if integration_dir.name == 'guardbear-core' else "guardbear"
 
         # Load integration
         print(f"Loading integration...\n")
@@ -47,7 +47,7 @@ def load_integrations(ruleset_path: Path, engine_handler: EngineHandler) -> None
 def load_policy(ruleset_path: Path, engine_handler: EngineHandler, stop_on_warn: bool) -> None:
     # Create policy
     request = api_policy.StorePost_Request()
-    request.policy = "policy/wazuh/0"
+    request.policy = "policy/guardbear/0"
     print(f"Creating policy...\n{request}")
     error, response = engine_handler.api_client.send_recv(request)
     if error:
@@ -57,11 +57,11 @@ def load_policy(ruleset_path: Path, engine_handler: EngineHandler, stop_on_warn:
         sys.exit(parsed_response.error)
     print("Policy created.")
 
-    # Set default parents for wazuh and user namespaces
+    # Set default parents for guardbear and user namespaces
     request = api_policy.DefaultParentPost_Request()
     request.parent = "decoder/integrations/0"
-    request.namespace = "wazuh"
-    request.policy = "policy/wazuh/0"
+    request.namespace = "guardbear"
+    request.policy = "policy/guardbear/0"
     print(f"Setting default parent...\n{request}")
     error, response = engine_handler.api_client.send_recv(request)
     if error:
@@ -77,7 +77,7 @@ def load_policy(ruleset_path: Path, engine_handler: EngineHandler, stop_on_warn:
     request = api_policy.DefaultParentPost_Request()
     request.parent = "decoder/integrations/0"
     request.namespace = "user"
-    request.policy = "policy/wazuh/0"
+    request.policy = "policy/guardbear/0"
     print(f"Setting default parent...\n{request}")
     error, response = engine_handler.api_client.send_recv(request)
     if error:
@@ -90,12 +90,12 @@ def load_policy(ruleset_path: Path, engine_handler: EngineHandler, stop_on_warn:
         sys.exit(parsed_response.warning)
     print("Default parent set.")
 
-    # Add wazuh-core
+    # Add guardbear-core
     request = api_policy.AssetPost_Request()
-    request.asset = "integration/wazuh-core/0"
-    request.policy = "policy/wazuh/0"
+    request.asset = "integration/guardbear-core/0"
+    request.policy = "policy/guardbear/0"
     request.namespace = "system"
-    print(f"Adding wazuh-core...\n{request}")
+    print(f"Adding guardbear-core...\n{request}")
     error, response = engine_handler.api_client.send_recv(request)
     if error:
         sys.exit(error)
@@ -104,18 +104,18 @@ def load_policy(ruleset_path: Path, engine_handler: EngineHandler, stop_on_warn:
         sys.exit(parsed_response.error)
     if len(parsed_response.warning) > 0 and stop_on_warn:
         sys.exit(parsed_response.warning)
-    print("wazuh-core added.")
+    print("guardbear-core added.")
 
     # Add rest of integrations
     for integration_dir in (ruleset_path / 'integrations').iterdir():
-        if integration_dir.name == 'wazuh-core':
+        if integration_dir.name == 'guardbear-core':
             continue
 
         integration_name = f'integration/{integration_dir.name}/0'
         request = api_policy.AssetPost_Request()
         request.asset = integration_name
-        request.policy = "policy/wazuh/0"
-        request.namespace = "wazuh"
+        request.policy = "policy/guardbear/0"
+        request.namespace = "guardbear"
         print(f"Adding {integration_name}...\n{request}")
         error, response = engine_handler.api_client.send_recv(request)
         if error:
@@ -131,7 +131,7 @@ def load_policy(ruleset_path: Path, engine_handler: EngineHandler, stop_on_warn:
     # Load environment
     request = api_router.RoutePost_Request()
     request.route.name = "default"
-    request.route.policy = "policy/wazuh/0"
+    request.route.policy = "policy/guardbear/0"
     request.route.filter = "filter/allow-all/0"
     request.route.priority = 254
     request.route.description = "Default route"
@@ -153,7 +153,7 @@ def run(args):
         print(f"Configuration file not found: {conf_path}")
         sys.exit(1)
 
-    bin_path = (env_path / "wazuh-engine").resolve()
+    bin_path = (env_path / "guardbear-engine").resolve()
     if not bin_path.is_file():
         print(f"Engine binary not found: {bin_path}")
         sys.exit(1)

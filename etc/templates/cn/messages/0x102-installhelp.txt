@@ -1,4 +1,4 @@
-
+﻿
   - 您可以有三种安装选项:服务器端安装(server),代理端(agent)或本地安装(local).
 
     -如果选择'服务器端安装(server)', 您将可以分析所有日志,
@@ -19,4 +19,4 @@
   - 如果您只有一台机器要监控,那么请选择'local'.
 
   - 要获得更多的信息, 请访问:
-    https://documentation.wazuh.com
+    https://documentation.guardbear.com

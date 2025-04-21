@@ -1,19 +1,19 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
 import logging
 import re
 
-from wazuh.core.config.models.logging import APILoggingConfig
+from guardbear.core.config.models.logging import APILoggingConfig
 
 from server_management_api.api_exception import APIError
 
 # Compile regex when the module is imported so it's not necessary to compile it everytime log.info is called
 request_pattern = re.compile(r'\[.+]|\s+\*\s+')
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('guardbear-api')
 
 # Variable used to specify an unknown user
 UNKNOWN_USER_STRING = 'unknown_user'
@@ -24,7 +24,7 @@ INFO = 'INFO'
 def set_logging(logging_config: APILoggingConfig, tag: str) -> dict:
     """Set up logging for API.
 
-    This function creates a logging configuration dictionary, configure the wazuh-api logger
+    This function creates a logging configuration dictionary, configure the guardbear-api logger
     and returns the logging configuration dictionary that will be used in uvicorn logging
     configuration.
 
@@ -71,7 +71,7 @@ def set_logging(logging_config: APILoggingConfig, tag: str) -> dict:
                 'use_colors': None,
             },
         },
-        'filters': {'plain-filter': {'()': 'wazuh.core.wlogging.CustomFilter', 'log_type': 'log'}},
+        'filters': {'plain-filter': {'()': 'guardbear.core.wlogging.CustomFilter', 'log_type': 'log'}},
         'handlers': {
             'default': {
                 'formatter': 'default',
@@ -87,9 +87,9 @@ def set_logging(logging_config: APILoggingConfig, tag: str) -> dict:
             },
         },
         'loggers': {
-            'wazuh': {'handlers': hdls, 'level': log_level, 'propagate': False},
-            'wazuh-api': {'handlers': hdls, 'level': log_level, 'propagate': False},
-            'wazuh-comms-api': {'handlers': hdls, 'level': log_level, 'propagate': False},
+            'guardbear': {'handlers': hdls, 'level': log_level, 'propagate': False},
+            'guardbear-api': {'handlers': hdls, 'level': log_level, 'propagate': False},
+            'guardbear-comms-api': {'handlers': hdls, 'level': log_level, 'propagate': False},
         },
     }
 

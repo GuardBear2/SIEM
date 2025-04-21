@@ -1,4 +1,4 @@
-# Name of the helper function
+﻿# Name of the helper function
 name: erase_custom_fields
 
 metadata:
@@ -23,7 +23,7 @@ target_field:
     - array
 
 test:
-  - target_field: -- Hi wazuh! --
+  - target_field: -- Hi guardbear! --
     should_pass: true
     expected: ""
     description: Success erase custom file

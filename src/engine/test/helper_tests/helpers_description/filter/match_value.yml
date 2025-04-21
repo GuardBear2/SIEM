@@ -1,4 +1,4 @@
-# Name of the helper function
+﻿# Name of the helper function
 name: match_value
 
 metadata:
@@ -43,7 +43,7 @@ test:
     description: Value is in array
   - arguments:
       array: [hello]
-    target_field: wazuh
+    target_field: guardbear
     should_pass: false
     description: Value not is in array
   - arguments:

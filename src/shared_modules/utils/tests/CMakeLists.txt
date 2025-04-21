@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12.4)
+﻿cmake_minimum_required(VERSION 3.12.4)
 
 project(utils_unit_test)
 
@@ -29,7 +29,7 @@ file(GLOB UTIL_CXX_UNITTEST_COMMON_SRC
     "loggerHelper_test.cpp"
     "globHelper_test.cpp"
     "socketDBWrapper_test.cpp"
-    "wazuhDBQueryBuilder_test.cpp"
+    "guardbearDBQueryBuilder_test.cpp"
     "main.cpp"
 )
 

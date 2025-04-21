@@ -1,4 +1,4 @@
-#!/usr/bin/make -f
+﻿#!/usr/bin/make -f
 # -*- makefile -*-
 # Sample debian/rules that uses debhelper.
 #
@@ -15,7 +15,7 @@ export DH_VERBOSE=1
 
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
-export PKG_DIR=debian/wazuh-server
+export PKG_DIR=debian/guardbear-server
 
 export TARGET_DIR=${CURDIR}/${PKG_DIR}
 
@@ -25,8 +25,8 @@ export JOBS="5"
 export DEBUG_ENABLED="no"
 export PATH="${PATH}"
 export LD_LIBRARY_PATH=""
-export WAZUH_USER="wazuh-server"
-export WAZUH_GROUP="wazuh-server"
+export GUARDBEAR_USER="guardbear-server"
+export GUARDBEAR_GROUP="guardbear-server"
 
 %:
 	dh $@
@@ -38,7 +38,7 @@ override_dh_auto_configure:
 override_dh_auto_install:
 
 override_dh_install:
-	# Install Wazuh
+	# Install GuardBear
 	VCPKG_ROOT="/root/vcpkg" \
 	PATH="${PATH}:${VCPKG_ROOT}" \
 	USER_LANGUAGE="en" \
@@ -64,66 +64,66 @@ override_dh_install:
 	mkdir -p $(TARGET_DIR)$(INSTALLATION_DIR)/etc
 	mkdir -p $(TARGET_DIR)$(INSTALLATION_DIR)/var/lib
 	mkdir -p $(TARGET_DIR)$(INSTALLATION_DIR)/var/log
-	mkdir -p $(TARGET_DIR)$(INSTALLATION_DIR)/usr/share/wazuh-server/bin
+	mkdir -p $(TARGET_DIR)$(INSTALLATION_DIR)/usr/share/guardbear-server/bin
 
 
-	cp -p $(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-engine $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/
-	cp -p $(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-server-management-apid $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/
-	cp -p $(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-comms-apid $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/
-	cp -p $(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-server $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/
-	cp -p $(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-keystore $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/
+	cp -p $(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-engine $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/
+	cp -p $(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-server-management-apid $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/
+	cp -p $(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-comms-apid $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/
+	cp -p $(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-server $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/
+	cp -p $(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-keystore $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/
 
-	cp -pr $(INSTALLATION_DIR)var/lib/wazuh-server $(TARGET_DIR)$(INSTALLATION_DIR)var/lib/
-	cp -pr $(INSTALLATION_DIR)usr/share/wazuh-server $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/
-	cp -pr $(INSTALLATION_DIR)etc/wazuh-server $(TARGET_DIR)$(INSTALLATION_DIR)etc/
+	cp -pr $(INSTALLATION_DIR)var/lib/guardbear-server $(TARGET_DIR)$(INSTALLATION_DIR)var/lib/
+	cp -pr $(INSTALLATION_DIR)usr/share/guardbear-server $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/
+	cp -pr $(INSTALLATION_DIR)etc/guardbear-server $(TARGET_DIR)$(INSTALLATION_DIR)etc/
 
 	# Copying init.d script
 	mkdir -p ${TARGET_DIR}/etc/init.d/
-	sed -i "s:WAZUH_HOME_TMP:${INSTALLATION_DIR}:g" src/init/templates/wazuh-server-debian.init
-	install -m 0644 src/init/templates/wazuh-server-debian.init ${TARGET_DIR}/etc/init.d/wazuh-server
+	sed -i "s:GUARDBEAR_HOME_TMP:${INSTALLATION_DIR}:g" src/init/templates/guardbear-server-debian.init
+	install -m 0644 src/init/templates/guardbear-server-debian.init ${TARGET_DIR}/etc/init.d/guardbear-server
 
 	# Copying systemd file
 	mkdir -p ${TARGET_DIR}/usr/lib/systemd/system/
-	sed -i "s:WAZUH_HOME_TMP:${INSTALLATION_DIR}:g" src/init/templates/wazuh-server.service
-	install -m 0644 src/init/templates/wazuh-server.service ${TARGET_DIR}/usr/lib/systemd/system/
+	sed -i "s:GUARDBEAR_HOME_TMP:${INSTALLATION_DIR}:g" src/init/templates/guardbear-server.service
+	install -m 0644 src/init/templates/guardbear-server.service ${TARGET_DIR}/usr/lib/systemd/system/
 
 override_dh_fixperms:
 	dh_fixperms
 	# Folders
-	chown -R $(WAZUH_USER):$(WAZUH_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)var/lib/wazuh-server
-	find $(TARGET_DIR)$(INSTALLATION_DIR)var/lib/wazuh-server -type d -exec chmod 750 {} \; -o -type f -exec chmod 640 {} \;
-	chown -R $(WAZUH_USER):$(WAZUH_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server
-	find $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server -type d -exec chmod 750 {} \; -o -type f -exec chmod 640 {} \;
-	chown -R $(WAZUH_USER):$(WAZUH_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)etc/wazuh-server
-	find $(TARGET_DIR)$(INSTALLATION_DIR)etc/wazuh-server -type d -exec chmod 750 {} \; -o -type f -exec chmod 640 {} \;
+	chown -R $(GUARDBEAR_USER):$(GUARDBEAR_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)var/lib/guardbear-server
+	find $(TARGET_DIR)$(INSTALLATION_DIR)var/lib/guardbear-server -type d -exec chmod 750 {} \; -o -type f -exec chmod 640 {} \;
+	chown -R $(GUARDBEAR_USER):$(GUARDBEAR_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server
+	find $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server -type d -exec chmod 750 {} \; -o -type f -exec chmod 640 {} \;
+	chown -R $(GUARDBEAR_USER):$(GUARDBEAR_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)etc/guardbear-server
+	find $(TARGET_DIR)$(INSTALLATION_DIR)etc/guardbear-server -type d -exec chmod 750 {} \; -o -type f -exec chmod 640 {} \;
 
 	# Binaries
-	chown $(WAZUH_USER):$(WAZUH_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-keystore
-	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-keystore
-	chown $(WAZUH_USER):$(WAZUH_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-engine
-	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-engine
-	chown $(WAZUH_USER):$(WAZUH_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-server-management-apid
-	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-server-management-apid
-	chown $(WAZUH_USER):$(WAZUH_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-comms-apid
-	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-comms-apid
-	chown $(WAZUH_USER):$(WAZUH_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-server
-	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/bin/wazuh-server
+	chown $(GUARDBEAR_USER):$(GUARDBEAR_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-keystore
+	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-keystore
+	chown $(GUARDBEAR_USER):$(GUARDBEAR_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-engine
+	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-engine
+	chown $(GUARDBEAR_USER):$(GUARDBEAR_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-server-management-apid
+	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-server-management-apid
+	chown $(GUARDBEAR_USER):$(GUARDBEAR_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-comms-apid
+	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-comms-apid
+	chown $(GUARDBEAR_USER):$(GUARDBEAR_GROUP) $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-server
+	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/bin/guardbear-server
 
 	# Scripts
-	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/framework/scripts/wazuh-server.py
-	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/apis/scripts/wazuh-comms-apid.py
-	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/wazuh-server/apis/scripts/wazuh-server-management-apid.py
+	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/framework/scripts/guardbear-server.py
+	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/apis/scripts/guardbear-comms-apid.py
+	chmod 750 $(TARGET_DIR)$(INSTALLATION_DIR)usr/share/guardbear-server/apis/scripts/guardbear-server-management-apid.py
 
 	# Services
-	chown root:root $(TARGET_DIR)/etc/init.d/wazuh-server
-	chmod 755 $(TARGET_DIR)/etc/init.d/wazuh-server
-	chown root:root $(TARGET_DIR)/usr/lib/systemd/system/wazuh-server.service
-	chmod 644 $(TARGET_DIR)/usr/lib/systemd/system/wazuh-server.service
+	chown root:root $(TARGET_DIR)/etc/init.d/guardbear-server
+	chmod 755 $(TARGET_DIR)/etc/init.d/guardbear-server
+	chown root:root $(TARGET_DIR)/usr/lib/systemd/system/guardbear-server.service
+	chmod 644 $(TARGET_DIR)/usr/lib/systemd/system/guardbear-server.service
 
 	# Fix Python permissions
-	chmod -R 0750 ${TARGET_DIR}$(INSTALLATION_DIR)usr/share/wazuh-server/framework/python/bin
+	chmod -R 0750 ${TARGET_DIR}$(INSTALLATION_DIR)usr/share/guardbear-server/framework/python/bin
 
 override_dh_strip:
-	dh_strip --dbg-package=wazuh-server-dbg --exclude=${PKG_DIR}${INSTALLATION_DIR}/framework/python
+	dh_strip --dbg-package=guardbear-server-dbg --exclude=${PKG_DIR}${INSTALLATION_DIR}/framework/python
 
 .PHONY: override_dh_install override_dh_strip override_dh_auto_build override_dh_auto_configure override_dh_fixperms

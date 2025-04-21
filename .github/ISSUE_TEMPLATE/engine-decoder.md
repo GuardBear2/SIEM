@@ -1,4 +1,4 @@
----
+﻿---
 name: Engine decoder issue
 about: Propose a new decoder or update an existing one.
 title: Engine - <Add/Update> <integration_name> decoder.
@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-| Wazuh version |  Integration name  | Integration type | Integration version |
+| GuardBear version |  Integration name  | Integration type | Integration version |
 |---------------|--------------------|------------------|---------------------|
 |   X.Y.Z-rev   | <integration_name> | new/update       | 1.0.0 - dev         |
 
@@ -41,7 +41,7 @@ Make sure you meet all the checks before requesting a review.
     <!--
     under file `<integration_name>/decoder_fields` in https://drive.google.com/drive/folders/1OYbSX65hIis8FKQmw75NseKoBoXv-neb?usp=sharing
     -->
-    - [ ] Is in the `wazuh` namespace.
+    - [ ] Is in the `guardbear` namespace.
     - Added test for all events:
         - [ ] `input` added
         - [ ] `expected` added

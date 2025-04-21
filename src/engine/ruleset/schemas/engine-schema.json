@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "schema/engine-schema/0",
   "fields": {
     "@timestamp": {
@@ -6665,11 +6665,11 @@
       "type": "ip",
       "array": true
     },
-    "wazuh.decoders": {
+    "guardbear.decoders": {
       "type": "keyword",
       "array": true
     },
-    "wazuh.rules": {
+    "guardbear.rules": {
       "type": "keyword",
       "array": true
     }

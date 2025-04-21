@@ -1,36 +1,36 @@
-#!/bin/sh
-# preinst script for Wazuh
+﻿#!/bin/sh
+# preinst script for GuardBear
 
 set -e
 
 # configuration variables
-WAZUH_TMP_DIR="/tmp"
+GUARDBEAR_TMP_DIR="/tmp"
 VERSION="$2"
 MAJOR=$(echo "$VERSION" | cut -dv -f2 | cut -d. -f1)
-WAZUH_USER="wazuh-server"
+GUARDBEAR_USER="guardbear-server"
 
 
 case "$1" in
     install|upgrade)
         if [ "$1" = "install" ]; then
-            # Create wazuh group if it does not exist
-            if ! getent group $WAZUH_USER > /dev/null 2>&1; then
-                groupadd -r $WAZUH_USER
+            # Create guardbear group if it does not exist
+            if ! getent group $GUARDBEAR_USER > /dev/null 2>&1; then
+                groupadd -r $GUARDBEAR_USER
             fi
 
-            # Create wazuh user if it does not exist
-            if ! getent passwd ${WAZUH_USER} > /dev/null 2>&1; then
-                useradd ${WAZUH_USER} -d / -s /sbin/nologin -g ${WAZUH_USER}
+            # Create guardbear user if it does not exist
+            if ! getent passwd ${GUARDBEAR_USER} > /dev/null 2>&1; then
+                useradd ${GUARDBEAR_USER} -d / -s /sbin/nologin -g ${GUARDBEAR_USER}
             fi
         fi
 
         if [ "$1" = "upgrade" ]; then
-            if command -v systemctl > /dev/null 2>&1 && systemctl > /dev/null 2>&1 && systemctl is-active --quiet wazuh-server > /dev/null 2>&1; then
-                systemctl stop wazuh-server.service > /dev/null 2>&1
-                touch ${WAZUH_TMP_DIR}/wazuh.restart
-            elif command -v service > /dev/null 2>&1 && service wazuh-server status 2>/dev/null | grep "is running" > /dev/null 2>&1; then
-                service wazuh-server stop > /dev/null 2>&1
-                touch ${WAZUH_TMP_DIR}/wazuh.restart
+            if command -v systemctl > /dev/null 2>&1 && systemctl > /dev/null 2>&1 && systemctl is-active --quiet guardbear-server > /dev/null 2>&1; then
+                systemctl stop guardbear-server.service > /dev/null 2>&1
+                touch ${GUARDBEAR_TMP_DIR}/guardbear.restart
+            elif command -v service > /dev/null 2>&1 && service guardbear-server status 2>/dev/null | grep "is running" > /dev/null 2>&1; then
+                service guardbear-server stop > /dev/null 2>&1
+                touch ${GUARDBEAR_TMP_DIR}/guardbear.restart
             fi
         fi
     ;;

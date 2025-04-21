@@ -1,4 +1,4 @@
----
+﻿---
 test_name: GET /agents
 
 marks:
@@ -200,7 +200,7 @@ stages:
       verify: False
       <<: *get_agents
       params:
-        search: 'wazuh-agent6'
+        search: 'guardbear-agent6'
     response:
       status_code: 200
       json:
@@ -208,7 +208,7 @@ stages:
         data:
           affected_items:
             - id: '006'
-              name: 'wazuh-agent6'
+              name: 'guardbear-agent6'
           failed_items: []
           total_affected_items: 1
           total_failed_items: 0
@@ -218,7 +218,7 @@ stages:
       verify: False
       <<: *get_agents
       params:
-        search: "wazuh-agent6' or 'wazuh'='wazuh"
+        search: "guardbear-agent6' or 'guardbear'='guardbear"
     response:
       status_code: 200
       json:
@@ -321,13 +321,13 @@ stages:
       json:
         <<: *error_spec
 
-  - name: Filter by agent version following the 'wazuh vX.Y.Z' format
+  - name: Filter by agent version following the 'guardbear vX.Y.Z' format
     request:
       verify: False
       <<: *get_agents
       params:
-        version: 'Wazuh v3.9.2'
-    response: &old_wazuh_agents_response
+        version: 'GuardBear v3.9.2'
+    response: &old_guardbear_agents_response
       status_code: 200
       json:
         error: 0
@@ -339,14 +339,14 @@ stages:
           total_affected_items: 2
           total_failed_items: 0
 
-  - name: Filter by agent version following the 'wazuh X.Y.Z' format
+  - name: Filter by agent version following the 'guardbear X.Y.Z' format
     request:
       verify: False
       <<: *get_agents
       params:
-        version: 'Wazuh 3.9.2'
+        version: 'GuardBear 3.9.2'
     response:
-      <<: *old_wazuh_agents_response
+      <<: *old_guardbear_agents_response
 
   - name: Filter by agent version following the 'vX.Y.Z' format
     request:
@@ -355,7 +355,7 @@ stages:
       params:
         version: 'v3.9.2'
     response:
-      <<: *old_wazuh_agents_response
+      <<: *old_guardbear_agents_response
 
   - name: Filter by agent version following the 'X.Y.Z' format
     request:
@@ -364,7 +364,7 @@ stages:
       params:
         version: '3.9.2'
     response:
-      <<: *old_wazuh_agents_response
+      <<: *old_guardbear_agents_response
 
   - name: Try to show agents using a non existing version
     request:
@@ -1833,7 +1833,7 @@ stages:
       verify: False
       <<: *groups_id_request
       params:
-        search: 'wazuh-agent8'
+        search: 'guardbear-agent8'
     response:
       status_code: 200
       json:
@@ -1841,7 +1841,7 @@ stages:
         data:
           affected_items:
             - id: '008'
-              name: 'wazuh-agent8'
+              name: 'guardbear-agent8'
               group:
                 - default
           failed_items: []
@@ -2169,7 +2169,7 @@ stages:
       headers:
         Authorization: "Bearer {test_login_token}"
       params:
-        name: wazuh-agent1
+        name: guardbear-agent1
     response:
       status_code: 200
       json:
@@ -2177,7 +2177,7 @@ stages:
         data: &get_agents_by_name_response
           affected_items:
             - id: '001'
-              name: 'wazuh-agent1'
+              name: 'guardbear-agent1'
           failed_items: []
           total_affected_items: 1
           total_failed_items: 0
@@ -2204,7 +2204,7 @@ stages:
       <<: *get_agents_by_name
       params:
         select: name
-        name: wazuh-agent1
+        name: guardbear-agent1
     response:
       verify_response_with:
         # Check response item keys are the selected keys
@@ -2223,7 +2223,7 @@ stages:
       <<: *get_agents_by_name
       params:
         select: name,id,status
-        name: wazuh-agent1
+        name: guardbear-agent1
     response:
       verify_response_with:
         # Check response item keys are the selected keys
@@ -2236,7 +2236,7 @@ stages:
         data:
           affected_items:
             - id: '001'
-              name: 'wazuh-agent1'
+              name: 'guardbear-agent1'
               status: 'active'
           failed_items: []
           total_affected_items: 1
@@ -2248,7 +2248,7 @@ stages:
       <<: *get_agents_by_name
       params:
         select: wrong_select
-        name: wazuh-agent1
+        name: guardbear-agent1
     response:
       status_code: 400
       json:

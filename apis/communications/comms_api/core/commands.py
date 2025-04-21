@@ -1,11 +1,11 @@
-import asyncio
+﻿import asyncio
 from multiprocessing.managers import SyncManager
 from multiprocessing.synchronize import Event
 from typing import Dict, List, Optional
 
 from fastapi import status
 from uuid6 import UUID
-from wazuh.core.indexer.models.commands import Command
+from guardbear.core.indexer.models.commands import Command
 
 from comms_api.routers.exceptions import HTTPError
 

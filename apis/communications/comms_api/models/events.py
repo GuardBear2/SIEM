@@ -1,7 +1,7 @@
-from typing import List
+﻿from typing import List
 
 from pydantic import BaseModel
-from wazuh.core.indexer.models.events import AgentMetadata, Header, TaskResult
+from guardbear.core.indexer.models.events import AgentMetadata, Header, TaskResult
 
 
 class StatefulEvents(BaseModel):

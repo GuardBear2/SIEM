@@ -1,8 +1,8 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 
 import "engine.proto";
 
-package com.wazuh.api.engine.policy;
+package com.guardbear.api.engine.policy;
 
 // Store of policy handlers
 

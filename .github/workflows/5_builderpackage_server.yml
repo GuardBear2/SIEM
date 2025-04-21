@@ -1,5 +1,5 @@
-run-name: Build wazuh-server packages on PR ${{ github.event.pull_request.number }}
-name: Build wazuh-server packages on PR
+﻿run-name: Build guardbear-server packages on PR ${{ github.event.pull_request.number }}
+name: Build guardbear-server packages on PR
 
 on:
   pull_request:

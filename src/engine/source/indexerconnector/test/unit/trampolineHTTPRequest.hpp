@@ -1,6 +1,6 @@
-/*
- * Wazuh Indexer Connector - Trampoline for HTTPRequest lib.
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear Indexer Connector - Trampoline for HTTPRequest lib.
+ * Copyright (C) 2015, GuardBear Inc.
  * August 30, 2024.
  *
  * This program is free software; you can redistribute it

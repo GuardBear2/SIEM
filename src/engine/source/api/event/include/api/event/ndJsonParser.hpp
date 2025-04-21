@@ -1,4 +1,4 @@
-#ifndef _API_EVENT_NDJSONPARSER_HPP
+﻿#ifndef _API_EVENT_NDJSONPARSER_HPP
 #define _API_EVENT_NDJSONPARSER_HPP
 
 #include <functional>
@@ -34,7 +34,7 @@ inline ProtocolHandler getNDJsonParser()
         const auto isSubHeader = [](const base::Event& event) -> bool
         {
             return event->isString("/module") && event->isString("/collector");
-        }; // '/module' and '/collector' are mandatory fields and not present in wazuh common schema
+        }; // '/module' and '/collector' are mandatory fields and not present in guardbear common schema
 
         if (batch.empty())
         {

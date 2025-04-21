@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -8,25 +8,25 @@ from unittest.mock import ANY, AsyncMock, MagicMock, call, patch
 import pytest
 from connexion.lifecycle import ConnexionResponse
 from connexion.testing import TestContext
-from wazuh.core.config.client import CentralizedConfig
-from wazuh.core.config.models.server import ValidateFilePathMixin
+from guardbear.core.config.client import CentralizedConfig
+from guardbear.core.config.models.server import ValidateFilePathMixin
 
 from server_management_api.controllers.test.utils import CustomAffectedItems, get_default_configuration
 from server_management_api.controllers.util import JSON_CONTENT_TYPE
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
+with patch('guardbear.common.guardbear_uid'):
+    with patch('guardbear.common.guardbear_gid'):
         with patch.object(ValidateFilePathMixin, '_validate_file_path', return_value=None):
             default_config = get_default_configuration()
             CentralizedConfig._config = default_config
 
-            sys.modules['wazuh.rbac.orm'] = MagicMock()
-            import wazuh.rbac.decorators
-            from wazuh import security
-            from wazuh.core.exception import WazuhException, WazuhPermissionError
-            from wazuh.core.results import AffectedItemsWazuhResult
-            from wazuh.rbac import preprocessor
-            from wazuh.tests.util import RBAC_bypasser
+            sys.modules['guardbear.rbac.orm'] = MagicMock()
+            import guardbear.rbac.decorators
+            from guardbear import security
+            from guardbear.core.exception import GuardBearException, GuardBearPermissionError
+            from guardbear.core.results import AffectedItemsGuardBearResult
+            from guardbear.rbac import preprocessor
+            from guardbear.tests.util import RBAC_bypasser
 
             from server_management_api.controllers.security_controller import (
                 add_policy,
@@ -66,8 +66,8 @@ with patch('wazuh.common.wazuh_uid'):
                 update_user,
             )
 
-            wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-            del sys.modules['wazuh.rbac.orm']
+            guardbear.rbac.decorators.expose_resources = RBAC_bypasser
+            del sys.modules['guardbear.rbac.orm']
 
 
 @pytest.fixture
@@ -81,7 +81,7 @@ def mock_request():
             m_req.get = MagicMock(return_value=None)
             m_req.query_params = MagicMock()
             m_req.query_params.get = MagicMock(return_value=None)
-            m_req.context = {'token_info': {'sub': 'wazuh', 'run_as': 'manager', 'rbac_policies': {}}}
+            m_req.context = {'token_info': {'sub': 'guardbear', 'run_as': 'manager', 'rbac_policies': {}}}
             yield m_req
 
 
@@ -122,8 +122,8 @@ async def test_login_user(mock_token, mock_exc, mock_dapi, mock_remove, mock_dfu
 @patch('server_management_api.controllers.security_controller.generate_token', return_value='token')
 @pytest.mark.parametrize('mock_bool', [True, False])
 async def test_login_user_ko(mock_token, mock_exc, mock_dapi, mock_remove, mock_dfunc, mock_bool):
-    """Verify 'login_user' endpoint is handling WazuhException as expected."""
-    mock_token.side_effect = WazuhException(999)
+    """Verify 'login_user' endpoint is handling GuardBearException as expected."""
+    mock_token.side_effect = GuardBearException(999)
     result = await login_user(user='001', raw=mock_bool)
     f_kwargs = {'user_id': '001'}
     mock_dapi.assert_called_once_with(
@@ -179,8 +179,8 @@ async def test_run_as_login(mock_token, mock_exc, mock_dapi, mock_remove, mock_d
 @patch('server_management_api.controllers.security_controller.generate_token', return_value='token')
 @pytest.mark.parametrize('mock_bool', [True, False])
 async def test_run_as_login_ko(mock_token, mock_exc, mock_dapi, mock_remove, mock_dfunc, mock_bool, mock_request):
-    """Verify 'run_as_login' endpoint is handling WazuhException as expected."""
-    mock_token.side_effect = WazuhException(999)
+    """Verify 'run_as_login' endpoint is handling GuardBearException as expected."""
+    mock_token.side_effect = GuardBearException(999)
     result = await run_as_login(user='001', raw=mock_bool)
     f_kwargs = {'user_id': '001', 'auth_context': await mock_request.json()}
     mock_dapi.assert_called_once_with(
@@ -226,7 +226,7 @@ async def test_get_user_me(mock_exc, mock_dapi, mock_remove, mock_dfunc, mock_re
 async def test_get_user_me_policies(mock_request):
     """Verify 'get_user_me_policies' endpoint is working as expected."""
     with patch(
-        'server_management_api.controllers.security_controller.WazuhResult', return_value='mock_wr_result'
+        'server_management_api.controllers.security_controller.GuardBearResult', return_value='mock_wr_result'
     ) as mock_wr:
         result = await get_user_me_policies()
         mock_wr.assert_called_once_with(
@@ -1019,10 +1019,10 @@ async def test_revoke_all_tokens(mock_isins, mock_exc, mock_dapi, mock_remove, m
 @patch('server_management_api.controllers.security_controller.remove_nones_to_dict')
 @patch('server_management_api.controllers.security_controller.DistributedAPI.__init__', return_value=None)
 @patch('server_management_api.controllers.security_controller.raise_if_exc', return_value=CustomAffectedItems())
-@patch('server_management_api.controllers.security_controller.type', return_value=AffectedItemsWazuhResult)
+@patch('server_management_api.controllers.security_controller.type', return_value=AffectedItemsGuardBearResult)
 @patch('server_management_api.controllers.security_controller.len', return_value=0)
 async def test_revoke_all_tokens_ko(mock_type, mock_len, mock_exc, mock_dapi, mock_remove, mock_dfunc, mock_request):
-    """Verify 'revoke_all_tokens' endpoint is handling WazuhPermissionError as expected."""
+    """Verify 'revoke_all_tokens' endpoint is handling GuardBearPermissionError as expected."""
     with patch(
         'server_management_api.controllers.security_controller.get_system_nodes', return_value=AsyncMock()
     ) as mock_snodes:
@@ -1039,7 +1039,7 @@ async def test_revoke_all_tokens_ko(mock_type, mock_len, mock_exc, mock_dapi, mo
             nodes=mock_snodes.return_value,
         )
         mock_exc.assert_has_calls(
-            [call(mock_dfunc.return_value), call(WazuhPermissionError(4000, mock_exc.return_value.message))]
+            [call(mock_dfunc.return_value), call(GuardBearPermissionError(4000, mock_exc.return_value.message))]
         )
         assert mock_exc.call_count == 2
         mock_remove.assert_called_once_with({})

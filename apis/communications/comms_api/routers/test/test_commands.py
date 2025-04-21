@@ -1,8 +1,8 @@
-from unittest.mock import AsyncMock, MagicMock, patch
+﻿from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from wazuh.core.exception import WazuhCommsAPIError
-from wazuh.core.indexer.models.commands import Command, Status
+from guardbear.core.exception import GuardBearCommsAPIError
+from guardbear.core.indexer.models.commands import Command, Status
 
 from comms_api.models.commands import Commands
 from comms_api.routers.commands import get_commands
@@ -34,7 +34,7 @@ async def test_get_commands(jwt_bearer_mock, decode_token_mock, pull_commands_mo
 @pytest.mark.parametrize(
     'exception',
     [
-        WazuhCommsAPIError(2706),
+        GuardBearCommsAPIError(2706),
     ],
 )
 async def test_get_commands_ko(decode_token_mock, exception):

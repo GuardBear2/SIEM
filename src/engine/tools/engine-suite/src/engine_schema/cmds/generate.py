@@ -1,4 +1,4 @@
-from engine_schema.generate import generate
+﻿from engine_schema.generate import generate
 import shared.resource_handler as rs
 from ._modules import configure as modules_configure
 from ._modules import get_args as modules_get_args
@@ -10,7 +10,7 @@ DEFAULT_OUTPUT_DIR = './'
 def run(args, resource_handler: rs.ResourceHandler):
     """Execute the generate sub-command, callback function.
 
-    Generates the wazuh schema and all needed configuration, optionally add \
+    Generates the guardbear schema and all needed configuration, optionally add \
 ECS field modules and apply changes on an engine instance through the API socket
 
     Args:
@@ -29,9 +29,9 @@ ECS field modules and apply changes on an engine instance through the API socket
     resource_handler.save_file(
         output_dir, 'fields', jproperties, rs.Format.JSON)
     resource_handler.save_file(
-        output_dir, 'wazuh-template', jmappings, rs.Format.JSON)
+        output_dir, 'guardbear-template', jmappings, rs.Format.JSON)
     resource_handler.save_file(
-        output_dir, 'wazuh-logpar-overrides', jlogpar, rs.Format.JSON)
+        output_dir, 'guardbear-logpar-overrides', jlogpar, rs.Format.JSON)
     resource_handler.save_file(
         output_dir, 'engine-schema', jengine, rs.Format.JSON)
     print('Success.')

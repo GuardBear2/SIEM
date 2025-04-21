@@ -1,5 +1,5 @@
-audit-wazuh-w:write
-audit-wazuh-r:read
-audit-wazuh-a:attribute
-audit-wazuh-x:execute
-audit-wazuh-c:command
+﻿audit-guardbear-w:write
+audit-guardbear-r:read
+audit-guardbear-a:attribute
+audit-guardbear-x:execute
+audit-guardbear-c:command

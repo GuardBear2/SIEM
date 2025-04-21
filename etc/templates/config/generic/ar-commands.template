@@ -1,12 +1,12 @@
-  <command>
+﻿  <command>
     <name>disable-account</name>
     <executable>disable-account</executable>
     <timeout_allowed>yes</timeout_allowed>
   </command>
 
   <command>
-    <name>restart-wazuh</name>
-    <executable>restart-wazuh</executable>
+    <name>restart-guardbear</name>
+    <executable>restart-guardbear</executable>
   </command>
 
   <command>

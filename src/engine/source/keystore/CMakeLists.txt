@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12.4)
+﻿cmake_minimum_required(VERSION 3.12.4)
 
 project(keystore)
 
@@ -14,8 +14,8 @@ add_library(keystore STATIC ${KEYSTORE_SRC})
 target_link_libraries(keystore PRIVATE base)
 target_include_directories(keystore PUBLIC include)
 
-add_executable(wazuh-keystore src/main.cpp)
-target_link_libraries(wazuh-keystore keystore OpenSSL::SSL OpenSSL::Crypto base filesystem -static-libgcc -static-libstdc++)
+add_executable(guardbear-keystore src/main.cpp)
+target_link_libraries(guardbear-keystore keystore OpenSSL::SSL OpenSSL::Crypto base filesystem -static-libgcc -static-libstdc++)
 
 # Tests
 if(ENGINE_BUILD_TEST)

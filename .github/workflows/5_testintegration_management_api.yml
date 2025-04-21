@@ -1,4 +1,4 @@
-name: Management API integration tests
+﻿name: Management API integration tests
 
 on:
   workflow_dispatch:
@@ -21,13 +21,13 @@ on:
 
 env:
     PACKAGE_REFERENCE: ${{ inputs.package_reference || github.head_ref || github.sha }}
-    S3_BUCKET_PATH: s3://packages-dev.internal.wazuh.com/development/wazuh/5.x/main/packages
+    S3_BUCKET_PATH: s3://packages-dev.internal.guardbear.com/development/guardbear/5.x/main/packages
 
 jobs:
 
-  # Check wazuh-server package existence to avoid unnecesary package creation
+  # Check guardbear-server package existence to avoid unnecesary package creation
   check_package_existence:
-    name: Check wazuh-server package existence
+    name: Check guardbear-server package existence
     runs-on: ubuntu-latest
     if: ${{ github.event.pull_request.draft == false || github.event_name == 'workflow_dispatch' }}
     outputs:
@@ -43,16 +43,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_SECRET_KEY }}
           aws-region: ${{ secrets.CI_AWS_REGION }}
         
-      # Set wazuh-server package name
+      # Set guardbear-server package name
       - name: Set package name
         id: package_name
         run: |
           short_commit=$(curl -s https://api.github.com/repos/GuardBear2/SIEM/commits?sha=$PACKAGE_REFERENCE | jq -r '.[0].sha[:7]')
           full_version=$(curl -s https://raw.githubusercontent.com/GuardBear2/SIEM/$PACKAGE_REFERENCE/src/VERSION)
           version=$(sed -E 's/^v([0-9]+\.[0-9]+\.[0-9]+)$/\1/' <<< $full_version)
-          echo "name=wazuh-server_${version}-0_amd64_${short_commit}.deb" >> $GITHUB_OUTPUT
+          echo "name=guardbear-server_${version}-0_amd64_${short_commit}.deb" >> $GITHUB_OUTPUT
 
-      - name: Check if wazuh-server package exists
+      - name: Check if guardbear-server package exists
         id: check_package
         run: |
           if aws s3 ls ${{ env.S3_BUCKET_PATH }}/${{ steps.package_name.outputs.name }} > /dev/null 2>&1; then
@@ -61,7 +61,7 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
-# Launch wazuh-server package generation workflow
+# Launch guardbear-server package generation workflow
   generate_package:
     name: Trigger package generation workflow
     needs: check_package_existence
@@ -72,18 +72,18 @@ jobs:
       architecture: amd64
       system: deb
 
-  # Wait for wazuh-server package generation workflow
+  # Wait for guardbear-server package generation workflow
   wait_package:
-    name: Wait for wazuh-server package generation workflow
+    name: Wait for guardbear-server package generation workflow
     needs: check_package_existence
     if: ${{ github.event_name == 'pull_request' && needs.check_package_existence.outputs.exists == 'false' }} 
     runs-on: ubuntu-latest
     steps:
-    - name: Wait for wazuh-server package generation workflow
+    - name: Wait for guardbear-server package generation workflow
       uses: lewagon/wait-on-check-action@v1.3.4
       with:
         ref: ${{ github.head_ref || github.ref_name }}
-        check-name: 'package-build (amd64, deb) / Build deb wazuh-server on amd64'
+        check-name: 'package-build (amd64, deb) / Build deb guardbear-server on amd64'
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         wait-interval: 60
         allowed-conclusions: success
@@ -120,26 +120,26 @@ jobs:
           aws-secret-access-key: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_SECRET_KEY }}
           aws-region: ${{ secrets.CI_AWS_REGION }}
       
-      # Fetch wazuh-server package
-      - name: Fetch wazuh-server package 
+      # Fetch guardbear-server package
+      - name: Fetch guardbear-server package 
         run: |
           aws s3 cp ${{ env.S3_BUCKET_PATH }}/${{env.PACKAGE_NAME}} ${GITHUB_WORKSPACE}/${{env.PACKAGE_NAME}}
 
-      # Install wazuh-server package
-      - name: Install wazuh-server 
+      # Install guardbear-server package
+      - name: Install guardbear-server 
         run: sudo apt install ${GITHUB_WORKSPACE}/${{env.PACKAGE_NAME}}
 
       # Download and install integration tests framework.
       - name: Download and install integration tests framework
         run: |
-          if [ "X`git ls-remote https://github.com/wazuh/qa-integration-framework.git ${{ github.head_ref || github.ref_name }}`" != "X" ]; then
+          if [ "X`git ls-remote https://github.com/guardbear/qa-integration-framework.git ${{ github.head_ref || github.ref_name }}`" != "X" ]; then
               QA_BRANCH=${{ github.head_ref || github.ref_name }}
-          elif [ "X`git ls-remote https://github.com/wazuh/qa-integration-framework.git ${{ github.base_ref || 'main' }}`" != "X" ]; then
+          elif [ "X`git ls-remote https://github.com/guardbear/qa-integration-framework.git ${{ github.base_ref || 'main' }}`" != "X" ]; then
               QA_BRANCH=${{ github.base_ref || 'main' }}
           else
               QA_BRANCH="main"
           fi
-          git clone -b ${QA_BRANCH} --single-branch https://github.com/wazuh/qa-integration-framework.git
+          git clone -b ${QA_BRANCH} --single-branch https://github.com/guardbear/qa-integration-framework.git
           python3 -m venv ${{ runner.temp }}/test-venv
           source ${{ runner.temp }}/test-venv/bin/activate
           pip install qa-integration-framework/

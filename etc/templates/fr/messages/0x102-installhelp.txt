@@ -1,4 +1,4 @@
-
+﻿
   - Vous avez 3 installations possibles : server, agent ou local.
 
     - Si vous choisissez 'serveur', vous pourrez analyser tous
@@ -24,4 +24,4 @@
   - choisissez 'local' si vous n'avez qu'une machine à surveiller.
 
   - Plus d'information sur :
-    https://documentation.wazuh.com
+    https://documentation.guardbear.com

@@ -1,4 +1,4 @@
-
+﻿
   - Üç adet kurulum seçeneği bulunmaktadır: sunucu, aracı veya yerel.
 
     - Eğer sunucu seçerseniz, bütün günlük kayıtlarını inceleyebilir
@@ -25,4 +25,4 @@
   - Eğer inceleme yapacağınız tek sisteminiz varsa 'yerel' kullanın.
 
   - Daha fazla bilgi:
-    https://documentation.wazuh.com
+    https://documentation.guardbear.com

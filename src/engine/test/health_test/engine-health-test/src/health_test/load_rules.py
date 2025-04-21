@@ -1,4 +1,4 @@
-import yaml
+﻿import yaml
 import sys
 from pathlib import Path
 from google.protobuf.json_format import ParseDict
@@ -20,10 +20,10 @@ def load_rules(ruleset_path: Path, engine_handler: EngineHandler) -> None:
             for rule_file in subdirectory.glob('*.yml'):
                 request = api_catalog.ResourcePost_Request()
                 request.type = api_catalog.ResourceType.rule
-                if subdirectory.name == 'wazuh-core':
+                if subdirectory.name == 'guardbear-core':
                     request.namespaceid = "system"
                 else:
-                    request.namespaceid = "wazuh"
+                    request.namespaceid = "guardbear"
                 request.content = rule_file.read_text()
                 request.format = api_catalog.ResourceFormat.yml
 
@@ -43,8 +43,8 @@ def load_rules(ruleset_path: Path, engine_handler: EngineHandler) -> None:
 def load_policy(ruleset_path: Path, engine_handler: EngineHandler, stop_on_warn: bool) -> None:
     request = api_policy.DefaultParentPost_Request()
     request.parent = "rule/enrichment/0"
-    request.namespace = "wazuh"
-    request.policy = "policy/wazuh/0"
+    request.namespace = "guardbear"
+    request.policy = "policy/guardbear/0"
     print(f"Setting default parent...\n{request}")
     error, response = engine_handler.api_client.send_recv(request)
     if error:
@@ -60,7 +60,7 @@ def load_policy(ruleset_path: Path, engine_handler: EngineHandler, stop_on_warn:
     # Add enrichment rule
     request = api_policy.AssetPost_Request()
     request.asset = "rule/enrichment/0"
-    request.policy = "policy/wazuh/0"
+    request.policy = "policy/guardbear/0"
     request.namespace = "system"
     print(f"Adding enrichment rule...\n{request}")
     error, response = engine_handler.api_client.send_recv(request)
@@ -75,7 +75,7 @@ def load_policy(ruleset_path: Path, engine_handler: EngineHandler, stop_on_warn:
 
     # Add rest of rules
     for ruleset_dir in (ruleset_path / 'rules').iterdir():
-        if ruleset_dir.name == 'wazuh-core':
+        if ruleset_dir.name == 'guardbear-core':
             continue
 
         for yaml_file in ruleset_dir.glob("*.yml"):
@@ -85,8 +85,8 @@ def load_policy(ruleset_path: Path, engine_handler: EngineHandler, stop_on_warn:
 
             request = api_policy.AssetPost_Request()
             request.asset = rule_name
-            request.policy = "policy/wazuh/0"
-            request.namespace = "wazuh"
+            request.policy = "policy/guardbear/0"
+            request.namespace = "guardbear"
             print(f"Adding {rule_name}...\n{request}")
             error, response = engine_handler.api_client.send_recv(request)
             if error:
@@ -108,7 +108,7 @@ def run(args):
         print(f"Configuration file not found: {conf_path}")
         sys.exit(1)
 
-    bin_path = (env_path / "wazuh-engine").resolve()
+    bin_path = (env_path / "guardbear-engine").resolve()
     if not bin_path.is_file():
         print(f"Engine binary not found: {bin_path}")
         sys.exit(1)

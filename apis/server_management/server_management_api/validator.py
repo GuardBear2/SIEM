@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+﻿# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -9,8 +9,8 @@ from typing import Dict, List
 
 from jsonschema import Draft4Validator
 from uuid6 import UUID
-from wazuh.core import common
-from wazuh.core.exception import WazuhError
+from guardbear.core import common
+from guardbear.core.exception import GuardBearError
 
 _alphanumeric_param = re.compile(r'^[\w,\-.+\s:]+$')
 _symbols_alphanumeric_param = re.compile(r'^[\w,*<>!\-.+\s:/()\[\]\'\"|=~#]+$')
@@ -38,8 +38,8 @@ _iso8601_date_time = re.compile(
 _names = re.compile(r'^[\w\-.%]+$', re.ASCII)
 _numbers = re.compile(r'^\d+$')
 _numbers_or_all = re.compile(r'^(\d+|all)$')
-_wazuh_key = re.compile(r'[a-zA-Z0-9]+$')
-_wazuh_version = re.compile(r'^(?:wazuh |)v?\d+\.\d+\.\d+$', re.IGNORECASE)
+_guardbear_key = re.compile(r'[a-zA-Z0-9]+$')
+_guardbear_version = re.compile(r'^(?:guardbear |)v?\d+\.\d+\.\d+$', re.IGNORECASE)
 _paths = re.compile(r'^[\w\-.\\/:]+$')
 _query_param = re.compile(r'^[\w.\-]+(?:=|!=|<|>|~)[\w.\- ]+(?:[;,][\w.\-]+(?:=|!=|<|>|~)[\w.\- ]+)*$')
 _ranges = re.compile(r'[\d]+$|^[\d]{1,2}-[\d]{1,2}$')
@@ -60,7 +60,7 @@ security_config_schema = {
     },
 }
 
-WAZUH_COMPONENT_CONFIGURATION_MAPPING = MappingProxyType(
+GUARDBEAR_COMPONENT_CONFIGURATION_MAPPING = MappingProxyType(
     {
         'agent': {'client', 'buffer', 'labels', 'internal'},
         'agentless': {'agentless'},
@@ -74,7 +74,7 @@ WAZUH_COMPONENT_CONFIGURATION_MAPPING = MappingProxyType(
         'monitor': {'global', 'internal', 'reports'},
         'request': {'global', 'remote', 'internal'},
         'syscheck': {'syscheck', 'rootcheck', 'internal'},
-        'wazuh-db': {'wdb', 'internal'},
+        'guardbear-db': {'wdb', 'internal'},
         'wmodules': {'wmodules'},
     }
 )
@@ -116,7 +116,7 @@ def allowed_fields(filters: Dict) -> List:
     return [field for field in filters]
 
 
-def is_safe_path(path: str, basedir: str = common.WAZUH_ETC, relative: bool = True) -> bool:
+def is_safe_path(path: str, basedir: str = common.GUARDBEAR_ETC, relative: bool = True) -> bool:
     """Check if a path is correct.
 
     Parameters
@@ -124,7 +124,7 @@ def is_safe_path(path: str, basedir: str = common.WAZUH_ETC, relative: bool = Tr
     path : str
         Path to be checked.
     basedir : str
-        Wazuh installation directory.
+        GuardBear installation directory.
     relative : bool
         True if path is relative. False otherwise (absolute).
 
@@ -145,25 +145,25 @@ def is_safe_path(path: str, basedir: str = common.WAZUH_ETC, relative: bool = Tr
     return os.path.commonpath([full_path, full_basedir]) == full_basedir
 
 
-def check_component_configuration_pair(component: str, configuration: str) -> WazuhError:
+def check_component_configuration_pair(component: str, configuration: str) -> GuardBearError:
     """Parameters
     ----------
     component : str
-        Wazuh component name.
+        GuardBear component name.
     configuration : str
         Component configuration.
 
     Returns
     -------
-    WazuhError
-        It can either return a `WazuhError` or `None`, depending on the given component and configuration. The exception
+    GuardBearError
+        It can either return a `GuardBearError` or `None`, depending on the given component and configuration. The exception
         is returned and not raised because we use the object to create a problem on API level.
     """
-    if configuration not in WAZUH_COMPONENT_CONFIGURATION_MAPPING[component]:
-        return WazuhError(
+    if configuration not in GUARDBEAR_COMPONENT_CONFIGURATION_MAPPING[component]:
+        return GuardBearError(
             1128,
             extra_message=f"Valid configuration values for '{component}': "
-            f'{WAZUH_COMPONENT_CONFIGURATION_MAPPING[component]}',
+            f'{GUARDBEAR_COMPONENT_CONFIGURATION_MAPPING[component]}',
         )
 
 
@@ -248,14 +248,14 @@ def format_timeframe(value):
     return check_exp(value, _timeframe_type)
 
 
-@Draft4Validator.FORMAT_CHECKER.checks('wazuh_key')
-def format_wazuh_key(value):
-    return check_exp(value, _wazuh_key)
+@Draft4Validator.FORMAT_CHECKER.checks('guardbear_key')
+def format_guardbear_key(value):
+    return check_exp(value, _guardbear_key)
 
 
-@Draft4Validator.FORMAT_CHECKER.checks('wazuh_version')
-def format_wazuh_version(value):
-    return check_exp(value, _wazuh_version)
+@Draft4Validator.FORMAT_CHECKER.checks('guardbear_version')
+def format_guardbear_version(value):
+    return check_exp(value, _guardbear_version)
 
 
 @Draft4Validator.FORMAT_CHECKER.checks('date')

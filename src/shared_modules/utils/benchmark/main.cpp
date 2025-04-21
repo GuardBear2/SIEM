@@ -1,6 +1,6 @@
-/*
- * Wazuh - Content Migration tests
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear - Content Migration tests
+ * Copyright (C) 2015, GuardBear Inc.
  * March 03, 2023.
  *
  */

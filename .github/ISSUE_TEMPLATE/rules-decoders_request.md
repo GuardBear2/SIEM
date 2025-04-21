@@ -1,4 +1,4 @@
----
+﻿---
 name: Rules/Decoders Issue
 about: Report a bug or make a feature request.
 title: ''
@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-|Wazuh version| Component | Action type |
+|GuardBear version| Component | Action type |
 |---| --- | --- |
 | X.Y.Z-rev | Rules/Decoders | New/Error/Improve |
 

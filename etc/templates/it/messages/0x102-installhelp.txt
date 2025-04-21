@@ -1,4 +1,4 @@
-  - Hai tre tipi di installazione possibili: server, agent o local.
+﻿  - Hai tre tipi di installazione possibili: server, agent o local.
 
     - Se scegli 'server', sarai in grado di analizzare tutti i logs,
       creare e-mail di notifica e risopsta, e ricevere i logs da
@@ -22,4 +22,4 @@
    - Scegli 'local' se hai un solo sistema da monitorare.
 
    - Ulteriori informazioni su:
-     https://documentation.wazuh.com
+     https://documentation.guardbear.com

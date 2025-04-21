@@ -1,17 +1,17 @@
-#!/bin/sh
-# postinst script for Wazuh
-# Wazuh, Inc 2015
+﻿#!/bin/sh
+# postinst script for GuardBear
+# GuardBear, Inc 2015
 set -e
 case "$1" in
     configure)
 
         OS=$(lsb_release -si)
         VER=$(lsb_release -sr)
-        WAZUH_TMP_DIR="/tmp"
+        GUARDBEAR_TMP_DIR="/tmp"
         OSMYSHELL="/sbin/nologin"
 
         if [ -d /run/systemd/system ]; then
-            rm -f /etc/init.d/wazuh-server
+            rm -f /etc/init.d/guardbear-server
         fi
 
         if [ ! -f ${OSMYSHELL} ]; then
@@ -20,22 +20,22 @@ case "$1" in
             fi
         fi
 
-        # Remove old service file /etc/systemd/system/wazuh-server.service if present
-        if [ -f /etc/systemd/system/wazuh-server.service ]; then
-            rm -f /etc/systemd/system/wazuh-server.service
+        # Remove old service file /etc/systemd/system/guardbear-server.service if present
+        if [ -f /etc/systemd/system/guardbear-server.service ]; then
+            rm -f /etc/systemd/system/guardbear-server.service
             if command -v systemctl > /dev/null 2>&1 && systemctl > /dev/null 2>&1; then
                 systemctl daemon-reload > /dev/null 2>&1
             fi
         fi
 
-        # Restart Wazuh manager
+        # Restart GuardBear manager
         if [ ! -z "$2" ]; then
-            if [ -f ${WAZUH_TMP_DIR}/wazuh.restart ] ; then
+            if [ -f ${GUARDBEAR_TMP_DIR}/guardbear.restart ] ; then
                 if command -v systemctl > /dev/null 2>&1 && systemctl > /dev/null 2>&1; then
                     systemctl daemon-reload > /dev/null 2>&1
-                    systemctl restart wazuh-server.service > /dev/null 2>&1
+                    systemctl restart guardbear-server.service > /dev/null 2>&1
                 elif command -v service > /dev/null 2>&1 ; then
-                    service wazuh-server restart > /dev/null 2>&1
+                    service guardbear-server restart > /dev/null 2>&1
                 fi
             fi
         fi

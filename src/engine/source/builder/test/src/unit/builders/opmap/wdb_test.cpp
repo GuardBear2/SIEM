@@ -1,10 +1,10 @@
-#include "builders/baseBuilders_test.hpp"
+﻿#include "builders/baseBuilders_test.hpp"
 #include "builders/opmap/wdb.hpp"
 
 #include <wdb/mockWdbHandler.hpp>
 #include <wdb/mockWdbManager.hpp>
 
-using namespace wazuhdb::mocks;
+using namespace guardbeardb::mocks;
 using namespace builder::builders::opmap;
 
 namespace
@@ -84,12 +84,12 @@ auto expectOkQuery(const std::string& query, const std::string& message = "")
     {
         if (message.empty())
         {
-            EXPECT_CALL(*mockWdbHandler, tryQueryAndParseResult(query, wazuhdb::DEFAULT_TRY_ATTEMPTS))
+            EXPECT_CALL(*mockWdbHandler, tryQueryAndParseResult(query, guardbeardb::DEFAULT_TRY_ATTEMPTS))
                 .WillOnce(testing::Return(okQueryRes()));
         }
         else
         {
-            EXPECT_CALL(*mockWdbHandler, tryQueryAndParseResult(query, wazuhdb::DEFAULT_TRY_ATTEMPTS))
+            EXPECT_CALL(*mockWdbHandler, tryQueryAndParseResult(query, guardbeardb::DEFAULT_TRY_ATTEMPTS))
                 .WillOnce(testing::Return(okQueryRes(message)));
         }
     };
@@ -99,7 +99,7 @@ auto expectNotOkQuery(const std::string& query)
 {
     return [=](const std::shared_ptr<MockWdbHandler>& mockWdbHandler)
     {
-        EXPECT_CALL(*mockWdbHandler, tryQueryAndParseResult(query, wazuhdb::DEFAULT_TRY_ATTEMPTS))
+        EXPECT_CALL(*mockWdbHandler, tryQueryAndParseResult(query, guardbeardb::DEFAULT_TRY_ATTEMPTS))
             .WillOnce(testing::Return(errorQueryRes()));
     };
 }

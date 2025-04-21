@@ -1,4 +1,4 @@
-{
+﻿{
 	// See https://go.microsoft.com/fwlink/?LinkId=733558
 	// for the documentation about the tasks.json format
 	"version": "2.0.0",
@@ -10,7 +10,7 @@
 			"args": [
 				"-rf",
 				"${env:TMP_CLEAN_ENV}",
-				"/var/log/wazuh-server/engine"
+				"/var/log/guardbear-server/engine"
 			]
 		},
 		{
@@ -30,7 +30,7 @@
 			"command": "rm",
 			"args": [
 				"-rf",
-				"/var/lib/wazuh-server/vd/feed/"
+				"/var/lib/guardbear-server/vd/feed/"
 			]
 		},
 		{
@@ -39,7 +39,7 @@
 			"command": "rm",
 			"args": [
 				"-rf",
-				"/var/lib/wazuh-server/indexer-connector/",
+				"/var/lib/guardbear-server/indexer-connector/",
 			]
 		},
 		{

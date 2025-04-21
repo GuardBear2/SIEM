@@ -1,6 +1,6 @@
-/*
- * Wazuh keystore
- * Copyright (C) 2015, Wazuh Inc.
+﻿/*
+ * GuardBear keystore
+ * Copyright (C) 2015, GuardBear Inc.
  * January 24, 2024.
  *
  * This program is free software; you can redistribute it
@@ -18,7 +18,7 @@
 #include <base/utils/keyValue.hpp>
 
 // Database constants, based on the keystore path.
-constexpr auto KEYSTORE_PATH {"/etc/wazuh-server/client.keystore"};
+constexpr auto KEYSTORE_PATH {"/etc/guardbear-server/client.keystore"};
 
 class Keystore final
 {

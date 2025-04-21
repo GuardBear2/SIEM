@@ -1,4 +1,4 @@
----
+﻿---
 name: 'Planned: Specific support new OSs'
 about: Test compatibility with new OS.
 title: Support new OSs - <OS name & version> - <Specific test name>
@@ -24,16 +24,16 @@ assignees: ''
 ## Considerations
 
 - Testing environment: Deploy the new OS taking into account the following notes:
-  - If the Wazuh central components are supported: 1 VM
-  - If the Wazuh agent is supported: 1 VM for each architecture supported.
-  - If the Wazuh central components or the Wazuh agent is not supported, deploy a Debian 12 VM for the non-supported component.
+  - If the GuardBear central components are supported: 1 VM
+  - If the GuardBear agent is supported: 1 VM for each architecture supported.
+  - If the GuardBear central components or the GuardBear agent is not supported, deploy a Debian 12 VM for the non-supported component.
 - All testing tasks must be completed for each OS architecture supported.
 - The following tasks should be completed in order.
 
 ## Tasks
 
-- [ ] Test the Wazuh dashboard one-liner deployment.
-  - [ ] Deploy a Wazuh agent using the Wazuh dashboard one-liner feature provided in the Wazuh user interface with the following cases.
+- [ ] Test the GuardBear dashboard one-liner deployment.
+  - [ ] Deploy a GuardBear agent using the GuardBear dashboard one-liner feature provided in the GuardBear user interface with the following cases.
     - [ ] Only IP address.
     - [ ] Only FQDN.
     - [ ] IP address, agent name, and group.

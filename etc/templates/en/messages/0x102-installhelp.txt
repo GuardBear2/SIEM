@@ -1,4 +1,4 @@
-
+﻿
   - You have these installation options: server, agent, local, or hybrid.
 
     - If you choose 'server', you will be able to analyze all
@@ -30,4 +30,4 @@
     local logs before forwarding alerts to another server.
 
   - More information at:
-    https://documentation.wazuh.com
+    https://documentation.guardbear.com

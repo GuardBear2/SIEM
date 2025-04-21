@@ -1,4 +1,4 @@
-## API Integration Test Mapping Script
+﻿## API Integration Test Mapping Script
 ### What is it
 This is a script to generate a JSON file with all the API integration test mapping. This JSON file will be used to run the assigned test whenever a file is modified in a PR.
 
@@ -12,9 +12,9 @@ This script has two modes:
     The JSON file will be generated within the same directory as the script as `integration_test_api_endpoints.json`.
     
 - Test the mapping
-    Run the script with a relative path from the `wazuh` folder to check if a file is mapped.
+    Run the script with a relative path from the `guardbear` folder to check if a file is mapped.
     ```
-    python3 _test_mapping.py framework/wazuh/agent.py
+    python3 _test_mapping.py framework/guardbear/agent.py
     ```
     If the file is mapped, this will be the output (for `agent.py`):
     ```
@@ -26,4 +26,4 @@ This script has two modes:
     test_rbac_white_agent_endpoints.tavern.yaml
     ```
   
-    > **NOTE:** Please use a relative path when trying the testing mode. For instance: `/home/wazuh/Desktop/git/wazuh/framework/wazuh/agent.py` -> `framework/wazuh/agent.py`
+    > **NOTE:** Please use a relative path when trying the testing mode. For instance: `/home/guardbear/Desktop/git/guardbear/framework/guardbear/agent.py` -> `framework/guardbear/agent.py`

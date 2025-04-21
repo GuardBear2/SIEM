@@ -1,4 +1,4 @@
-#!perl
+﻿#!perl
 # Script for creating a test MaxMind DB file.
 # Dependencies: MaxMind::DB::Writer (cpan)
 
@@ -53,13 +53,13 @@ my $tree = MaxMind::DB::Writer::Tree->new(
 
 my %address_for_test = (
     '1.2.3.4/32' => {
-        city  => { names => {en => 'Wazuh city' }},
-        continent  => {code => 'WC', names => {en => 'Wazuh Continent' }},
-        country  => {iso_code => 'WCtry', names => {en => 'Wazuh Country' }},
-        location  => {latitude => 41.7776, longitude => 88.4293, time_zone => 'Wazuh/Timezone'},
+        city  => { names => {en => 'GuardBear city' }},
+        continent  => {code => 'WC', names => {en => 'GuardBear Continent' }},
+        country  => {iso_code => 'WCtry', names => {en => 'GuardBear Country' }},
+        location  => {latitude => 41.7776, longitude => 88.4293, time_zone => 'GuardBear/Timezone'},
         postal  => {code => '7777'},
         autonomous_system_number => 1234,
-        autonomous_system_organization => 'Wazuh Organization',
+        autonomous_system_organization => 'GuardBear Organization',
     }
 );
 

@@ -1,4 +1,4 @@
-name: "Indexer connector dependencies"
+﻿name: "Indexer connector dependencies"
 description: "Download and compiles the dependencies for the indexer connector"
 
 runs:
@@ -29,7 +29,7 @@ runs:
         run: |
           cd src
           make deps TARGET=server -j2
-          make libwazuhext.so TARGET=server -j2
+          make libguardbearext.so TARGET=server -j2
         shell: bash
 
       - name: Build http-request
