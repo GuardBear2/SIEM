@@ -1,13 +1,13 @@
-# WAZUH SYSTEM FILE, PLEASE DO NOT MODIFY
+# GUARDBEAR SYSTEM FILE, PLEASE DO NOT MODIFY
 
 default_users:
   wazuh:
-    description: Superuser of Wazuh.
+    description: Superuser of GuardBear.
     password: wazuh
     allow_run_as: True
 
   wazuh-wui:
-    description: Superuser of Wazuh UI
+    description: Superuser of GuardBear UI
     password: wazuh-wui
     allow_run_as: True
 

@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@wazuh.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from os import chmod, chown, path
@@ -351,7 +351,7 @@ async def add_agent(
     version: str,
     host: Host = None,
 ) -> WazuhResult:
-    """Add a new Wazuh agent.
+    """Add a new GuardBear agent.
 
     Parameters
     ----------
@@ -515,7 +515,7 @@ async def create_group(group_id: str) -> WazuhResult:
     Returns
     -------
     WazuhResult
-        WazuhResult object with a operation message.
+        GuardBearResult object with a operation message.
     """
     # Input Validation of group_id
     if not InputValidator().group(group_id):

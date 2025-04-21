@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@wazuh.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from copy import deepcopy
@@ -8,7 +8,7 @@ from typing import Any, Union
 from wazuh.core.cluster import __version__
 from wazuh.core.common import AGENT_NAME_LEN_LIMIT, MAX_SOCKET_BUFFER_SIZE, WAZUH_SERVER_YML
 
-GENERIC_ERROR_MSG = 'Wazuh Internal Error. See log for more detail'
+GENERIC_ERROR_MSG = 'GuardBear Internal Error. See log for more detail'
 DOCU_VERSION = 'current' if __version__ == '' else '.'.join(__version__.split('.')[:2]).lstrip('v')
 
 
@@ -18,20 +18,20 @@ class WazuhException(Exception):
     ERRORS = {
         # < 999: API
         900: 'One of the API child processes terminated abruptly. The API process pool is not usable anymore. '
-        'Please restart the Wazuh API',
+        'Please restart the GuardBear API',
         901: 'API executor subprocess broke. A service restart may be needed',
         902: 'API Endpoint only available on master node',
         # Wazuh: 0999 - 1099
         999: 'Incompatible version of Python',
         1000: {
-            'message': 'Wazuh Internal Error',
+            'message': 'GuardBear Internal Error',
             '       remediation': 'Please, check the server logs for more information about the error',
         },
         1001: 'Error importing module',
         1002: 'Error executing command',
         1005: {
             'message': 'Error reading file',
-            'remediation': 'Please, ensure you have the right file permissions in Wazuh directories',
+            'remediation': 'Please, ensure you have the right file permissions in GuardBear directories',
         },
         1006: {
             'message': 'File/directory does not exist or there is a problem with the permissions',
@@ -41,9 +41,9 @@ class WazuhException(Exception):
         1010: 'Unable to connect to queue',
         1011: 'Error communicating with queue',
         1012: {'message': 'Invalid message to queue'},
-        1013: {'message': 'Unable to connect with socket', 'remediation': 'Please, restart Wazuh to restore sockets'},
-        1014: {'message': 'Error communicating with socket', 'remediation': 'Please, restart Wazuh to restore sockets'},
-        1017: 'Some Wazuh daemons are not ready yet in node "{node_name}" ({not_ready_daemons})',
+        1013: {'message': 'Unable to connect with socket', 'remediation': 'Please, restart GuardBear to restore sockets'},
+        1014: {'message': 'Error communicating with socket', 'remediation': 'Please, restart GuardBear to restore sockets'},
+        1017: 'Some GuardBear daemons are not ready yet in node "{node_name}" ({not_ready_daemons})',
         1018: 'Body request is not a valid JSON',
         # Configuration: 1100 - 1199
         1101: {
@@ -180,7 +180,7 @@ class WazuhException(Exception):
         1724: {'message': 'Not a valid select field', 'remediation': 'Please, use only allowed select fields'},
         1725: {'message': 'Error enrolling a new agent', 'remediation': 'Please check all data fields and try again'},
         1726: {
-            'message': 'Wazuh authd is not running',
+            'message': 'GuardBear authd is not running',
             'remediation': 'Please enable authd or check if there is any error',
         },
         1728: {
@@ -370,7 +370,7 @@ class WazuhException(Exception):
             'message': 'The specified policy does not exist',
             'remediation': 'Please, create the specified policy with the endpoint POST /security/policies',
         },
-        4008: {'message': "The specified resource is required for a correct Wazuh's functionality"},
+        4008: {'message': "The specified resource is required for a correct GuardBear's functionality"},
         4009: {'message': 'The specified name or policy already exists'},
         4010: {
             'message': 'The specified role-policy relation does not exist',
@@ -682,7 +682,7 @@ class WazuhInternalError(WazuhException):
     """Class representing an error in the code that could not be handled."""
 
     _default_type = 'about:blank'
-    _default_title = 'Wazuh Internal Error'
+    _default_title = 'GuardBear Internal Error'
 
     def __init__(
         self,
@@ -733,42 +733,42 @@ class WazuhClusterError(WazuhInternalError):
     """Cluster exception."""
 
     _default_type = 'about:blank'
-    _default_title = 'Wazuh Cluster Error'
+    _default_title = 'GuardBear Cluster Error'
 
 
 class WazuhHAPHelperError(WazuhClusterError):
     """HAProxy Helper exception."""
 
     _default_type = 'about:blank'
-    _default_title = 'HAProxy Helper Error'
+    _default_title = 'GuardBear HAProxy Helper Error'
 
 
 class WazuhCommsAPIError(WazuhInternalError):
     """Communications API exception."""
 
     _default_type = 'about:blank'
-    _default_title = 'Communications API Error'
+    _default_title = 'GuardBear Communications API Error'
 
 
 class WazuhEngineError(WazuhInternalError):
     """Engine client exception."""
 
     _default_type = 'about:blank'
-    _default_title = 'Wazuh Engine Error'
+    _default_title = 'GuardBear Engine Error'
 
 
 class WazuhIndexerError(WazuhInternalError):
     """Indexer client exception."""
 
     _default_type = 'about:blank'
-    _default_title = 'Wazuh Indexer Error'
+    _default_title = 'GuardBear Indexer Error'
 
 
 class WazuhDaemonError(WazuhInternalError):
     """Server daemons exception."""
 
     _default_type = 'about:blank'
-    _default_title = 'Wazuh Daemon Error'
+    _default_title = 'GuardBear Daemon Error'
 
 
 class WazuhError(WazuhException):

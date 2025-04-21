@@ -1,4 +1,4 @@
-# WAZUH SYSTEM FILE, PLEASE DO NOT MODIFY
+# GUARDBEAR SYSTEM FILE, PLEASE DO NOT MODIFY
 
 default_rules:
   wui_elastic_admin:

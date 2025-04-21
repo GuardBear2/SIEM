@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@wazuh.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from time import strftime
@@ -9,7 +9,7 @@ from wazuh.core.exception import WazuhError, WazuhException, WazuhInternalError
 from wazuh.core.wdb import WazuhDBConnection
 
 """
-Wazuh HIDS Python package
+GuardBear HIDS Python package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Wazuh is a python package to manage OSSEC.
 
@@ -69,7 +69,7 @@ class Wazuh:
         }
 
     def _initialize(self):
-        """Calculates all Wazuh installation metadata."""
+        """Calculates all GuardBear installation metadata."""
         # info DB if possible
         try:
             wdb_conn = WazuhDBConnection()
@@ -90,4 +90,4 @@ class Wazuh:
 
 
 def main():
-    print('Wazuh HIDS Library')
+    print('GuardBear HIDS Library')

@@ -1,12 +1,12 @@
-# Wazuh Open Source Project Security Policy
+# GuardBear Open Source Project Security Policy
 
 Version: 2023-06-12
 
 ## Introduction
-This document outlines the Security Policy for Wazuh's open source projects. It emphasizes our commitment to maintain a secure environment for our users and contributors, and reflects our belief in the power of collaboration to identify and resolve security vulnerabilities.
+This document outlines the Security Policy for GuardBear's open source projects. It emphasizes our commitment to maintain a secure environment for our users and contributors, and reflects our belief in the power of collaboration to identify and resolve security vulnerabilities.
 
 ## Scope
-This policy applies to all open source projects developed, maintained, or hosted by Wazuh.
+This policy applies to all open source projects developed, maintained, or hosted by GuardBear.
 
 ## Reporting Security Vulnerabilities
 If you believe you've discovered a potential security vulnerability in one of our open source projects, we strongly encourage you to report it to us responsibly.
@@ -24,7 +24,7 @@ Upon receiving a report of a potential vulnerability, our team will initiate an 
 
 4. Release & Disclosure: After 90 days from the discovery of the vulnerability, or as soon as a fix is ready and thoroughly tested (whichever comes first), we will release a security update for the affected project. We will also publicly disclose the vulnerability by publishing a CVE (Common Vulnerabilities and Exposures) and acknowledging the discovering party.
 
-5. Exceptions: In order to preserve the security of the Wazuh community at large, we might extend the disclosure period to allow users to patch their deployments.
+5. Exceptions: In order to preserve the security of the GuardBear community at large, we might extend the disclosure period to allow users to patch their deployments.
 
 This 90-day period allows for end-users to update their systems and minimizes the risk of widespread exploitation of the vulnerability.
 
