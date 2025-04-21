@@ -4,7 +4,7 @@
 
 import json
 
-from wazuh import WazuhInternalError
+from wazuh import GuardBearInternalError
 from wazuh.core import common
 from wazuh.core.agent import Agent
 from wazuh.core.cluster import local_client
@@ -213,5 +213,5 @@ async def get_system_nodes():
         lc = local_client.LocalClient()
         result = await get_nodes(lc)
         return [node['name'] for node in result['items']]
-    except WazuhInternalError as e:
+    except GuardBearInternalError as e:
         raise e

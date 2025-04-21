@@ -78,7 +78,7 @@ def test_customfilter():
     [
         ('Example log', True),
         ('Wazuh Internal Error', False),
-        ('WazuhInternalError', False),
+        ('GuardBearInternalError', False),
         ('WazuhError', True),
         ('InternalError', True),
     ],

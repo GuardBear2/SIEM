@@ -7,7 +7,7 @@ from wazuh.core.common import ENGINE_SOCKET
 from wazuh.core.config.client import CentralizedConfig
 from wazuh.core.engine.events import EventsModule
 from wazuh.core.engine.vulnerability import VulnerabilityModule
-from wazuh.core.exception import WazuhEngineError
+from wazuh.core.exception import GuardBearCluserError
 
 logger = getLogger('wazuh')
 
@@ -52,10 +52,10 @@ async def get_engine_client() -> AsyncIterator[Engine]:
     try:
         yield client
     except TimeoutException:
-        raise WazuhEngineError(2800)
+        raise GuardBearCluserError(2800)
     except UnsupportedProtocol:
-        raise WazuhEngineError(2801)
+        raise GuardBearCluserError(2801)
     except ConnectError:
-        raise WazuhEngineError(2802)
+        raise GuardBearCluserError(2802)
     finally:
         await client.close()

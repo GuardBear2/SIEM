@@ -45,7 +45,7 @@ from wazuh.core.cluster.utils import print_version
 from wazuh.core.config.client import CentralizedConfig
 from wazuh.core.config.models.comms_api import CommsAPIConfig
 from wazuh.core.config.models.logging import APILoggingConfig
-from wazuh.core.exception import WazuhCommsAPIError
+from wazuh.core.exception import GuardBearCommsAPIError
 
 MAIN_PROCESS = 'wazuh-comms-apid'
 LOGGING_TAG = 'Communications API'
@@ -120,14 +120,14 @@ def configure_ssl(keyfile: str, certfile: str) -> None:
             generate_self_signed_certificate(private_key, certfile)
             logger.info(f'Generated certificate file in {certfile}')
     except ssl.SSLError as exc:
-        raise WazuhCommsAPIError(2700, extra_message=str(exc))
+        raise GuardBearCommsAPIError(2700, extra_message=str(exc))
     except IOError as exc:
         if exc.errno == 22:
-            raise WazuhCommsAPIError(2701, extra_message=str(exc))
+            raise GuardBearCommsAPIError(2701, extra_message=str(exc))
         elif exc.errno == 13:
-            raise WazuhCommsAPIError(2702, extra_message=str(exc))
+            raise GuardBearCommsAPIError(2702, extra_message=str(exc))
         else:
-            raise WazuhCommsAPIError(2703, extra_message=str(exc))
+            raise GuardBearCommsAPIError(2703, extra_message=str(exc))
 
 
 def ssl_context(conf, default_ssl_context_factory) -> ssl.SSLContext:
@@ -328,7 +328,7 @@ if __name__ == '__main__':
         options = get_gunicorn_options(pid, log_config_dict, comms_api_config)
         load_jwt_keys(comms_api_config)
         StandaloneApplication(app, options).run()
-    except WazuhCommsAPIError as e:
+    except GuardBearCommsAPIError as e:
         logger.error(f'Error when trying to start the Wazuh Communications API. {e}')
         exit_code = 1
     except Exception as e:

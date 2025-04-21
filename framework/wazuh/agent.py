@@ -13,7 +13,7 @@ from wazuh.core.agent import (
     get_groups,
 )
 from wazuh.core.cluster.cluster import get_node
-from wazuh.core.exception import WazuhError, WazuhException, WazuhInternalError, WazuhResourceNotFound
+from wazuh.core.exception import WazuhError, WazuhException, GuardBearInternalError, WazuhResourceNotFound
 from wazuh.core.indexer import get_indexer_client
 from wazuh.core.indexer.agent import DEFAULT_GROUP
 from wazuh.core.indexer.base import IndexerKey
@@ -509,7 +509,7 @@ async def create_group(group_id: str) -> WazuhResult:
         If the group already exists.
     WazuhError(1713)
         If the group ID is not valid.
-    WazuhInternalError(1005)
+    GuardBearInternalError(1005)
         If there was an error reading a file.
 
     Returns
@@ -539,7 +539,7 @@ async def create_group(group_id: str) -> WazuhResult:
         chmod(group_path, 0o660)
         msg = f"Group '{group_id}' created."
     except Exception as e:
-        raise WazuhInternalError(1005, extra_message=str(e))
+        raise GuardBearInternalError(1005, extra_message=str(e))
 
     return WazuhResult({'message': msg})
 

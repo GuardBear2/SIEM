@@ -142,9 +142,9 @@ class AbstractServerHandler(c_common.Handler):
         self.name = data.decode()
         if self.name in self.server.clients:
             self.name = ''
-            raise exception.WazuhClusterError(3028, extra_message=data.decode())
+            raise exception.GuardBearClusterError(3028, extra_message=data.decode())
         elif self.name == self.server_config.node.name:
-            raise exception.WazuhClusterError(3029)
+            raise exception.GuardBearClusterError(3029)
         else:
             self.server.clients[self.name] = self
             self.tag = f'{self.tag} {self.name}'
@@ -584,7 +584,7 @@ class AbstractServer:
                 ssl=ssl_context,
             )
         except OSError as e:
-            raise exception.WazuhClusterError(3007, extra_message=e)
+            raise exception.GuardBearClusterError(3007, extra_message=e)
 
         self.logger.info(f'Serving on {server.sockets[0].getsockname()}')
         self.tasks.append(server.serve_forever)

@@ -19,7 +19,7 @@ with patch('wazuh.core.common.wazuh_uid'):
 
         wazuh.rbac.decorators.expose_resources = RBAC_bypasser
         from wazuh.core import configuration
-        from wazuh.core.exception import WazuhError, WazuhInternalError
+        from wazuh.core.exception import WazuhError, GuardBearInternalError
 
 parent_directory = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 tmp_path = 'tests/data'
@@ -168,15 +168,15 @@ def test_get_active_configuration(
         ('001', 'syscheck', 'syscheck', ANY, 'WazuhSocket', WazuhError, 1117),  # No such file or directory
         # Checks for manager - Simple messages
         (None, 'syscheck', 'syscheck', False, 'WazuhSocket', WazuhError, 1121),  # Socket does not exist
-        (None, 'syscheck', 'syscheck', True, 'WazuhSocket', WazuhInternalError, 1121),  # Error connecting with socket
-        (None, 'syscheck', 'syscheck', True, 'WazuhSocket', WazuhInternalError, 1118),  # Data could not be received
+        (None, 'syscheck', 'syscheck', True, 'WazuhSocket', GuardBearInternalError, 1121),  # Error connecting with socket
+        (None, 'syscheck', 'syscheck', True, 'WazuhSocket', GuardBearInternalError, 1118),  # Data could not be received
         # Checks for manager - JSON messages
         (None, 'request', 'global', False, 'WazuhSocketJSON', WazuhError, 1121),  # Socket does not exist
-        (None, 'request', 'global', True, 'WazuhSocketJSON', WazuhInternalError, 1121),  # Error connecting with socket
-        (None, 'request', 'global', True, 'WazuhSocketJSON', WazuhInternalError, 1118),  # Data could not be received
+        (None, 'request', 'global', True, 'WazuhSocketJSON', GuardBearInternalError, 1121),  # Error connecting with socket
+        (None, 'request', 'global', True, 'WazuhSocketJSON', GuardBearInternalError, 1118),  # Data could not be received
         # Checks for 001
-        ('001', 'syscheck', 'syscheck', ANY, 'WazuhSocket', WazuhInternalError, 1121),  # Error connecting with socket
-        ('001', 'syscheck', 'syscheck', ANY, 'WazuhSocket', WazuhInternalError, 1118),  # Data could not be received
+        ('001', 'syscheck', 'syscheck', ANY, 'WazuhSocket', GuardBearInternalError, 1121),  # Error connecting with socket
+        ('001', 'syscheck', 'syscheck', ANY, 'WazuhSocket', GuardBearInternalError, 1118),  # Data could not be received
     ],
 )
 @patch('os.path.exists')

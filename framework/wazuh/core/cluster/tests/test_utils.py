@@ -28,7 +28,7 @@ with patch('wazuh.core.common.getgrnam'):
                         WazuhError,
                         WazuhException,
                         WazuhHAPHelperError,
-                        WazuhInternalError,
+                        GuardBearInternalError,
                         WazuhPermissionError,
                         WazuhResourceNotFound,
                     )
@@ -241,18 +241,18 @@ def test_get_manager_status_ko(mock_stat, exc):
         Expected exception to be handled.
     """
     mock_stat.side_effect = exc
-    with pytest.raises(WazuhInternalError, match='.* 1913 .*'):
+    with pytest.raises(GuardBearInternalError, match='.* 1913 .*'):
         utils.get_manager_status()
 
 
 def test_get_cluster_status():
     """Check if cluster is enabled and running. Also check that cluster is shown as not running when a
-    WazuhInternalError is raised.
+    GuardBearInternalError is raised.
     """
     status = utils.get_cluster_status()
     assert {'running': 'no'} == status
 
-    with patch('wazuh.core.cluster.utils.get_manager_status', side_effect=WazuhInternalError(1913)):
+    with patch('wazuh.core.cluster.utils.get_manager_status', side_effect=GuardBearInternalError(1913)):
         status = utils.get_cluster_status()
         assert {'running': 'no'} == status
 
@@ -261,15 +261,15 @@ def test_manager_restart():
     """Verify that manager_restart send to the manager the restart request."""
     with patch('wazuh.core.cluster.utils.open', side_effect=None):
         with patch('fcntl.lockf', side_effect=None):
-            with pytest.raises(WazuhInternalError, match='.* 1901 .*'):
+            with pytest.raises(GuardBearInternalError, match='.* 1901 .*'):
                 utils.manager_restart()
 
             with patch('os.path.exists', return_value=True):
-                with pytest.raises(WazuhInternalError, match='.* 1902 .*'):
+                with pytest.raises(GuardBearInternalError, match='.* 1902 .*'):
                     utils.manager_restart()
 
                 with patch('socket.socket.connect', side_effect=None):
-                    with pytest.raises(WazuhInternalError, match='.* 1014 .*'):
+                    with pytest.raises(GuardBearInternalError, match='.* 1014 .*'):
                         utils.manager_restart()
 
                     with patch('socket.socket.send', side_effect=None):
@@ -390,7 +390,7 @@ def test_running_on_master_node(node_type, expected):
     'result',
     [
         WazuhError(6001),
-        WazuhInternalError(1000),
+        GuardBearInternalError(1000),
         WazuhPermissionError(4000),
         WazuhResourceNotFound(1710),
         'value',

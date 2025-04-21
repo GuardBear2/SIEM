@@ -9,7 +9,7 @@ from opensearchpy import AsyncOpenSearch
 from opensearchpy.exceptions import ImproperlyConfigured, TransportError
 from wazuh.core.config.client import CentralizedConfig
 from wazuh.core.config.models.ssl_config import IndexerSSLConfig
-from wazuh.core.exception import WazuhIndexerError
+from wazuh.core.exception import GuardBearCluserError
 from wazuh.core.indexer.agent import AgentsIndex
 from wazuh.core.indexer.bulk import MixinBulk
 from wazuh.core.indexer.commands import CommandsManager
@@ -56,12 +56,12 @@ class Indexer(MixinBulk):
 
         Raises
         ------
-        WazuhIndexerError
+        GuardBearCluserError
             In case authentication is not provided.
 
         Raises
         ------
-        WazuhIndexerError(2201)
+        GuardBearCluserError(2201)
             In case of no authentication credentials were specified.
 
         Returns
@@ -80,13 +80,13 @@ class Indexer(MixinBulk):
         if all([self.user, self.password]):
             parameters.update({'http_auth': (self.user, self.password)})
         else:
-            raise WazuhIndexerError(2201, extra_message="'user' and 'password' are required")
+            raise GuardBearCluserError(2201, extra_message="'user' and 'password' are required")
 
         if self.use_ssl:
             if all([self.client_cert, self.client_key]):
                 parameters.update({'client_cert': self.client_cert, 'client_key': self.client_key})
             else:
-                raise WazuhIndexerError(2201, extra_message='SSL certificates paths missing in the configuration')
+                raise GuardBearCluserError(2201, extra_message='SSL certificates paths missing in the configuration')
 
         return AsyncOpenSearch(**parameters)
 
@@ -95,18 +95,18 @@ class Indexer(MixinBulk):
 
         Raises
         ------
-        WazuhIndexerError(2200)
+        GuardBearCluserError(2200)
             In case of errors communicating with the Wazuh Indexer.
         """
         logger.debug('Connecting to the indexer client.')
         try:
             return await self._client.info()
         except (ConnectionError, TransportError) as e:
-            raise WazuhIndexerError(2200, extra_message=e.error)
+            raise GuardBearCluserError(2200, extra_message=e.error)
         except ssl.SSLError as e:
-            raise WazuhIndexerError(2200, extra_message=e.reason)
+            raise GuardBearCluserError(2200, extra_message=e.reason)
         except ImproperlyConfigured as e:
-            raise WazuhIndexerError(2200, extra_message=f'{e}. Check your indexer configuration and SSL certificates')
+            raise GuardBearCluserError(2200, extra_message=f'{e}. Check your indexer configuration and SSL certificates')
 
     async def close(self) -> None:
         """Close the Wazuh Indexer client."""
@@ -167,7 +167,7 @@ async def create_indexer(
         try:
             await indexer.connect()
             return indexer
-        except WazuhIndexerError:
+        except GuardBearCluserError:
             if retries_count == retries:
                 await indexer.close()
                 raise

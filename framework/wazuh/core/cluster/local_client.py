@@ -152,11 +152,11 @@ class LocalClient(client.AbstractClientManager):
                 path=common.LOCAL_SERVER_SOCKET_PATH,
             )
         except (ConnectionRefusedError, FileNotFoundError):
-            raise exception.WazuhInternalError(3012)
+            raise exception.GuardBearInternalError(3012)
         except MemoryError:
-            raise exception.WazuhInternalError(1119)
+            raise exception.GuardBearInternalError(1119)
         except Exception as e:
-            raise exception.WazuhInternalError(3009, str(e))
+            raise exception.GuardBearInternalError(3009, str(e))
 
     async def wait_for_response(self, timeout: int) -> str:
         """Wait for cluster response.
@@ -184,14 +184,14 @@ class LocalClient(client.AbstractClientManager):
                 return self.protocol.response.decode()
             except asyncio.TimeoutError:
                 if min_timeout < self.server_config.worker.intervals.keep_alive:
-                    raise exception.WazuhInternalError(3020)
+                    raise exception.GuardBearInternalError(3020)
                 else:
                     try:
                         # Keepalive is sent so local server does not close communication with this client.
                         await self.protocol.send_request(b'echo-c', b'keepalive')
-                    except exception.WazuhClusterError as e:
+                    except exception.GuardBearClusterError as e:
                         if e.code == 3018:
-                            raise exception.WazuhInternalError(3020)
+                            raise exception.GuardBearInternalError(3020)
                         else:
                             raise e
 

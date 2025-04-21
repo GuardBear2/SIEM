@@ -475,18 +475,18 @@ async def test_master_handler_execute_ko(uuid4_mock):
     master_handler.server = Server()
 
     # Test the first exception
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3022 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3022 .*'):
         await master_handler.execute(command=b'dapi_fwd', data=b'client request', wait_for_complete=True)
 
     # Test the second exception
     master_handler.server_config.communications.timeouts.dapi_request = 0.1
     with patch('wazuh.core.cluster.master.MasterHandler.send_request', return_value=b'result'):
-        with pytest.raises(exception.WazuhClusterError, match=r'.* 3021 .*'):
+        with pytest.raises(exception.GuardBearClusterError, match=r'.* 3021 .*'):
             await master_handler.execute(command=b'dapi', data=b'client request', wait_for_complete=False)
 
     # Test the third exception
     with patch('wazuh.core.cluster.master.MasterHandler.process_request', return_value=[b'error', b'']):
-        with pytest.raises(exception.WazuhClusterError, match=r'.* 3022 .*'):
+        with pytest.raises(exception.GuardBearClusterError, match=r'.* 3022 .*'):
             await master_handler.execute(command=b'random', data=b'client request', wait_for_complete=True)
 
 
@@ -540,7 +540,7 @@ def test_master_handler_hello_ko(super_hello_mock):
     master_handler.server = Server()
     master_handler.server.configuration['name'] = 'other name'
 
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3031 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3031 .*'):
         master_handler.hello(b'name node_type version')
 
     super_hello_mock.assert_called_with(b'name')
@@ -621,7 +621,7 @@ def test_master_handler_process_dapi_res_ko():
 
     master_handler.server = Server()
 
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3032 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3032 .*'):
         master_handler.process_dapi_res(b'req_id string_id')
 
 
@@ -810,7 +810,7 @@ async def test_master_handler_sync_worker_files_ko(wait_for_mock, decompress_fil
         await master_handler.sync_worker_files('task_id', asyncio.Event(), logging.getLogger('wazuh'))
 
     # Test the second exception
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3038 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3038 .*'):
         master_handler.sync_tasks['task_id'].filename = ''
         await master_handler.sync_worker_files('task_id', asyncio.Event(), logging.getLogger('wazuh'))
 

@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from fastapi import Request, status
 from fastapi.applications import FastAPI
-from wazuh.core.exception import WazuhEngineError, WazuhError
+from wazuh.core.exception import GuardBearCluserError, WazuhError
 from wazuh.core.indexer.models.events import FIM_INDEX, TaskResult
 
 from comms_api.models.events import StatefulEventsResponse
@@ -63,7 +63,7 @@ async def test_post_stateless_events(send_stateless_events_mock):
 @pytest.mark.asyncio
 async def test_post_stateless_events_ko():
     """Verify that the `post_stateless_events` handler catches exceptions successfully."""
-    exception = WazuhEngineError(2802)
+    exception = GuardBearCluserError(2802)
 
     with patch('comms_api.routers.events.send_stateless_events', MagicMock(side_effect=exception)):
         with pytest.raises(HTTPError, match=rf'{exception.code}: {exception.message}'):

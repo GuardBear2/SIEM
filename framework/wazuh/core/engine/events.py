@@ -3,7 +3,7 @@ from typing import AsyncGenerator
 from httpx import RequestError
 from wazuh.core.engine.base import APPLICATION_JSON, APPLICATION_NDJSON, BaseModule
 from wazuh.core.engine.models.base import ErrorResponse
-from wazuh.core.exception import WazuhEngineError, WazuhError
+from wazuh.core.exception import GuardBearCluserError, WazuhError
 
 
 class EventsModule(BaseModule):
@@ -39,4 +39,4 @@ class EventsModule(BaseModule):
                 raise WazuhError(2710, extra_message=': '.join(error.error))
 
         except RequestError as exc:
-            raise WazuhEngineError(2803, extra_message=str(exc))
+            raise GuardBearCluserError(2803, extra_message=str(exc))

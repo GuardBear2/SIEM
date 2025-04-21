@@ -239,7 +239,7 @@ class MasterHandler(server.AbstractServerHandler, c_common.WazuhCommon):
                     await self.server.clients[client].send_request(b'dapi', request_id.encode() + b' ' + request)
                 ).decode()
             else:
-                raise exception.WazuhClusterError(3022, extra_message=client)
+                raise exception.GuardBearClusterError(3022, extra_message=client)
         # Add request to local API requests queue.
         elif command == b'dapi':
             result = (await self.send_request(b'dapi', request_id.encode() + b' ' + data)).decode()
@@ -254,12 +254,12 @@ class MasterHandler(server.AbstractServerHandler, c_common.WazuhCommon):
                 await asyncio.wait_for(self.server.pending_api_requests[request_id]['Event'].wait(), timeout=timeout)
                 request_result = self.server.pending_api_requests[request_id]['Response']
             except asyncio.TimeoutError:
-                raise exception.WazuhClusterError(3021)
+                raise exception.GuardBearClusterError(3021)
         # Otherwise, immediately return the result obtained before.
         else:
             status, request_result = result
             if status != b'ok':
-                raise exception.WazuhClusterError(3022, extra_message=request_result.decode())
+                raise exception.GuardBearClusterError(3022, extra_message=request_result.decode())
             request_result = request_result.decode()
         return request_result
 
@@ -294,7 +294,7 @@ class MasterHandler(server.AbstractServerHandler, c_common.WazuhCommon):
         self.version, self.node_type = version.decode(), node_type.decode()
 
         if self.version != metadata.__version__:
-            raise exception.WazuhClusterError(3031)
+            raise exception.GuardBearClusterError(3031)
 
         # Create directory where zips and other files coming from or going to the worker will be managed.
         worker_dir = common.WAZUH_QUEUE / self.name
@@ -349,7 +349,7 @@ class MasterHandler(server.AbstractServerHandler, c_common.WazuhCommon):
             asyncio.create_task(self.forward_dapi_response(data))
             return b'ok', b'Response forwarded to worker'
         else:
-            raise exception.WazuhClusterError(3032, extra_message=req_id)
+            raise exception.GuardBearClusterError(3032, extra_message=req_id)
 
     def get_nodes(self, arguments: Dict) -> Tuple[bytes, Dict]:
         """Process 'get_nodes' request.
@@ -658,7 +658,7 @@ class MasterHandler(server.AbstractServerHandler, c_common.WazuhCommon):
                 self.server_config.master.intervals.timeout_extra_valid,
             )
         except Exception as e:
-            raise exception.WazuhClusterError(3038, extra_message=str(e))
+            raise exception.GuardBearClusterError(3038, extra_message=str(e))
         finally:
             shutil.rmtree(decompressed_files_path)
 

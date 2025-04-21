@@ -32,7 +32,7 @@ with patch('wazuh.common.wazuh_uid'):
 
             wazuh.rbac.decorators.expose_resources = RBAC_bypasser
             import wazuh.core.cluster.cluster as cluster
-            from wazuh.core.exception import WazuhError, WazuhInternalError
+            from wazuh.core.exception import WazuhError, GuardBearInternalError
 
 agent_groups = b'default,windows-servers'
 
@@ -195,7 +195,7 @@ def test_walk_dir_ko(mock_path_join, mock_walk):
         assert logs['error']['/foo/bar'] == ["Can't read metadata from file spam: "]
 
     with patch('wazuh.core.cluster.cluster.walk', side_effect=OSError):
-        with pytest.raises(WazuhInternalError, match=r'.* 3015 .*'):
+        with pytest.raises(GuardBearInternalError, match=r'.* 3015 .*'):
             cluster.walk_dir(
                 '/foo/bar', True, ['all'], ['ar.conf'], ['.xml', '.txt'], '', {'/foo/bar/': {'mod_time': True}}
             )

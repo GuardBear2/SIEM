@@ -6,7 +6,7 @@ import json
 import socket
 
 from wazuh.core.common import origin_module
-from wazuh.core.exception import WazuhError, WazuhInternalError
+from wazuh.core.exception import WazuhError, GuardBearInternalError
 from wazuh.core.wazuh_socket import create_wazuh_socket_message
 
 
@@ -54,7 +54,7 @@ class BaseQueue:
             if length_send_buffer < WazuhQueue.MAX_MSG_SIZE:
                 self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, WazuhQueue.MAX_MSG_SIZE)
         except Exception:
-            raise WazuhInternalError(1010, self.path)
+            raise GuardBearInternalError(1010, self.path)
 
     def __enter__(self):
         return self
@@ -69,16 +69,16 @@ class BaseQueue:
 
         Raises
         ------
-        WazuhInternalError(1011)
+        GuardBearInternalError(1011)
             If there was an error communicating with queue.
         """
         try:
             sent = self.socket.send(msg)
 
             if sent == 0:
-                raise WazuhInternalError(1011, self.path)
+                raise GuardBearInternalError(1011, self.path)
         except socket.error:
-            raise WazuhInternalError(1011, self.path)
+            raise GuardBearInternalError(1011, self.path)
 
     def close(self):
         self.socket.close()
@@ -132,7 +132,7 @@ class WazuhQueue(BaseQueue):
 
         Raises
         ------
-        WazuhInternalError(1012)
+        GuardBearInternalError(1012)
             If the message was invalid to queue.
         WazuhError(1014)
             If there was an error communicating with socket.
@@ -163,9 +163,9 @@ class WazuhQueue(BaseQueue):
         # NO-AR: Restart syscheck and reconnect
         # Restart agents
         else:
-            # If msg is not a non active-response command and not a restart command, raises WazuhInternalError
+            # If msg is not a non active-response command and not a restart command, raises GuardBearInternalError
             if not msg_is_no_ar and not msg_is_restart:
-                raise WazuhInternalError(1012, msg)
+                raise GuardBearInternalError(1012, msg)
             socket_msg = create_wazuh_queue_socket_msg(flag, str_agent_id, msg, is_restart=msg_is_restart)
             # Return message
             if msg == WazuhQueue.HC_SK_RESTART:
@@ -194,7 +194,7 @@ class WazuhAnalysisdQueue(BaseQueue):
             self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
             self.socket.connect(self.path)
         except Exception:
-            raise WazuhInternalError(1010, self.path)
+            raise GuardBearInternalError(1010, self.path)
 
     def send_msg(self, msg_header: str, msg: str):
         """Send message to analysisd.
@@ -208,7 +208,7 @@ class WazuhAnalysisdQueue(BaseQueue):
 
         Raises
         ------
-        WazuhInternalError(1012)
+        GuardBearInternalError(1012)
             If the size of the event is bigger than the message size that analysisd can handle.
         WazuhError(1014)
             If there was an error communicating with socket.

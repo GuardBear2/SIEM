@@ -13,7 +13,7 @@ from typing import List, Union
 
 from wazuh.core import common
 from wazuh.core.common import MAX_SOCKET_BUFFER_SIZE
-from wazuh.core.exception import WazuhError, WazuhInternalError
+from wazuh.core.exception import WazuhError, GuardBearInternalError
 
 DATE_FORMAT = re.compile(r'\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}')
 
@@ -79,7 +79,7 @@ class AsyncWazuhDBConnection:
                 data = await self._reader.readexactly(data_size)
                 data = data.decode(encoding='utf-8', errors='ignore').split(' ', 1)
             except asyncio.IncompleteReadError as e:
-                raise WazuhInternalError(2010, extra_message=e)
+                raise GuardBearInternalError(2010, extra_message=e)
 
             if raw:
                 return data
@@ -90,7 +90,7 @@ class AsyncWazuhDBConnection:
         except (FileNotFoundError, ConnectionError) as e:
             with contextlib.suppress(Exception):
                 await self.open_connection()
-            raise WazuhInternalError(2005, extra_message=e)
+            raise GuardBearInternalError(2005, extra_message=e)
 
     async def run_wdb_command(self, command):
         """Run command in wdb and return list of retrieved information.
@@ -117,11 +117,11 @@ class AsyncWazuhDBConnection:
         # result[1] -> payload
         if len(result) > 1:
             if result[0] == 'err':
-                raise WazuhInternalError(2007, extra_message=result[1])
+                raise GuardBearInternalError(2007, extra_message=result[1])
 
         else:
             if result[0] != 'ok':
-                raise WazuhInternalError(2007)
+                raise GuardBearInternalError(2007)
 
         return result
 
@@ -143,7 +143,7 @@ class WazuhDBConnection:
             self.__conn = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             self.__conn.connect(self.socket_path)
         except OSError as e:
-            raise WazuhInternalError(2005, e)
+            raise GuardBearInternalError(2005, e)
 
     def close(self):
         self.__conn.close()
@@ -219,7 +219,7 @@ class WazuhDBConnection:
 
         Raises
         ------
-        WazuhInternalError(2009)
+        GuardBearInternalError(2009)
             Pagination error. Response from wazuh-db was over the maximum socket buffer size.
         WazuhError(2003)
             Error in wdb request.
@@ -242,7 +242,7 @@ class WazuhDBConnection:
 
         # Max size socket buffer is 64KB
         if data_size >= MAX_SOCKET_BUFFER_SIZE:
-            raise WazuhInternalError(2009)
+            raise GuardBearInternalError(2009)
 
         if data[0] == 'err':
             raise WazuhError(2003, data[1])
@@ -376,10 +376,10 @@ class WazuhDBConnection:
                     return step * 2
                 else:
                     return step
-            except WazuhInternalError:
+            except GuardBearInternalError:
                 # if the step is already 1, it can't be divided
                 if step == 1:
-                    raise WazuhInternalError(2009)
+                    raise GuardBearInternalError(2009)
 
                 send_request_to_wdb(query_lower, step // 2, off, response)
                 # Add step // 2 remaining when the step is odd to avoid losing information
@@ -458,10 +458,10 @@ class WazuhDBConnection:
                     off += step
             except ValueError as e:
                 raise WazuhError(2006, str(e))
-            except (WazuhError, WazuhInternalError) as e:
+            except (WazuhError, GuardBearInternalError) as e:
                 raise e
             except Exception as e:
-                raise WazuhInternalError(2007, str(e))
+                raise GuardBearInternalError(2007, str(e))
 
             if count:
                 return response, total

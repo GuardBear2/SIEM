@@ -8,7 +8,7 @@ import socket
 from json import dumps, loads
 from struct import pack, unpack
 
-from wazuh.core.exception import WazuhException, WazuhInternalError
+from wazuh.core.exception import WazuhException, GuardBearInternalError
 
 SOCKET_COMMUNICATION_PROTOCOL_VERSION = 1
 
@@ -31,9 +31,9 @@ class WazuhSocket:
             self.s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             self.s.connect(self.path)
         except FileNotFoundError:
-            raise WazuhInternalError(1013, extra_message=os.path.basename(self.path))
+            raise GuardBearInternalError(1013, extra_message=os.path.basename(self.path))
         except ConnectionRefusedError:
-            raise WazuhInternalError(
+            raise GuardBearInternalError(
                 1121, extra_message=f"Socket '{os.path.basename(self.path)}' cannot receive connections"
             )
         except Exception as e:

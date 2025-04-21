@@ -32,7 +32,7 @@ class AbstractWazuhResult(collections.abc.MutableMapping):
 
         Raises
         ------
-        wexception.WazuhInternalError(1000)
+        wexception.GuardBearInternalError(1000)
             If dct is of a wrong type.
         """
         if isinstance(dct, dict):
@@ -40,7 +40,7 @@ class AbstractWazuhResult(collections.abc.MutableMapping):
         elif isinstance(dct, AbstractWazuhResult):
             self.dikt = dct.dikt
         else:
-            raise wexception.WazuhInternalError(
+            raise wexception.GuardBearInternalError(
                 1000,
                 extra_message=f'dct param must be a dict or an AbstractWazuhResult subclass, not a {type(dct)}',
             )
@@ -86,7 +86,7 @@ class AbstractWazuhResult(collections.abc.MutableMapping):
 
         Raises
         ------
-        WazuhInternalError(1000)
+        GuardBearInternalError(1000)
             Wazuh internal error when two object could not be merged.
 
         Returns
@@ -97,7 +97,7 @@ class AbstractWazuhResult(collections.abc.MutableMapping):
         if isinstance(other, wexception.WazuhException):
             return other
         elif not isinstance(other, (dict, AbstractWazuhResult)):
-            raise wexception.WazuhInternalError(1000, extra_message=f'Cannot be merged with {type(other)} object')
+            raise wexception.GuardBearInternalError(1000, extra_message=f'Cannot be merged with {type(other)} object')
 
         result = deepcopy(self)
 
@@ -426,11 +426,11 @@ class AffectedItemsWazuhResult(AbstractWazuhResult):
 
         Raises
         ------
-        wexception.WazuhInternalError(1000)
+        wexception.GuardBearInternalError(1000)
             If dct is of a wrong type.
         """
         if not isinstance(other, AffectedItemsWazuhResult):
-            raise wexception.WazuhInternalError(
+            raise wexception.GuardBearInternalError(
                 1000, extra_message=f'Failed items cannot be taken from {type(other)} object'
             )
 
@@ -460,7 +460,7 @@ class AffectedItemsWazuhResult(AbstractWazuhResult):
 
         Raises
         ------
-        wexception.WazuhInternalError(1000)
+        wexception.GuardBearInternalError(1000)
             If dct is of a wrong type.
         """
         result = super().__or__(other)
@@ -474,7 +474,7 @@ class AffectedItemsWazuhResult(AbstractWazuhResult):
         elif isinstance(result, wexception.WazuhException):
             return result
         elif not isinstance(other, AffectedItemsWazuhResult):
-            raise wexception.WazuhInternalError(1000, extra_message=f'Cannot be merged with {type(other)} object')
+            raise wexception.GuardBearInternalError(1000, extra_message=f'Cannot be merged with {type(other)} object')
 
         result.add_failed_items_from(other)
         result.affected_items = merge(

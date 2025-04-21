@@ -1,5 +1,5 @@
 import pytest
-from wazuh.core.exception import WazuhCommsAPIError
+from wazuh.core.exception import GuardBearCommsAPIError
 
 from comms_api.core.files import DIR, get_file_path
 
@@ -16,8 +16,8 @@ def test_get_file_path():
 @pytest.mark.parametrize(
     'file_name,exception,error_code',
     [
-        ('test/', WazuhCommsAPIError, 2704),
-        ('dir/test.txt', WazuhCommsAPIError, 2705),
+        ('test/', GuardBearCommsAPIError, 2704),
+        ('dir/test.txt', GuardBearCommsAPIError, 2705),
     ],
 )
 def test_get_file_path_ko(file_name, exception, error_code) -> None:

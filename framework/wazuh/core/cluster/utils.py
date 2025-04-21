@@ -17,7 +17,7 @@ from pathlib import Path
 
 from wazuh.core import common, pyDaemonModule
 from wazuh.core.config.client import CentralizedConfig
-from wazuh.core.exception import WazuhError, WazuhHAPHelperError, WazuhInternalError
+from wazuh.core.exception import WazuhError, WazuhHAPHelperError, GuardBearInternalError
 from wazuh.core.results import WazuhResult
 from wazuh.core.utils import temporary_cache
 from wazuh.core.wazuh_socket import create_wazuh_socket_message
@@ -206,7 +206,7 @@ def get_manager_status(cache=False) -> typing.Dict:
 
     Raises
     ------
-    WazuhInternalError(1913)
+    GuardBearInternalError(1913)
         If /proc directory is not found or permissions to see its status are not granted.
 
     Returns
@@ -219,7 +219,7 @@ def get_manager_status(cache=False) -> typing.Dict:
     try:
         os.stat(proc_path)
     except (PermissionError, FileNotFoundError) as e:
-        raise WazuhInternalError(1913, extra_message=str(e))
+        raise GuardBearInternalError(1913, extra_message=str(e))
 
     processes = ['wazuh-server', 'wazuh-engined', 'wazuh-server-management-apid', 'wazuh-comms-apid']
 
@@ -258,7 +258,7 @@ def get_cluster_status() -> typing.Dict:
     """
     try:
         cluster_status = {'running': 'yes' if get_manager_status()['wazuh-server'] == 'running' else 'no'}
-    except WazuhInternalError:
+    except GuardBearInternalError:
         cluster_status = {'running': 'no'}
 
     return cluster_status
@@ -271,11 +271,11 @@ def manager_restart() -> WazuhResult:
 
     Raises
     ------
-    WazuhInternalError(1901)
+    GuardBearInternalError(1901)
         If the socket path doesn't exist.
-    WazuhInternalError(1902)
+    GuardBearInternalError(1902)
         If there is a socket connection error.
-    WazuhInternalError(1014)
+    GuardBearInternalError(1014)
         If there is a socket communication error.
 
     Returns
@@ -302,15 +302,15 @@ def manager_restart() -> WazuhResult:
                 conn = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
                 conn.connect(socket_path)
             except socket.error:
-                raise WazuhInternalError(1902)
+                raise GuardBearInternalError(1902)
         else:
-            raise WazuhInternalError(1901)
+            raise GuardBearInternalError(1901)
 
         try:
             conn.send(msg.encode())
             conn.close()
         except socket.error as e:
-            raise WazuhInternalError(1014, extra_message=str(e))
+            raise GuardBearInternalError(1014, extra_message=str(e))
     finally:
         fcntl.lockf(lock_file, fcntl.LOCK_UN)
         lock_file.close()

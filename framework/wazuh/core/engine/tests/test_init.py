@@ -7,7 +7,7 @@ from wazuh.core.config.client import CentralizedConfig
 from wazuh.core.config.models.server import ValidateFilePathMixin
 from wazuh.core.engine import Engine, get_engine_client
 from wazuh.core.engine.tests.conftest import get_default_configuration
-from wazuh.core.exception import WazuhEngineError
+from wazuh.core.exception import GuardBearCluserError
 
 with patch.object(ValidateFilePathMixin, '_validate_file_path', return_value=None):
     default_config = get_default_configuration()
@@ -62,11 +62,11 @@ async def test_get_engine_client():
     ],
 )
 async def test_get_engine_client_ko(socket_path: str, error_number: int):
-    """Check that the `get_engine_client` returns a WazuhEngineError on an exception."""
+    """Check that the `get_engine_client` returns a GuardBearCluserError on an exception."""
     with patch.object(CentralizedConfig, 'load', return_value=None):
         CentralizedConfig._config = default_config
 
-        with pytest.raises(WazuhEngineError, match=f'.*{error_number}.*'):
+        with pytest.raises(GuardBearCluserError, match=f'.*{error_number}.*'):
             async with get_engine_client() as engine:
                 engine._client._transport._pool._retries = 0
                 engine._client.timeout = Timeout(None)

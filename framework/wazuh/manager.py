@@ -1,12 +1,12 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@wazuh.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from wazuh import Wazuh
 from wazuh.core import common
 from wazuh.core.cluster.cluster import get_node
 from wazuh.core.cluster.utils import manager_restart
-from wazuh.core.exception import WazuhError, WazuhInternalError
+from wazuh.core.exception import WazuhError, GuardBearInternalError
 from wazuh.core.manager import (
     OSSEC_LOG_FIELDS,
     get_logs_summary,
@@ -198,7 +198,7 @@ _validation_default_result_kwargs = {
     post_proc_kwargs={'default_result_kwargs': _validation_default_result_kwargs},
 )
 def validation() -> AffectedItemsWazuhResult:
-    """Check if Wazuh configuration is OK.
+    """Check if GuardBear configuration is OK.
 
     Returns
     -------
@@ -276,7 +276,7 @@ def get_basic_info() -> AffectedItemsWazuhResult:
 # TODO(26555): Adapt function to the new configuration
 @expose_resources(actions=['cluster:update_config'], resources=[f'node:id:{node_id}'])
 def update_ossec_conf(new_conf: str = None) -> AffectedItemsWazuhResult:
-    """Replace wazuh configuration (ossec.conf) with the provided configuration.
+    """Replace GuardBear configuration (ossec.conf) with the provided configuration.
 
     Parameters
     ----------
@@ -302,7 +302,7 @@ def get_update_information(installation_uid: str, update_information: dict) -> W
     Parameters
     ----------
     installation_uid : str
-        Wazuh UID to include in the result.
+        GuardBear UID to include in the result.
     update_information : dict
         Data to process.
 
@@ -320,7 +320,7 @@ def get_update_information(installation_uid: str, update_information: dict) -> W
 
     if status_code != 200:
         extra_message = f'{uuid}, {tag}' if status_code == 401 else update_information['message']
-        raise WazuhInternalError(2100, extra_message=extra_message)
+        raise GuardBearInternalError(2100, extra_message=extra_message)
 
     update_information.pop('message', None)
 

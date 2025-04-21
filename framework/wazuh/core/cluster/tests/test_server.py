@@ -695,7 +695,7 @@ async def test_AbstractServer_start_ko(
         patch('ssl.create_default_context', return_value=ssl_mock),
         patch.object(ssl_mock, 'load_cert_chain'),
     ):
-        with pytest.raises(exception.WazuhClusterError, match=r'.* 3007 .*'):
+        with pytest.raises(exception.GuardBearClusterError, match=r'.* 3007 .*'):
             abstract_server = AbstractServer(
                 performance_test=1,
                 concurrency_test=2,

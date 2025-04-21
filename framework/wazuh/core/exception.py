@@ -678,7 +678,7 @@ class WazuhException(Exception):
         return cls(**dct)
 
 
-class WazuhInternalError(WazuhException):
+class GuardBearInternalError(WazuhException):
     """Class representing an error in the code that could not be handled."""
 
     _default_type = 'about:blank'
@@ -695,7 +695,7 @@ class WazuhInternalError(WazuhException):
         title: str = None,
         type: str = None,
     ):
-        """Create a WazuhInternalError exception.
+        """Create a GuardBearInternalError exception.
 
         Parameters
         ----------
@@ -729,42 +729,42 @@ class WazuhInternalError(WazuhException):
         self._ids = set() if ids is None else set(ids)
 
 
-class WazuhClusterError(WazuhInternalError):
+class GuardBearClusterError(GuardBearInternalError):
     """Cluster exception."""
 
     _default_type = 'about:blank'
     _default_title = 'GuardBear Cluster Error'
 
 
-class WazuhHAPHelperError(WazuhClusterError):
+class WazuhHAPHelperError(GuardBearClusterError):
     """HAProxy Helper exception."""
 
     _default_type = 'about:blank'
     _default_title = 'GuardBear HAProxy Helper Error'
 
 
-class WazuhCommsAPIError(WazuhInternalError):
+class GuardBearCommsAPIError(GuardBearInternalError):
     """Communications API exception."""
 
     _default_type = 'about:blank'
     _default_title = 'GuardBear Communications API Error'
 
 
-class WazuhEngineError(WazuhInternalError):
+class GuardBearEngineError(GuardBearInternalError):
     """Engine client exception."""
 
     _default_type = 'about:blank'
     _default_title = 'GuardBear Engine Error'
 
 
-class WazuhIndexerError(WazuhInternalError):
+class GuardBearIndexerError(GuardBearInternalError):
     """Indexer client exception."""
 
     _default_type = 'about:blank'
     _default_title = 'GuardBear Indexer Error'
 
 
-class WazuhDaemonError(WazuhInternalError):
+class GuardBearDaemonError(GuardBearInternalError):
     """Server daemons exception."""
 
     _default_type = 'about:blank'

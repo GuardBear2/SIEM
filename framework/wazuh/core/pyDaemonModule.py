@@ -10,7 +10,7 @@ from pathlib import Path
 
 import psutil
 from wazuh.core import common
-from wazuh.core.exception import WazuhInternalError
+from wazuh.core.exception import GuardBearInternalError
 
 
 def create_pid(name: str, pid: int):
@@ -25,7 +25,7 @@ def create_pid(name: str, pid: int):
 
     Raises
     ------
-    WazuhInternalError(3002)
+    GuardBearInternalError(3002)
         Error creating pidfile.
     """
     filename = common.WAZUH_RUN / f'{name}-{pid}.pid'
@@ -35,7 +35,7 @@ def create_pid(name: str, pid: int):
             fp.write(f'{pid}\n')
             os.chmod(filename, 0o640)
         except OSError as e:
-            raise WazuhInternalError(3002, str(e))
+            raise GuardBearInternalError(3002, str(e))
 
 
 def get_parent_pid(name: str) -> int:

@@ -4,7 +4,7 @@ import pytest
 from opensearchpy import AsyncOpenSearch
 from opensearchpy.exceptions import TransportError
 from wazuh.core.config.models.indexer import IndexerConfig, IndexerNode
-from wazuh.core.exception import WazuhIndexerError
+from wazuh.core.exception import GuardBearCluserError
 from wazuh.core.indexer import Indexer, create_indexer, get_indexer_client
 
 
@@ -49,7 +49,7 @@ class TestIndexer:
     )
     def test_indexer_init_ko(self, params: dict):
         """Check the correct initalization of the `Indexer` class."""
-        with pytest.raises(WazuhIndexerError, match='.*2201.*'):
+        with pytest.raises(GuardBearCluserError, match='.*2201.*'):
             Indexer(hosts=['test'], ports=[9200], **params)
 
     async def test_connect(self, indexer_instance_with_mocked_client):
@@ -63,7 +63,7 @@ class TestIndexer:
         """Check the correct raise of `connect` method."""
         indexer_instance_with_mocked_client._client.info.side_effect = TransportError('', '')
 
-        with pytest.raises(WazuhIndexerError, match='.*2200.*'):
+        with pytest.raises(GuardBearCluserError, match='.*2200.*'):
             await indexer_instance_with_mocked_client.connect()
 
     async def test_close(self, indexer_instance_with_mocked_client):
@@ -106,11 +106,11 @@ async def test_create_indexer_ko(indexer_mock: mock.AsyncMock, retries: int):
     password = 'password_test'
 
     instance_mock = mock.AsyncMock()
-    instance_mock.connect.side_effect = WazuhIndexerError(2200)
+    instance_mock.connect.side_effect = GuardBearCluserError(2200)
     indexer_mock.return_value = instance_mock
 
     with mock.patch('wazuh.core.indexer.sleep') as sleep_mock:
-        with pytest.raises(WazuhIndexerError, match='.*2200.*'):
+        with pytest.raises(GuardBearCluserError, match='.*2200.*'):
             instance_mock = await create_indexer(
                 hosts=hosts, ports=ports, user=user, password=password, retries=retries
             )

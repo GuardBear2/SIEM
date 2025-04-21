@@ -111,16 +111,16 @@ def test_start_daemons_ko(mock_popen):
         patch.object(wazuh_server, 'main_logger'),
         patch.object(wazuh_server.pyDaemonModule, 'get_parent_pid', return_value=pid),
     ):
-        with pytest.raises(wazuh_server.WazuhDaemonError, match='Error starting wazuh-engined: return code 1'):
+        with pytest.raises(wazuh_server.GuardBearDaemonError, match='Error starting wazuh-engined: return code 1'):
             wait_mock.side_effect = (1,)
             wazuh_server.start_daemons(False)
 
-        with pytest.raises(wazuh_server.WazuhDaemonError, match='Error starting wazuh-comms-apid: return code 1'):
+        with pytest.raises(wazuh_server.GuardBearDaemonError, match='Error starting wazuh-comms-apid: return code 1'):
             wait_mock.side_effect = (0, 1)
             wazuh_server.start_daemons(False)
 
         with pytest.raises(
-            wazuh_server.WazuhDaemonError, match='Error starting wazuh-server-management-apid: return code 1'
+            wazuh_server.GuardBearDaemonError, match='Error starting wazuh-server-management-apid: return code 1'
         ):
             wait_mock.side_effect = (0, 0, 1)
             wazuh_server.start_daemons(False)
@@ -500,7 +500,7 @@ def test_start(
                     )
 
                 error_message = 'Some daemon fail to start'
-                start_daemons_mock.side_effect = wazuh_server.WazuhDaemonError(error_message)
+                start_daemons_mock.side_effect = wazuh_server.GuardBearDaemonError(error_message)
                 wazuh_server.start()
                 main_logger_mock.assert_any_call(error_message)
 
@@ -674,7 +674,7 @@ def test_check_daemon_ko_children_number(clean_pid_files_mock):
     proc_list = [proc_mock]
 
     with pytest.raises(
-        wazuh_server.WazuhDaemonError,
+        wazuh_server.GuardBearDaemonError,
         match=f'Daemon `{proc_name}` does not have the correct number of children process.',
     ):
         wazuh_server.check_daemon(proc_list, proc_name, children_number)
@@ -740,7 +740,7 @@ async def test_check_for_server_readiness_ko(sleep_mock, daemon_exists, children
 @pytest.mark.asyncio
 @patch('scripts.wazuh_server.stop_loop', side_effect=RuntimeError)
 @patch('scripts.wazuh_server.check_for_server_readiness')
-@patch('scripts.wazuh_server.check_daemon', side_effect=(None, None, wazuh_server.WazuhDaemonError(code='Test error.')))
+@patch('scripts.wazuh_server.check_daemon', side_effect=(None, None, wazuh_server.GuardBearDaemonError(code='Test error.')))
 @patch('scripts.wazuh_server.asyncio.sleep')
 async def test_monitor_server_daemons(sleep_mock, check_daemon_mock, readiness_mock, stop_loop_mock):
     """Check and set the behavior of wazuh_server `monitor_server_daemons` function."""

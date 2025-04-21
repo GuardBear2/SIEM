@@ -24,7 +24,7 @@ import psutil
 import yaml
 from cachetools import TTLCache, cached
 from wazuh.core import common
-from wazuh.core.exception import WazuhError, WazuhInternalError
+from wazuh.core.exception import WazuhError, GuardBearInternalError
 from wazuh.core.wdb import WazuhDBConnection
 
 # Python 2/3 compatibility
@@ -1716,7 +1716,7 @@ class WazuhDBQuery(object):
 
         Raises
         ------
-        WazuhInternalError(1123)
+        GuardBearInternalError(1123)
             Error communicating with socket. Query too long.
         """
         self._add_select_to_query()
@@ -1734,7 +1734,7 @@ class WazuhDBQuery(object):
         elif self.__class__.__name__ == 'WazuhDBQueryGroups':
             resource = 'name'
         else:
-            raise WazuhInternalError(1123)
+            raise GuardBearInternalError(1123)
         self.select = [resource]
         self._add_select_to_query()
         self._execute_data_query()

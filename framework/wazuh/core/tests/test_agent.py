@@ -26,7 +26,7 @@ with patch('wazuh.core.common.wazuh_uid'):
             from server_management_api.util import remove_nones_to_dict
             from wazuh.core.agent import *
             from wazuh.core.common import reset_context_cache
-            from wazuh.core.exception import WazuhException, WazuhIndexerError
+            from wazuh.core.exception import WazuhException, GuardBearCluserError
             from wazuh.core.indexer.agent import Agent as IndexerAgent
             from wazuh.core.utils import get_group_file_path
 
@@ -1134,10 +1134,10 @@ async def test_agent_set_agent_group_relationship(
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.indexer.Indexer._get_opensearch_client', side_effect=WazuhIndexerError(2200))
+@patch('wazuh.core.indexer.Indexer._get_opensearch_client', side_effect=GuardBearCluserError(2200))
 async def test_agent_set_agent_group_relationship_ko(get_client_mock):
     """Test if set_agent_group_relationship() raises expected exception."""
-    with pytest.raises(WazuhInternalError, match='.* 2200 .*'):
+    with pytest.raises(GuardBearInternalError, match='.* 2200 .*'):
         await Agent.set_agent_group_relationship('002', 'test_group')
 
 

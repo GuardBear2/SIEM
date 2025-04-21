@@ -193,17 +193,17 @@ class DistributedAPI:
             )
 
         except json.decoder.JSONDecodeError:
-            e = exception.WazuhInternalError(3036)
+            e = exception.GuardBearInternalError(3036)
             e.dapi_errors = await self.get_error_info(e)
             if self.debug:
                 raise
             self.logger.error(f'{e.message}')
             return e
-        except exception.WazuhInternalError as e:
+        except exception.GuardBearInternalError as e:
             e.dapi_errors = await self.get_error_info(e)
             if self.debug:
                 raise
-            self.logger.error(f'{e.message}', exc_info=not isinstance(e, exception.WazuhClusterError))
+            self.logger.error(f'{e.message}', exc_info=not isinstance(e, exception.GuardBearClusterError))
             return e
         except exception.WazuhError as e:
             e.dapi_errors = await self.get_error_info(e)
@@ -213,7 +213,7 @@ class DistributedAPI:
                 raise
 
             self.logger.error(f'Unhandled exception: {str(e)}', exc_info=True)
-            return exception.WazuhInternalError(1000, dapi_errors=await self.get_error_info(e))
+            return exception.GuardBearInternalError(1000, dapi_errors=await self.get_error_info(e))
 
     def check_wazuh_status(self):
         """There are some services that are required for wazuh to correctly process API requests. If any of those services
@@ -239,7 +239,7 @@ class DistributedAPI:
                 'node_name': self.node_info.get('node', 'UNKNOWN NODE'),
                 'not_ready_daemons': ', '.join([f'{key}->{value}' for key, value in not_ready_daemons.items()]),
             }
-            raise exception.WazuhInternalError(1017, extra_message=extra_info)
+            raise exception.GuardBearInternalError(1017, extra_message=extra_info)
 
     @staticmethod
     def run_local(f, f_kwargs, rbac_permissions, broadcasting, nodes, current_user, origin_module):
@@ -315,25 +315,25 @@ class DistributedAPI:
                     data = await asyncio.wait_for(task, timeout=timeout)
                     self.debug_log('Finished executing request locally')
                 except asyncio.TimeoutError:
-                    raise exception.WazuhInternalError(3021)
+                    raise exception.GuardBearInternalError(3021)
                 except OperationalError as exc:
-                    raise exception.WazuhInternalError(2008, extra_message=str(exc.orig))
+                    raise exception.GuardBearInternalError(2008, extra_message=str(exc.orig))
                 except process.BrokenProcessPool:
-                    raise exception.WazuhInternalError(901)
+                    raise exception.GuardBearInternalError(901)
             except json.decoder.JSONDecodeError:
-                raise exception.WazuhInternalError(3036)
+                raise exception.GuardBearInternalError(3036)
             except process.BrokenProcessPool:
-                raise exception.WazuhInternalError(900)
+                raise exception.GuardBearInternalError(900)
 
             self.debug_log(f'Time calculating request result: {time.time() - before:.3f}s')
             return data
-        except exception.WazuhInternalError as e:
+        except exception.GuardBearInternalError as e:
             e.dapi_errors = await self.get_error_info(e)
             # Avoid exception info if it is an asyncio timeout error, JSONDecodeError, /proc availability error or
             # WazuhClusterError
             self.logger.error(
                 f'{e.message}',
-                exc_info=e.code not in {3021, 3036, 1913, 1017} and not isinstance(e, exception.WazuhClusterError),
+                exc_info=e.code not in {3021, 3036, 1913, 1017} and not isinstance(e, exception.GuardBearClusterError),
             )
             if self.debug:
                 raise
@@ -348,7 +348,7 @@ class DistributedAPI:
             if self.debug:
                 raise
             return json.dumps(
-                exception.WazuhInternalError(1000, dapi_errors=await self.get_error_info(e)),
+                exception.GuardBearInternalError(1000, dapi_errors=await self.get_error_info(e)),
                 cls=c_common.WazuhJSONEncoder,
             )
 
@@ -409,8 +409,8 @@ class DistributedAPI:
         error_message = e.message if isinstance(e, exception.WazuhException) else exception.GENERIC_ERROR_MSG
         result = {node: {'error': error_message}}
 
-        # Give log path only in case of WazuhInternalError
-        if isinstance(e, exception.WazuhInternalError):
+        # Give log path only in case of GuardBearInternalError
+        if isinstance(e, exception.GuardBearInternalError):
             log_filename = None
             for h in self.logger.handlers or self.logger.parent.handlers:
                 if hasattr(h, 'baseFilename'):

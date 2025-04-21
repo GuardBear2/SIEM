@@ -36,7 +36,7 @@ with patch('wazuh.common.wazuh_uid'):
 
             wazuh.rbac.decorators.expose_resources = RBAC_bypasser
             from server_management_api.util import raise_if_exc
-            from wazuh import WazuhError, WazuhInternalError, agent, cluster, manager
+            from wazuh import WazuhError, GuardBearInternalError, agent, cluster, manager
             from wazuh.core.cluster import local_client
             from wazuh.core.cluster.dapi.dapi import APIRequestQueue, DistributedAPI
             from wazuh.core.exception import WazuhClusterError
@@ -252,7 +252,7 @@ async def test_DistributedAPI_local_request_errors():
     """Check the behaviour when the local_request function raised an error."""
     with patch(
         'wazuh.core.cluster.dapi.dapi.DistributedAPI.execute_local_request',
-        new=AsyncMock(side_effect=WazuhInternalError(1001)),
+        new=AsyncMock(side_effect=GuardBearInternalError(1001)),
     ):
         dapi_kwargs = {'f': agent.get_agents, 'logger': logger}
         await raise_if_exc_routine(dapi_kwargs=dapi_kwargs, expected_error=1001)
@@ -261,7 +261,7 @@ async def test_DistributedAPI_local_request_errors():
         dapi = DistributedAPI(f=agent.get_agents, logger=logger, debug=True)
         try:
             raise_if_exc(await dapi.distribute_function())
-        except WazuhInternalError as e:
+        except GuardBearInternalError as e:
             assert e.code == 1001
 
     with patch(
@@ -327,18 +327,18 @@ async def test_DistributedAPI_local_request(mock_local_request):
         dapi = DistributedAPI(f=manager.status, logger=logger, debug=True)
         try:
             raise_if_exc(await dapi.distribute_function())
-        except WazuhInternalError as e:
+        except GuardBearInternalError as e:
             assert e.code == 2008
             assert str(e).endswith(orig_message)
 
-    with patch('asyncio.wait_for', new=AsyncMock(side_effect=WazuhInternalError(1001))):
+    with patch('asyncio.wait_for', new=AsyncMock(side_effect=GuardBearInternalError(1001))):
         dapi_kwargs = {'f': manager.status, 'logger': logger}
         await raise_if_exc_routine(dapi_kwargs=dapi_kwargs, expected_error=1001)
 
         dapi = DistributedAPI(f=manager.status, logger=logger, debug=True)
         try:
             raise_if_exc(await dapi.distribute_function())
-        except WazuhInternalError as e:
+        except GuardBearInternalError as e:
             assert e.code == 1001
 
     with patch('asyncio.wait_for', new=AsyncMock(side_effect=KeyError('Testing'))):
@@ -421,7 +421,7 @@ async def test_DistributedAPI_forward_request_errors(mock_client_execute, mock_g
 
 @patch(
     'wazuh.core.cluster.dapi.dapi.DistributedAPI.execute_local_request',
-    new=AsyncMock(side_effect=WazuhInternalError(1001)),
+    new=AsyncMock(side_effect=GuardBearInternalError(1001)),
 )
 async def test_DistributedAPI_logger():
     """Test custom logger inside DistributedAPI class."""
@@ -624,7 +624,7 @@ def test_DistributedAPI_check_wazuh_status_exception(node_info_mock, status_valu
         dapi = DistributedAPI(f=agent.get_agents, logger=logger)
         try:
             dapi.check_wazuh_status()
-        except WazuhInternalError as e:
+        except GuardBearInternalError as e:
             assert e.code == 1017
             assert statuses
             assert e._extra_message['node_name'] == 'random_node'

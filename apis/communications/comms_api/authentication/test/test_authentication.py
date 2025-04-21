@@ -15,7 +15,7 @@ with patch.object(ValidateFilePathMixin, '_validate_file_path', return_value=Non
     CentralizedConfig._config = default_config
 
     from server_management_api.authentication import JWT_ISSUER
-    from wazuh.core.exception import WazuhCommsAPIError
+    from wazuh.core.exception import GuardBearCommsAPIError
 
     from comms_api.authentication.authentication import (
         JWT_AUDIENCE,
@@ -63,7 +63,7 @@ async def test_jwt_bearer_ko():
 
 
 @pytest.mark.asyncio
-@patch('comms_api.authentication.authentication.decode_token', side_effect=WazuhCommsAPIError(2706))
+@patch('comms_api.authentication.authentication.decode_token', side_effect=GuardBearCommsAPIError(2706))
 async def test_jwt_bearer_decode_ko(decode_token_mock):
     """Validate that the `JWTBearer` class handles decode exceptions successfully."""
     mock_req = MagicMock()
@@ -113,7 +113,7 @@ def test_decode_token(mock_get_keypair, mock_decode):
 )
 def test_decode_token_ko(mock_get_keypair):
     """Assert exceptions are handled as expected inside the `decode_token` function."""
-    with pytest.raises(WazuhCommsAPIError, match='Error 2706 - Invalid authentication token'):
+    with pytest.raises(GuardBearCommsAPIError, match='Error 2706 - Invalid authentication token'):
         _ = decode_token(token='test_token')
 
     mock_get_keypair.assert_called_once()

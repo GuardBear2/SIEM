@@ -16,7 +16,7 @@ from os import listdir, path, remove, stat, walk
 from uuid import uuid4
 
 from jsonschema import ValidationError, validate, validators
-from wazuh import WazuhError, WazuhException, WazuhInternalError
+from wazuh import WazuhError, WazuhException, GuardBearInternalError
 from wazuh.core import common
 from wazuh.core.cluster.utils import (
     AGENT_CHUNK_SIZE,
@@ -263,7 +263,7 @@ def walk_dir(
             else:
                 break
     except OSError as e:
-        raise WazuhInternalError(3015, e)
+        raise GuardBearInternalError(3015, e)
     return walk_files, result_logs
 
 

@@ -77,7 +77,7 @@ async def test_async_send_ko():
     async_wdb = AsyncWazuhDBConnection()
 
     # Reader and writer are None.
-    with pytest.raises(exception.WazuhInternalError, match='.* 2005 .*'):
+    with pytest.raises(exception.GuardBearInternalError, match='.* 2005 .*'):
         await async_wdb._send('test')
 
     # EOF reached before n can be read.
@@ -85,7 +85,7 @@ async def test_async_send_ko():
     async_wdb._writer.drain = AsyncMock()
     async_wdb._reader = AsyncMock()
     async_wdb._reader.readexactly.side_effect = lambda x: exec('raise(asyncio.IncompleteReadError("test", 5))')
-    with pytest.raises(exception.WazuhInternalError, match=r'\b2010\b'):
+    with pytest.raises(exception.GuardBearInternalError, match=r'\b2010\b'):
         await async_wdb._send('test')
 
     # Wazuh-db error response.
@@ -115,7 +115,7 @@ async def test_run_wdb_command_ko(wdb_response):
     """Test `WazuhDBConnection.run_wdb_command` method expected exceptions."""
     with patch('wazuh.core.wdb.AsyncWazuhDBConnection._send', return_value=wdb_response):
         wdb_con = AsyncWazuhDBConnection()
-        with pytest.raises(exception.WazuhInternalError, match='.* 2007 .*') as expected_exc:
+        with pytest.raises(exception.GuardBearInternalError, match='.* 2007 .*') as expected_exc:
             await wdb_con.run_wdb_command('global sync-agent-info-get ')
 
         if len(wdb_response) > 1:
@@ -266,7 +266,7 @@ def test_execute_pagination(socket_send_mock, connect_mock):
         'wazuh.core.wdb.WazuhDBConnection._send',
         side_effect=[
             [{'total': 5}],
-            exception.WazuhInternalError(2009),
+            exception.GuardBearInternalError(2009),
             ['ok', '{"total": 5}'],
             ['ok', '{"total": 5}'],
         ],
@@ -275,9 +275,9 @@ def test_execute_pagination(socket_send_mock, connect_mock):
 
     # Test pagination error
     with patch(
-        'wazuh.core.wdb.WazuhDBConnection._send', side_effect=[[{'total': 5}], exception.WazuhInternalError(2009)]
+        'wazuh.core.wdb.WazuhDBConnection._send', side_effect=[[{'total': 5}], exception.GuardBearInternalError(2009)]
     ):
-        with pytest.raises(exception.WazuhInternalError, match='.* 2009 .*'):
+        with pytest.raises(exception.GuardBearInternalError, match='.* 2009 .*'):
             mywdb.execute('agent 000 sql select test from test offset 1 limit 1')
 
 

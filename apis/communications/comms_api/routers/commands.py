@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends, Request, status
-from wazuh.core.exception import WazuhCommsAPIError
+from wazuh.core.exception import GuardBearCommsAPIError
 
 from comms_api.authentication.authentication import JWTBearer, decode_token
 from comms_api.core.commands import pull_commands
@@ -35,5 +35,5 @@ async def get_commands(token: Annotated[str, Depends(JWTBearer())], request: Req
         uuid = decode_token(token)['uuid']
         commands = await pull_commands(request.app.state.commands_manager, uuid)
         return Commands(commands=commands)
-    except WazuhCommsAPIError as exc:
+    except GuardBearCommsAPIError as exc:
         raise HTTPError(message=exc.message, code=exc.code, status_code=status.HTTP_403_FORBIDDEN)

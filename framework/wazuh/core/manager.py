@@ -16,7 +16,7 @@ from typing import Dict, Optional, Union
 import certifi
 import httpx
 import wazuh
-from wazuh import WazuhError, WazuhException, WazuhInternalError
+from wazuh import WazuhError, WazuhException, GuardBearInternalError
 from wazuh.core import common
 from wazuh.core.cluster.utils import get_manager_status
 from wazuh.core.configuration import get_active_configuration, get_cti_url
@@ -129,7 +129,7 @@ def get_ossec_logs(limit: int = 2000) -> list:
     elif log_format == LoggingFormat.json and exists(common.WAZUH_LOG_JSON):
         wazuh_log_content = tail(common.WAZUH_LOG_JSON, limit)
     else:
-        raise WazuhInternalError(1000)
+        raise GuardBearInternalError(1000)
 
     for line in wazuh_log_content:
         log_fields = get_ossec_log_fields(line, log_format=log_format)
@@ -179,13 +179,13 @@ def validate_ossec_conf() -> str:
 
     Raises
     ------
-    WazuhInternalError(1014)
+    GuardBearInternalError(1014)
         If there is a socket communication error.
-    WazuhInternalError(1013)
+    GuardBearInternalError(1013)
         If it is unable to connect to socket.
-    WazuhInternalError(1901)
+    GuardBearInternalError(1901)
         If 'execq' socket cannot be created.
-    WazuhInternalError(1904)
+    GuardBearInternalError(1904)
         If there is bad data received from 'execq'.
 
     Returns
@@ -204,9 +204,9 @@ def validate_ossec_conf() -> str:
             wcom_socket = WazuhSocket(wcom_socket_path)
         except WazuhException as e:
             extra_msg = f'Socket: WAZUH_PATH/queue/sockets/com. Error {e.message}'
-            raise WazuhInternalError(1013, extra_message=extra_msg)
+            raise GuardBearInternalError(1013, extra_message=extra_msg)
     else:
-        raise WazuhInternalError(1901)
+        raise GuardBearInternalError(1901)
 
     # Send msg to wcom socket
     try:
@@ -217,14 +217,14 @@ def validate_ossec_conf() -> str:
         buffer.extend(datagram)
 
     except (socket.error, socket.timeout) as e:
-        raise WazuhInternalError(1014, extra_message=str(e))
+        raise GuardBearInternalError(1014, extra_message=str(e))
     finally:
         wcom_socket.close()
 
     try:
         response = parse_execd_output(buffer.decode('utf-8').rstrip('\0'))
     except (KeyError, json.decoder.JSONDecodeError) as e:
-        raise WazuhInternalError(1904, extra_message=str(e))
+        raise GuardBearInternalError(1904, extra_message=str(e))
 
     return response
 

@@ -8,7 +8,7 @@ from unittest.mock import ANY, patch
 
 import pytest
 from connexion import ProblemException
-from wazuh.core.exception import WazuhError, WazuhInternalError, WazuhPermissionError, WazuhResourceNotFound
+from wazuh.core.exception import WazuhError, GuardBearInternalError, WazuhPermissionError, WazuhResourceNotFound
 
 from server_management_api import util
 
@@ -183,7 +183,7 @@ def test_to_relative_path(mock_real_path):
         (WazuhError, 1000, 400, ProblemException),
         (WazuhPermissionError, 4000, 403, ProblemException),
         (WazuhResourceNotFound, 1710, 404, ProblemException),
-        (WazuhInternalError, 1000, 500, ProblemException),
+        (GuardBearInternalError, 1000, 500, ProblemException),
     ],
 )
 def test_create_problem(exception_type, code, returned_code, returned_exception):
@@ -200,7 +200,7 @@ def test_create_problem(exception_type, code, returned_code, returned_exception)
     'obj, code',
     [
         ((WazuhError(6001), ['value0', 'value1']), 429),
-        ((WazuhInternalError(1000), ['value0', 'value1']), None),
+        ((GuardBearInternalError(1000), ['value0', 'value1']), None),
         ((WazuhPermissionError(4000), ['value0', 'value1']), None),
         ((WazuhResourceNotFound(1710), ['value0', 'value1']), None),
     ],

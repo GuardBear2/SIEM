@@ -356,7 +356,7 @@ def _create_problem(exc: Exception, code: int = None):
             }
         )
 
-    if isinstance(exc, exception.WazuhInternalError):
+    if isinstance(exc, exception.GuardBearInternalError):
         raise ProblemException(
             status=500 if not code else code, type=exc.type, title=exc.title, detail=exc.message, ext=ext
         )

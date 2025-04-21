@@ -31,7 +31,7 @@ with patch('wazuh.core.common.wazuh_uid'):
             wazuh.rbac.decorators.expose_resources = RBAC_bypasser
 
             from server_management_api.util import remove_nones_to_dict
-            from wazuh import WazuhError, WazuhException, WazuhInternalError
+            from wazuh import WazuhError, WazuhException, GuardBearInternalError
             from wazuh.agent import (
                 add_agent,
                 build_agents_query,
@@ -448,7 +448,7 @@ async def test_create_group(chown_mock, uid_mock, gid_mock, group_id):
         ('default', WazuhError, 1711),
         (f'group-1{GROUP_FILE_EXT}', WazuhError, 1722),
         ('invalid!', WazuhError, 1722),
-        ('delete-me', WazuhInternalError, 1005),
+        ('delete-me', GuardBearInternalError, 1005),
         ('agent-template', WazuhError, 1713),
     ],
 )

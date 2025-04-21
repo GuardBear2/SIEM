@@ -256,7 +256,7 @@ async def test_worker_handler_process_request_ko(logger_mock, event_loop):
         """Auxiliary class."""
 
         def send_request(self, command, error_msg):
-            raise exception.WazuhClusterError(1001)
+            raise exception.GuardBearClusterError(1001)
 
     class LocalServerDapiMock:
         """Auxiliary class."""
@@ -403,7 +403,7 @@ async def test_worker_handler_sync_integrity(
 
         error_mock.assert_called_with('Error synchronizing integrity: ')
         json_dumps_mock.assert_called_with(
-            exception.WazuhClusterError(code=1000, extra_message=str(Exception())), cls=cluster_common.WazuhJSONEncoder
+            exception.GuardBearClusterError(code=1000, extra_message=str(Exception())), cls=cluster_common.WazuhJSONEncoder
         )
         send_request_mock.assert_called_with(command=b'syn_i_w_m_r', data=b'None ' + ''.encode())
 
@@ -633,7 +633,7 @@ async def test_worker_handler_process_files_from_master_ok(
         logger_debug_mock.assert_not_called()
         logger_info_mock.assert_called_once_with('Starting.')
         json_dumps_mock.assert_called_once_with(
-            exception.WazuhClusterError(code=1000, extra_message=str(Exception())), cls=cluster_common.WazuhJSONEncoder
+            exception.GuardBearClusterError(code=1000, extra_message=str(Exception())), cls=cluster_common.WazuhJSONEncoder
         )
         rmtree_mock.assert_not_called()
 
@@ -664,19 +664,19 @@ async def test_worker_handler_process_files_from_master_ko(send_request_mock, js
             worker_handler.process_files_from_master(name='task_id', file_received=event), unlock_event(event)
         )
     json_dumps_mock.assert_called_with(
-        exception.WazuhClusterError(code=1000, extra_message=str(Exception())), cls=cluster_common.WazuhJSONEncoder
+        exception.GuardBearClusterError(code=1000, extra_message=str(Exception())), cls=cluster_common.WazuhJSONEncoder
     )
     send_request_mock.assert_called_with(command=b'syn_i_w_m_r', data=b'None ')
 
     worker_handler.server.server_config.communications.timeouts.receiving_file = 0.1
 
     event = asyncio.Event()
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3039 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3039 .*'):
         await asyncio.gather(worker_handler.process_files_from_master(name='task_id', file_received=event))
     send_request_mock.assert_called_with(command=b'cancel_task', data=b'task_id ')
 
     event = asyncio.Event()
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3040 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3040 .*'):
         with patch.object(event, 'wait', side_effect=raise_exception):
             await asyncio.gather(worker_handler.process_files_from_master(name='task_id', file_received=event))
     send_request_mock.assert_called_with(command=b'cancel_task', data=b'task_id ')

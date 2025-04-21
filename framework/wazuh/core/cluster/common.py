@@ -277,7 +277,7 @@ class Handler(asyncio.Protocol):
         cmd_len = len(command)
         # cmd_len must be 12 - 1 (Byte reserved for the flag used in message division)
         if cmd_len > self.cmd_len - len(InBuffer.divide_flag):
-            raise exception.WazuhClusterError(3024, extra_message=command)
+            raise exception.GuardBearClusterError(3024, extra_message=command)
 
         # Adds - to command until it reaches cmd length
         command = command + b' ' + b'-' * (self.cmd_len - cmd_len - 1)
@@ -372,7 +372,7 @@ class Handler(asyncio.Protocol):
                 break
             parsed = self.msg_parse()
 
-    async def send_request(self, command: bytes, data: bytes) -> Union[exception.WazuhClusterError, Any]:
+    async def send_request(self, command: bytes, data: bytes) -> Union[exception.GuardBearClusterError, Any]:
         """Send a request to peer and wait for the response to be received and processed.
 
         Parameters
@@ -396,9 +396,9 @@ class Handler(asyncio.Protocol):
                 self.push(msg)
         except MemoryError:
             self.request_chunk //= 2
-            raise exception.WazuhClusterError(3026)
+            raise exception.GuardBearClusterError(3026)
         except Exception as e:
-            raise exception.WazuhClusterError(3018, extra_message=str(e))
+            raise exception.GuardBearClusterError(3018, extra_message=str(e))
         try:
             # A lock is hold until response.write() is called inside data_received() method.
             response_data = await asyncio.wait_for(
@@ -408,7 +408,7 @@ class Handler(asyncio.Protocol):
             del self.box[msg_counter]
         except asyncio.TimeoutError:
             self.box[msg_counter] = None
-            raise exception.WazuhClusterError(3020, extra_message=command.decode())
+            raise exception.GuardBearClusterError(3020, extra_message=command.decode())
         return response_data
 
     async def send_file(self, filename: str, task_id: bytes = None) -> int:
@@ -427,7 +427,7 @@ class Handler(asyncio.Protocol):
             Number of bytes that were successfully sent.
         """
         if not os.path.exists(filename):
-            raise exception.WazuhClusterError(3034, extra_message=filename)
+            raise exception.GuardBearClusterError(3034, extra_message=filename)
 
         sent_size = 0
         filename = Path(filename)
@@ -435,7 +435,7 @@ class Handler(asyncio.Protocol):
         try:
             # Tell to the destination node where (inside wazuh_path) the file has to be written.
             await self.send_request(command=b'new_file', data=relative_path)
-        except exception.WazuhClusterError as e:
+        except exception.GuardBearClusterError as e:
             if e.code != 3020:
                 raise e
 
@@ -445,7 +445,7 @@ class Handler(asyncio.Protocol):
             for chunk in iter(lambda: f.read(self.request_chunk - len(relative_path) - 1), b''):
                 try:
                     await self.send_request(command=b'file_upd', data=relative_path + b' ' + chunk)
-                except exception.WazuhClusterError as e:
+                except exception.GuardBearClusterError as e:
                     if e.code != 3020:
                         raise e
                 file_hash.update(chunk)
@@ -456,7 +456,7 @@ class Handler(asyncio.Protocol):
         try:
             # Close the destination file descriptor so the file in memory is dumped to disk.
             await self.send_request(command=b'file_end', data=relative_path + b' ' + file_hash.digest())
-        except exception.WazuhClusterError as e:
+        except exception.GuardBearClusterError as e:
             if e.code != 3020:
                 raise e
 
@@ -482,13 +482,13 @@ class Handler(asyncio.Protocol):
         except exception.WazuhException as e:
             task_id = str(e).encode()
             self.logger.error(f'There was an error while trying to send a string: {str(e)}', exc_info=False)
-            with contextlib.suppress(exception.WazuhClusterError):
+            with contextlib.suppress(exception.GuardBearClusterError):
                 await self.send_request(command=b'err_str', data=str(total).encode())
         else:
             # Send chunks of the string to the destination node, indicating the ID of the string.
             local_req_chunk = self.request_chunk - len(task_id) - 1
             for c in range(0, total, local_req_chunk):
-                with contextlib.suppress(exception.WazuhClusterError):
+                with contextlib.suppress(exception.GuardBearClusterError):
                     await self.send_request(command=b'str_upd', data=task_id + b' ' + my_str[c : c + local_req_chunk])
 
         return task_id
@@ -521,7 +521,7 @@ class Handler(asyncio.Protocol):
             if isinstance(e, exception.WazuhException):
                 exc = json.dumps(e, cls=WazuhJSONEncoder)
             else:
-                exc = json.dumps(exception.WazuhClusterError(1000, extra_message=str(e)), cls=WazuhJSONEncoder)
+                exc = json.dumps(exception.GuardBearClusterError(1000, extra_message=str(e)), cls=WazuhJSONEncoder)
             with contextlib.suppress(Exception):
                 await self.send_request(b'dapi_err', exc.encode())
         finally:
@@ -585,7 +585,7 @@ class Handler(asyncio.Protocol):
             self.logger.error(f"Unhandled error processing request '{command}': {e}", exc_info=True)
             command, payload = (
                 b'err',
-                json.dumps(exception.WazuhInternalError(1000, extra_message=str(e)), cls=WazuhJSONEncoder).encode(),
+                json.dumps(exception.GuardBearInternalError(1000, extra_message=str(e)), cls=WazuhJSONEncoder).encode(),
             )
         if command is not None:
             msgs = self.msg_build(command, counter, payload)
@@ -694,7 +694,7 @@ class Handler(asyncio.Protocol):
                 self.server.local_server.clients[dapi_client.decode()].send_request(b'dapi_err', error_msg)
             )
         else:
-            raise exception.WazuhClusterError(3032, extra_message=dapi_client.decode())
+            raise exception.GuardBearClusterError(3032, extra_message=dapi_client.decode())
         return b'ok', b'DAPI error forwarded to worker'
 
     def receive_file(self, data: bytes) -> Tuple[bytes, bytes]:
@@ -892,7 +892,7 @@ class Handler(asyncio.Protocol):
         try:
             exc = json.loads(data.decode(), object_hook=as_wazuh_object)
         except json.JSONDecodeError:
-            exc = exception.WazuhClusterError(3000, extra_message=data.decode())
+            exc = exception.GuardBearClusterError(3000, extra_message=data.decode())
 
         return exc
 
@@ -933,9 +933,9 @@ class Handler(asyncio.Protocol):
 
         except Exception as e:
             if isinstance(e, asyncio.TimeoutError):
-                exc = exception.WazuhClusterError(3039)
+                exc = exception.GuardBearClusterError(3039)
             else:
-                exc = exception.WazuhClusterError(3040, extra_message=str(e))
+                exc = exception.GuardBearClusterError(3040, extra_message=str(e))
             # Notify the sending node to stop its task.
             with contextlib.suppress(Exception):
                 await self.send_request(
@@ -1029,7 +1029,7 @@ class WazuhCommon:
                     self.get_logger(logger_tag).error(
                         f'Attempt to delete file {os.path.join(common.WAZUH_RUN, filename)} failed: {e}'
                     )
-            raise exception.WazuhClusterError(3027, extra_message=task_id)
+            raise exception.GuardBearClusterError(3027, extra_message=task_id)
 
         # Set full path to file for task 'task_id' and notify it is ready to be read, so the lock is released.
         self.sync_tasks[task_id].filename = os.path.join(common.WAZUH_RUN, filename)
@@ -1209,7 +1209,7 @@ class SyncFiles(SyncTask):
             if isinstance(e, exception.WazuhException):
                 exc = json.dumps(e, cls=WazuhJSONEncoder).encode()
             else:
-                exc = json.dumps(exception.WazuhClusterError(1000, extra_message=str(e)), cls=WazuhJSONEncoder).encode()
+                exc = json.dumps(exception.GuardBearClusterError(1000, extra_message=str(e)), cls=WazuhJSONEncoder).encode()
             with contextlib.suppress(Exception):
                 # Notify error to master and delete its received file.
                 await self.server.send_request(command=self.cmd + b'_r', data=task_id + b' ' + exc)
@@ -1329,7 +1329,7 @@ def as_wazuh_object(dct: Dict):
         return dct
 
     except (KeyError, AttributeError):
-        raise exception.WazuhInternalError(
+        raise exception.GuardBearInternalError(
             1000, extra_message=f'Wazuh object cannot be decoded from JSON {dct}', cmd_error=True
         )
 

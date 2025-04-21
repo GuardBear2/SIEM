@@ -21,7 +21,7 @@ with patch('wazuh.common.wazuh_uid'):
 
             from wazuh.core.cluster.common import InBuffer
             from wazuh.core.cluster.local_client import *
-            from wazuh.core.exception import WazuhInternalError
+            from wazuh.core.exception import GuardBearInternalError
 
 asyncio.set_event_loop_policy(EventLoopPolicy())
 loop = new_event_loop()
@@ -159,19 +159,19 @@ async def test_localclient_start(mock_get_server_config):
 @patch('wazuh.core.cluster.client.asyncio.get_running_loop')
 async def test_localclient_start_ko(mock_get_running_loop, mock_get_server_config):
     """Check the behavior of the start function for the different types of exceptions that may occur."""
-    with pytest.raises(WazuhInternalError, match=r'.* 3009 .*'):
+    with pytest.raises(GuardBearInternalError, match=r'.* 3009 .*'):
         await LocalClient().start()
 
     with patch('asyncio.get_running_loop.return_value.create_unix_connection', side_effect=MemoryError):
-        with pytest.raises(WazuhInternalError, match=r'.* 1119 .*'):
+        with pytest.raises(GuardBearInternalError, match=r'.* 1119 .*'):
             await LocalClient().start()
 
     with patch('asyncio.get_running_loop.return_value.create_unix_connection', side_effect=FileNotFoundError):
-        with pytest.raises(WazuhInternalError, match=r'.* 3012 .*'):
+        with pytest.raises(GuardBearInternalError, match=r'.* 3012 .*'):
             await LocalClient().start()
 
     with patch('asyncio.get_running_loop.return_value.create_unix_connection', side_effect=ConnectionRefusedError):
-        with pytest.raises(WazuhInternalError, match=r'.* 3012 .*'):
+        with pytest.raises(GuardBearInternalError, match=r'.* 3012 .*'):
             await LocalClient().start()
 
 
@@ -188,10 +188,10 @@ async def test_wait_for_response():
     lc = LocalClient()
     lc.protocol = Protocol()
     lc.protocol.send_request = AsyncMock()
-    lc.protocol.send_request.side_effect = [b'None', exception.WazuhClusterError(3018)]
+    lc.protocol.send_request.side_effect = [b'None', exception.GuardBearClusterError(3018)]
 
     with patch('asyncio.Event.wait', side_effect=asyncio.TimeoutError):
-        with pytest.raises(WazuhInternalError, match=r'.* 3020 .*'):
+        with pytest.raises(GuardBearInternalError, match=r'.* 3020 .*'):
             await lc.wait_for_response(timeout=200)
     lc.protocol.send_request.assert_has_calls([call(b'echo-c', b'keepalive'), call(b'echo-c', b'keepalive')])
 
@@ -240,9 +240,9 @@ async def test_localclient_send_api_request_ko(mock_get_running_loop):
     lc = LocalClient()
     lc.protocol = Protocol()
     lc.protocol.send_request = AsyncMock()
-    lc.protocol.send_request.side_effect = [b'None', exception.WazuhClusterError(3018)]
+    lc.protocol.send_request.side_effect = [b'None', exception.GuardBearClusterError(3018)]
     with patch('asyncio.Event.wait', side_effect=asyncio.TimeoutError):
-        with pytest.raises(WazuhInternalError, match=r'.* 3020 .*'):
+        with pytest.raises(GuardBearInternalError, match=r'.* 3020 .*'):
             await lc.send_api_request(command=b'dapi', data=b'None')
     lc.protocol.send_request.assert_has_calls([call(b'dapi', b'None'), call(b'echo-c', b'keepalive')])
 

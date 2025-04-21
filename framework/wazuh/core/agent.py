@@ -12,7 +12,7 @@ from typing import List, Optional
 
 from wazuh.core import common, configuration
 from wazuh.core.cluster.utils import get_manager_status
-from wazuh.core.exception import WazuhError, WazuhException, WazuhInternalError, WazuhResourceNotFound
+from wazuh.core.exception import WazuhError, WazuhException, GuardBearInternalError, WazuhResourceNotFound
 from wazuh.core.indexer import get_indexer_client
 from wazuh.core.indexer.base import IndexerKey
 from wazuh.core.indexer.models.agent import Agent as IndexerAgent
@@ -723,7 +723,7 @@ class Agent:
         ------
         WazuhError(1726)
             Authd is not running.
-        WazuhInternalError(1757)
+        GuardBearInternalError(1757)
             Unhandled exception.
 
         Returns
@@ -734,7 +734,7 @@ class Agent:
         # Check that wazuh-authd is running
         try:
             manager_status = get_manager_status(cache=True)
-        except WazuhInternalError as e:
+        except GuardBearInternalError as e:
             # wazuh-authd is not running due to a problem with /proc availability
             raise WazuhError(1726, extra_message=str(e))
 
@@ -750,7 +750,7 @@ class Agent:
         except WazuhException as e:
             raise e
         except Exception as e:
-            raise WazuhInternalError(1757, extra_message=str(e))
+            raise GuardBearInternalError(1757, extra_message=str(e))
 
     def _remove_authd(self, purge: bool = False) -> dict:
         """Delete the agent.
@@ -797,7 +797,7 @@ class Agent:
         ------
         WazuhError(1706)
             If there is an agent with the same IP or the IP is invalid.
-        WazuhInternalError(1725)
+        GuardBearInternalError(1725)
             If there was an error registering a new agent.
         WazuhError(1726)
             If authd is not running.
@@ -823,7 +823,7 @@ class Agent:
         # Check that wazuh-authd is running
         try:
             manager_status = get_manager_status()
-        except WazuhInternalError as e:
+        except GuardBearInternalError as e:
             # wazuh-authd is not running due to a problem with /proc availability
             raise WazuhError(1726, extra_message=str(e))
 
@@ -837,7 +837,7 @@ class Agent:
         except WazuhException as e:
             raise e
         except Exception as e:
-            raise WazuhInternalError(1725, extra_message=str(e))
+            raise GuardBearInternalError(1725, extra_message=str(e))
 
     def _add_authd(self, name: str, ip: str, id: str = None, key: str = None, force: bool = None):
         """Add an agent to Wazuh using authd.
@@ -1113,7 +1113,7 @@ class Agent:
             Agent's active configuration.
         """
         if WazuhVersion(agent_version) < WazuhVersion(common.ACTIVE_CONFIG_VERSION):
-            raise WazuhInternalError(1735, extra_message=f'Minimum required version is {common.ACTIVE_CONFIG_VERSION}')
+            raise GuardBearInternalError(1735, extra_message=f'Minimum required version is {common.ACTIVE_CONFIG_VERSION}')
 
         return configuration.get_active_configuration(agent_id=self.id, component=component, configuration=config)
 

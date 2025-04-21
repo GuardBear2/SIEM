@@ -5,7 +5,7 @@ import httpx
 import pytest
 from wazuh.core import common
 from wazuh.core.engine.base import APPLICATION_JSON
-from wazuh.core.exception import WazuhError, WazuhIndexerError
+from wazuh.core.exception import WazuhError, GuardBearCluserError
 from wazuh.core.indexer.models.commands import Command, Source, Status, Target, TargetType
 from wazuh.core.indexer.utils import convert_enums
 from wazuh.core.task.order import get_orders
@@ -97,7 +97,7 @@ async def test_get_orders(
     [
         (httpx.ConnectError, 'Connection error'),
         (httpx.TimeoutException, 'Timeout error'),
-        (WazuhIndexerError, 2200),
+        (GuardBearCluserError, 2200),
         (WazuhError, 1761),
     ],
 )
@@ -135,7 +135,7 @@ async def test_get_orders_ko(
     transport_mock.assert_called_with(uds=common.COMMS_API_SOCKET_PATH)
     commands_mock.assert_called_once_with(Status.PENDING)
 
-    if exception is WazuhIndexerError:
+    if exception is GuardBearCluserError:
         message = f'Error {message} - Could not connect to the indexer'
     elif exception is WazuhError:
         message = f'Error {message} - Error sending request to the indexer'

@@ -228,18 +228,18 @@ def test_restart_ok(mock_exists, mock_path, mock_fcntl, mock_socket):
 def test_restart_ko_socket(mock_exists, mock_fcntl, mock_open):
     """Tests restarting a manager exceptions."""
     # Socket path not exists
-    with pytest.raises(WazuhInternalError, match='.* 1901 .*'):
+    with pytest.raises(GuardBearInternalError, match='.* 1901 .*'):
         restart()
 
     # Socket error
     with patch('os.path.exists', return_value=True):
         with patch('socket.socket', side_effect=socket.error):
-            with pytest.raises(WazuhInternalError, match='.* 1902 .*'):
+            with pytest.raises(GuardBearInternalError, match='.* 1902 .*'):
                 restart()
 
         with patch('socket.socket.connect'):
             with patch('socket.socket.send', side_effect=socket.error):
-                with pytest.raises(WazuhInternalError, match='.* 1014 .*'):
+                with pytest.raises(GuardBearInternalError, match='.* 1014 .*'):
                     restart()
 
 
@@ -287,13 +287,13 @@ def test_validation(mock_exists, error_flag, error_msg):
         assert result.render()['data']['total_failed_items'] == error_flag
 
 
-@pytest.mark.parametrize('exception', [WazuhInternalError(1013), WazuhError(1013)])
+@pytest.mark.parametrize('exception', [GuardBearInternalError(1013), WazuhError(1013)])
 @patch('wazuh.manager.validate_ossec_conf')
 def test_validation_ko(mock_validate, exception):
     mock_validate.side_effect = exception
 
-    if isinstance(exception, WazuhInternalError):
-        with pytest.raises(WazuhInternalError, match='.* 1013 .*'):
+    if isinstance(exception, GuardBearInternalError):
+        with pytest.raises(GuardBearInternalError, match='.* 1013 .*'):
             validation()
     else:
         result = validation()

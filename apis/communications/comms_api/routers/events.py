@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Request, Response, status
 from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
-from wazuh.core.exception import WazuhEngineError, WazuhError, WazuhIndexerError
+from wazuh.core.exception import GuardBearCluserError, WazuhError, GuardBearCluserError
 
 from comms_api.authentication.authentication import JWTBearer
 from comms_api.core.events import parse_stateful_events, send_stateful_events, send_stateless_events
@@ -35,7 +35,7 @@ async def post_stateful_events(request: Request) -> StatefulEventsResponse:
         return StatefulEventsResponse(results=results)
     except WazuhError as exc:
         raise HTTPError(message=exc.message, status_code=status.HTTP_400_BAD_REQUEST)
-    except WazuhIndexerError as exc:
+    except GuardBearCluserError as exc:
         raise HTTPError(message=exc.message, code=exc.code, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except ValidationError as exc:
         return await validation_exception_handler(request, RequestValidationError(exc.errors()))
@@ -65,7 +65,7 @@ async def post_stateless_events(request: Request) -> Response:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     except WazuhError as exc:
         raise HTTPError(message=exc.message, status_code=status.HTTP_400_BAD_REQUEST)
-    except WazuhEngineError as exc:
+    except GuardBearCluserError as exc:
         raise HTTPError(message=exc.message, code=exc.code, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

@@ -264,7 +264,7 @@ class WorkerHandler(client.AbstractClient, c_common.WazuhCommon):
                     exc = json.dumps(e, cls=c_common.WazuhJSONEncoder)
                 else:
                     exc = json.dumps(
-                        exception.WazuhClusterError(1000, extra_message=str(e)), cls=c_common.WazuhJSONEncoder
+                        exception.GuardBearClusterError(1000, extra_message=str(e)), cls=c_common.WazuhJSONEncoder
                     )
                 with contextlib.suppress(Exception):
                     await self.send_request(command=b'syn_i_w_m_r', data=f'None {exc}'.encode())
@@ -321,7 +321,7 @@ class WorkerHandler(client.AbstractClient, c_common.WazuhCommon):
             if isinstance(e, exception.WazuhException):
                 exc = json.dumps(e, cls=c_common.WazuhJSONEncoder)
             else:
-                exc = json.dumps(exception.WazuhClusterError(1000, extra_message=str(e)), cls=c_common.WazuhJSONEncoder)
+                exc = json.dumps(exception.GuardBearClusterError(1000, extra_message=str(e)), cls=c_common.WazuhJSONEncoder)
             with contextlib.suppress(Exception):
                 await self.send_request(command=b'syn_i_w_m_r', data=f'None {exc}'.encode())
 
@@ -346,7 +346,7 @@ class WorkerHandler(client.AbstractClient, c_common.WazuhCommon):
         received_filename = self.sync_tasks[name].filename
         if isinstance(received_filename, Exception):
             exc_info = json.dumps(
-                exception.WazuhClusterError(1000, extra_message=str(self.sync_tasks[name].filename)),
+                exception.GuardBearClusterError(1000, extra_message=str(self.sync_tasks[name].filename)),
                 cls=c_common.WazuhJSONEncoder,
             )
             with contextlib.suppress(Exception):
@@ -394,7 +394,7 @@ class WorkerHandler(client.AbstractClient, c_common.WazuhCommon):
             if isinstance(e, exception.WazuhException):
                 exc = json.dumps(e, cls=c_common.WazuhJSONEncoder)
             else:
-                exc = json.dumps(exception.WazuhClusterError(1000, extra_message=str(e)), cls=c_common.WazuhJSONEncoder)
+                exc = json.dumps(exception.GuardBearClusterError(1000, extra_message=str(e)), cls=c_common.WazuhJSONEncoder)
             with contextlib.suppress(Exception):
                 await self.send_request(command=b'syn_i_w_m_r', data=f'None {exc}'.encode())
         finally:

@@ -5,7 +5,7 @@
 from time import strftime
 
 from wazuh.core import common
-from wazuh.core.exception import WazuhError, WazuhException, WazuhInternalError
+from wazuh.core.exception import WazuhError, WazuhException, GuardBearInternalError
 from wazuh.core.wdb import WazuhDBConnection
 
 """
@@ -27,9 +27,9 @@ try:
     from sys import version_info as python_version
 
     if python_version.major < 2 or (python_version.major == 2 and python_version.minor < 7):
-        raise WazuhInternalError(999, msg)
+        raise GuardBearInternalError(999, msg)
 except Exception:
-    raise WazuhInternalError(999, msg)
+    raise GuardBearInternalError(999, msg)
 
 
 class Wazuh:

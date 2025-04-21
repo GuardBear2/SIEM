@@ -122,7 +122,7 @@ def test_get_ossec_logs(log_format):
     logs = get_logs(json_log=log_format == LoggingFormat.json).splitlines()
 
     with patch('wazuh.core.manager.get_wazuh_active_logging_format', return_value=log_format):
-        with pytest.raises(WazuhInternalError, match='.*1000.*'):
+        with pytest.raises(GuardBearInternalError, match='.*1000.*'):
             get_ossec_logs()
 
         with patch('wazuh.core.manager.exists', return_value=True):
@@ -157,36 +157,36 @@ def test_validation_ko(mock_exists):
     """Test validate_ossec_conf raises an error"""
     # Socket creation raise socket.error
     with patch('socket.socket', side_effect=socket.error):
-        with pytest.raises(WazuhInternalError, match='.* 1013 .*'):
+        with pytest.raises(GuardBearInternalError, match='.* 1013 .*'):
             validate_ossec_conf()
 
     with patch('socket.socket.bind'):
         # Socket connection raise socket.error
         with patch('socket.socket.connect', side_effect=socket.error):
-            with pytest.raises(WazuhInternalError, match='.* 1013 .*'):
+            with pytest.raises(GuardBearInternalError, match='.* 1013 .*'):
                 validate_ossec_conf()
 
         # execq_socket_path not exists
         with patch('wazuh.core.manager.exists', return_value=False):
-            with pytest.raises(WazuhInternalError, match='.* 1901 .*'):
+            with pytest.raises(GuardBearInternalError, match='.* 1901 .*'):
                 validate_ossec_conf()
 
         with patch('socket.socket.connect'):
             # Socket send raise socket.error
             with patch('wazuh.core.manager.WazuhSocket.send', side_effect=socket.error):
-                with pytest.raises(WazuhInternalError, match='.* 1014 .*'):
+                with pytest.raises(GuardBearInternalError, match='.* 1014 .*'):
                     validate_ossec_conf()
 
             with patch('socket.socket.send'):
                 # Socket recv raise socket.error
                 with patch('wazuh.core.manager.WazuhSocket.receive', side_effect=socket.timeout):
-                    with pytest.raises(WazuhInternalError, match='.* 1014 .*'):
+                    with pytest.raises(GuardBearInternalError, match='.* 1014 .*'):
                         validate_ossec_conf()
 
                 # _parse_execd_output raise KeyError
                 with patch('wazuh.core.manager.WazuhSocket'):
                     with patch('wazuh.core.manager.parse_execd_output', side_effect=KeyError):
-                        with pytest.raises(WazuhInternalError, match='.* 1904 .*'):
+                        with pytest.raises(GuardBearInternalError, match='.* 1904 .*'):
                             validate_ossec_conf()
 
 

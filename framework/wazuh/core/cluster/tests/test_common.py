@@ -316,7 +316,7 @@ def test_handler_msg_build_ko():
     """Test the 'message_build' method and check if it is raising the exceptions properly."""
     handler = cluster_common.Handler(server_config=default_config.server)
 
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3024 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3024 .*'):
         handler.msg_build(b'much much longer command', 12345, b'data')
 
 
@@ -382,7 +382,7 @@ async def test_handler_send_request_ok(msg_build_mock, next_counter_mock, push_m
 
     handler.server_config.communications.timeouts.cluster_request = 0.01
     with patch('wazuh.core.cluster.common.Response.read', side_effect=delay):
-        with pytest.raises(exception.WazuhClusterError, match=r'\b3020\b'):
+        with pytest.raises(exception.GuardBearClusterError, match=r'\b3020\b'):
             await handler.send_request(b'some bytes', b'some data')
         read_mock.assert_awaited_once()
         assert handler.box[next_counter_mock.return_value] is None
@@ -399,10 +399,10 @@ async def test_handler_send_request_ko():
     handler = cluster_common.Handler(server_config=default_config.server)
 
     with patch('wazuh.core.cluster.common.Handler.msg_build', side_effect=MemoryError):
-        with pytest.raises(exception.WazuhClusterError, match=r'.* 3026 .*'):
+        with pytest.raises(exception.GuardBearClusterError, match=r'.* 3026 .*'):
             await handler.send_request(b'some bytes', b'some data')
 
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3018 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3018 .*'):
         await handler.send_request(b'some bytes', b'some data')
 
 
@@ -443,7 +443,7 @@ async def test_handler_send_file_ko():
     """Test the 'send_file' method exception raise."""
     handler = cluster_common.Handler(server_config=default_config.server)
 
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3034 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3034 .*'):
         await handler.send_file('some_file.txt')
 
 
@@ -455,9 +455,9 @@ async def test_handler_send_string():
     with patch('wazuh.core.cluster.common.Handler.send_request', return_value=b'some data'):
         assert await handler.send_string(b'something') == b'some data'
 
-    with patch('wazuh.core.cluster.common.Handler.send_request', side_effect=exception.WazuhClusterError(3020)):
+    with patch('wazuh.core.cluster.common.Handler.send_request', side_effect=exception.GuardBearClusterError(3020)):
         with patch.object(logging.getLogger('wazuh'), 'error') as logger_mock:
-            assert exception.WazuhClusterError(3020).message.encode() in await handler.send_string(b'something')
+            assert exception.GuardBearClusterError(3020).message.encode() in await handler.send_string(b'something')
             logger_mock.assert_called_once_with(
                 'There was an error while trying to send a string: Error 3020 - Timeout sending request', exc_info=False
             )
@@ -826,7 +826,7 @@ def test_handler_process_dapi_error_ko():
             self.local_server = LocalServerDapiMock()
 
     handler = cluster_common.Handler(server_config=default_config.server)
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3032 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3032 .*'):
         handler.server = ManagerMock()
         handler.process_dapi_error(data=b'data 2')
 
@@ -838,7 +838,7 @@ def test_handler_process_error_from_peer():
     with patch('json.loads', return_value='some value'):
         assert handler.process_error_from_peer(b'data to decode') == 'some value'
 
-    assert isinstance(handler.process_error_from_peer(b'data to decode'), exception.WazuhClusterError)
+    assert isinstance(handler.process_error_from_peer(b'data to decode'), exception.GuardBearClusterError)
 
 
 def test_handler_setup_task_logger():
@@ -897,12 +897,12 @@ async def test_handler_wait_for_file_ko(send_request_mock):
     handler = cluster_common.Handler(server_config=default_config.server)
     handler.server_config.communications.timeouts.receiving_file = 0.4
     file_event = AsyncMock()
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3039 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3039 .*'):
         with patch.object(file_event, 'wait', side_effect=delay):
             await handler.wait_for_file(file_event, 'test')
     send_request_mock.assert_called_once_with(command=b'cancel_task', data=ANY)
 
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3040 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3040 .*'):
         with patch.object(file_event, 'wait', side_effect=Exception('any')):
             await handler.wait_for_file(file_event, 'task_id')
     send_request_mock.assert_called_with(command=b'cancel_task', data=ANY)
@@ -958,11 +958,11 @@ def test_wazuh_common_end_receiving_file_ok(logger_mock, wazuh_common_mock):
 @patch('os.path.exists', return_value=True)
 def test_wazuh_common_end_receiving_file_ko(path_exists_mock, os_remove_mock):
     """Test the 'end_receiving_file' correct functioning in a failure scenario."""
-    with pytest.raises(exception.WazuhClusterError, match=r'.* 3027 .*'):
+    with pytest.raises(exception.GuardBearClusterError, match=r'.* 3027 .*'):
         wazuh_common.end_receiving_file('not_task_ID filepath')
 
     with patch('wazuh.core.cluster.common.WazuhCommon.get_logger'):
-        with pytest.raises(exception.WazuhClusterError, match=r'.* 3027 .*'):
+        with pytest.raises(exception.GuardBearClusterError, match=r'.* 3027 .*'):
             os_remove_mock.side_effect = Exception
             wazuh_common.end_receiving_file('not_task_ID filepath')
     assert os_remove_mock.call_count == 2
@@ -1169,7 +1169,7 @@ def test_as_wazuh_object_ok():
 
 def test_as_wazuh_object_ko():
     """Test if the exceptions are correctly raised."""
-    with pytest.raises(exception.WazuhInternalError, match=r'.* 1000 .*'):
+    with pytest.raises(exception.GuardBearInternalError, match=r'.* 1000 .*'):
         cluster_common.as_wazuh_object({'__callable__': {'__name__': 'value', '__wazuh__': 'value'}})
 
 
@@ -1256,7 +1256,7 @@ async def test_sync_files_sync_ok(log_subprocess_mock, compress_files_mock, unli
         async def send_request(self, command, data):
             """Decide with will be the right output depending on the scenario."""
             if command == b'cmd' and data == b'' and self.count == 1:
-                raise exception.WazuhClusterError(3020, extra_message=command.decode())
+                raise exception.GuardBearClusterError(3020, extra_message=command.decode())
             elif command == b'cmd' and data == b'' and self.count == 2:
                 return b'OK'
             elif command == b'cmd_e' and b'OK path' and self.count == 2:
@@ -1264,7 +1264,7 @@ async def test_sync_files_sync_ok(log_subprocess_mock, compress_files_mock, unli
             elif command == b'cmd' and data == b'' and self.count == 3:
                 return b'OK'
             elif command == b'cmd_e' and b'OK path' and self.count == 3:
-                raise exception.WazuhClusterError(3016, extra_message=command.decode())
+                raise exception.GuardBearClusterError(3016, extra_message=command.decode())
             elif command == b'cmd' and data == b'' and self.count == 4:
                 return b'OK'
             elif command == b'cmd_e' and b'OK path' and self.count == 4:
@@ -1282,7 +1282,7 @@ async def test_sync_files_sync_ok(log_subprocess_mock, compress_files_mock, unli
         await sync_files.sync(files_to_sync, files_metadata, 1, task_pool=None)
         log_subprocess_mock.assert_called()
         json_dumps_mock.assert_called_once_with(
-            exception.WazuhClusterError(code=3020, extra_message='cmd'), cls=cluster_common.WazuhJSONEncoder
+            exception.GuardBearClusterError(code=3020, extra_message='cmd'), cls=cluster_common.WazuhJSONEncoder
         )
         logger_mock.assert_called_once_with('Error sending zip file: Error 3020 - Timeout sending request: cmd')
 

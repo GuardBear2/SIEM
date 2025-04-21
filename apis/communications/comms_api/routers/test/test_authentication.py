@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from fastapi import status
 from freezegun import freeze_time
-from wazuh.core.exception import WazuhIndexerError, WazuhInternalError, WazuhResourceNotFound
+from wazuh.core.exception import GuardBearCluserError, GuardBearInternalError, WazuhResourceNotFound
 from wazuh.core.indexer.models.agent import Agent, Status
 from wazuh.core.utils import get_utc_now
 
@@ -47,9 +47,9 @@ async def test_authentication(
 @pytest.mark.parametrize(
     'exception,message',
     [
-        (WazuhIndexerError(2200), "Couldn't connect to the indexer: Error 2200 - Could not connect to the indexer"),
+        (GuardBearCluserError(2200), "Couldn't connect to the indexer: Error 2200 - Could not connect to the indexer"),
         (WazuhResourceNotFound(1701), 'Agent does not exist'),
-        (WazuhInternalError(6003), "Couldn't get key pair: Error 6003 - Error trying to load the JWT secret"),
+        (GuardBearInternalError(6003), "Couldn't get key pair: Error 6003 - Error trying to load the JWT secret"),
     ],
 )
 async def test_authentication_ko(exception, message):

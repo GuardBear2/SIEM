@@ -10,7 +10,7 @@ from typing import Union
 
 import wazuh.core.config.client
 from wazuh.core import common, wazuh_socket
-from wazuh.core.exception import WazuhError, WazuhInternalError, WazuhResourceNotFound
+from wazuh.core.exception import WazuhError, GuardBearInternalError, WazuhResourceNotFound
 from wazuh.core.InputValidator import InputValidator
 from wazuh.core.utils import get_group_file_path, load_wazuh_yaml, validate_wazuh_configuration
 
@@ -87,7 +87,7 @@ def update_group_configuration(group_id: str, file_content: str) -> str:
     ------
     WazuhResourceNotFound(1710)
         Group was not found.
-    WazuhInternalError(1006)
+    GuardBearInternalError(1006)
         Error writing file.
 
     Returns
@@ -167,9 +167,9 @@ def get_active_configuration(component: str, configuration: str, agent_id: str =
         If the specified component is not valid.
     WazuhError(1121)
         If the component is not properly configured.
-    WazuhInternalError(1121)
+    GuardBearInternalError(1121)
         If the socket cant be created.
-    WazuhInternalError(1118)
+    GuardBearInternalError(1118)
         If the socket is not able to receive a response.
     WazuhError(1117)
         If there's no such file or directory in agent node, or the socket cannot send the request.
@@ -241,10 +241,10 @@ def get_active_configuration(component: str, configuration: str, agent_id: str =
             # Socket connection
             try:
                 s = wazuh_socket.WazuhSocket(dest_socket)
-            except WazuhInternalError:
+            except GuardBearInternalError:
                 raise
             except Exception as unhandled_exc:
-                raise WazuhInternalError(1121, extra_message=str(unhandled_exc))
+                raise GuardBearInternalError(1121, extra_message=str(unhandled_exc))
 
             # Send message
             s.send(msg.encode())
@@ -254,7 +254,7 @@ def get_active_configuration(component: str, configuration: str, agent_id: str =
                 # Receive data length
                 rec_msg_ok, rec_msg = s.receive().decode().split(' ', 1)
             except ValueError:
-                raise WazuhInternalError(1118, extra_message='Data could not be received')
+                raise GuardBearInternalError(1118, extra_message='Data could not be received')
             finally:
                 s.close()
 
@@ -271,10 +271,10 @@ def get_active_configuration(component: str, configuration: str, agent_id: str =
             # Socket connection
             try:
                 s = wazuh_socket.WazuhSocketJSON(dest_socket)
-            except WazuhInternalError:
+            except GuardBearInternalError:
                 raise
             except Exception as unhandled_exc:
-                raise WazuhInternalError(1121, extra_message=str(unhandled_exc))
+                raise GuardBearInternalError(1121, extra_message=str(unhandled_exc))
 
             # Send message
             s.send(msg)
@@ -283,7 +283,7 @@ def get_active_configuration(component: str, configuration: str, agent_id: str =
             try:
                 response = s.receive(raw=True)
             except ValueError:
-                raise WazuhInternalError(1118, extra_message='Data could not be received')
+                raise GuardBearInternalError(1118, extra_message='Data could not be received')
             finally:
                 s.close()
 
@@ -300,10 +300,10 @@ def get_active_configuration(component: str, configuration: str, agent_id: str =
         # Socket connection
         try:
             s = wazuh_socket.WazuhSocket(dest_socket)
-        except WazuhInternalError:
+        except GuardBearInternalError:
             raise
         except Exception as unhandled_exc:
-            raise WazuhInternalError(1121, extra_message=str(unhandled_exc))
+            raise GuardBearInternalError(1121, extra_message=str(unhandled_exc))
 
         # Send message
         s.send(msg.encode())
@@ -313,7 +313,7 @@ def get_active_configuration(component: str, configuration: str, agent_id: str =
             # Receive data length
             rec_msg_ok, rec_msg = s.receive().decode().split(' ', 1)
         except ValueError:
-            raise WazuhInternalError(1118, extra_message='Data could not be received')
+            raise GuardBearInternalError(1118, extra_message='Data could not be received')
         finally:
             s.close()
 

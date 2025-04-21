@@ -129,9 +129,9 @@ class WazuhLogger:
 
 
 class CLIFilter(logging.Filter):
-    """Define a custom filter to filter WazuhInternalErrors."""
+    """Define a custom filter to filter GuardBearInternalErrors."""
 
-    messages_to_avoid = ['Wazuh Internal Error', 'WazuhInternalError']
+    messages_to_avoid = ['Wazuh Internal Error', 'GuardBearInternalError']
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter the log entry depending on its message contents.

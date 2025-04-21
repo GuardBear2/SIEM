@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import yaml
 from pydantic import ValidationError
-from wazuh import WazuhInternalError
+from wazuh import GuardBearInternalError
 from wazuh.core.common import WAZUH_SERVER_YML
 from wazuh.core.config.models.central_config import (
     CommsAPIConfig,
@@ -179,7 +179,7 @@ class CentralizedConfig:
 
         Raises
         ------
-        WazuhInternalError
+        GuardBearInternalError
             If an error occurs while updating the configuration or saving
             to the file.
         """
@@ -198,6 +198,6 @@ class CentralizedConfig:
             with open(WAZUH_SERVER_YML, 'w') as file:
                 yaml.dump(non_default_values, file)
         except IOError:
-            raise WazuhInternalError(1005)
+            raise GuardBearInternalError(1005)
         except ValidationError:
-            raise WazuhInternalError(1103)
+            raise GuardBearInternalError(1103)
