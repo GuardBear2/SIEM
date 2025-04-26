@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -8,7 +8,7 @@ from unittest.mock import ANY, patch
 
 import pytest
 from connexion import ProblemException
-from wazuh.core.exception import WazuhError, WazuhInternalError, WazuhPermissionError, WazuhResourceNotFound
+from guardbear.core.exception import GuardBearError, GuardBearInternalError, GuardBearPermissionError, GuardBearResourceNotFound
 
 from server_management_api import util
 
@@ -180,10 +180,10 @@ def test_to_relative_path(mock_real_path):
     'exception_type, code, returned_code, returned_exception',
     [
         (ValueError, 100, ValueError(100), ValueError),
-        (WazuhError, 1000, 400, ProblemException),
-        (WazuhPermissionError, 4000, 403, ProblemException),
-        (WazuhResourceNotFound, 1710, 404, ProblemException),
-        (WazuhInternalError, 1000, 500, ProblemException),
+        (GuardBearError, 1000, 400, ProblemException),
+        (GuardBearPermissionError, 4000, 403, ProblemException),
+        (GuardBearResourceNotFound, 1710, 404, ProblemException),
+        (GuardBearInternalError, 1000, 500, ProblemException),
     ],
 )
 def test_create_problem(exception_type, code, returned_code, returned_exception):
@@ -199,10 +199,10 @@ def test_create_problem(exception_type, code, returned_code, returned_exception)
 @pytest.mark.parametrize(
     'obj, code',
     [
-        ((WazuhError(6001), ['value0', 'value1']), 429),
-        ((WazuhInternalError(1000), ['value0', 'value1']), None),
-        ((WazuhPermissionError(4000), ['value0', 'value1']), None),
-        ((WazuhResourceNotFound(1710), ['value0', 'value1']), None),
+        ((GuardBearError(6001), ['value0', 'value1']), 429),
+        ((GuardBearInternalError(1000), ['value0', 'value1']), None),
+        ((GuardBearPermissionError(4000), ['value0', 'value1']), None),
+        ((GuardBearResourceNotFound(1710), ['value0', 'value1']), None),
     ],
 )
 @patch('server_management_api.util._create_problem')
@@ -235,7 +235,7 @@ def test_get_invalid_keys(dikt, f_kwargs, invalid_keys):
     assert invalid == invalid_keys
 
 
-@pytest.mark.parametrize('link', ['', 'https://documentation.wazuh.com/current/user-manual/api/reference.html'])
+@pytest.mark.parametrize('link', ['', 'https://documentation.guardbear.com/current/user-manual/api/reference.html'])
 @pytest.mark.asyncio
 async def test_deprecate_endpoint(link):
     """Check that `deprecate_endpoint` decorator adds valid deprecation headers."""
@@ -270,6 +270,6 @@ async def test_only_master_endpoint(mock_exc):
 
     with patch('server_management_api.util.running_in_master_node', return_value=False):
         await func_()
-        mock_exc.assert_called_once_with(WazuhResourceNotFound(902))
+        mock_exc.assert_called_once_with(GuardBearResourceNotFound(902))
     with patch('server_management_api.util.running_in_master_node', return_value=True):
         assert await func_() == ret_val

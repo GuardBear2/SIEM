@@ -12,15 +12,15 @@ from typing import Any, List, Set
 from time import sleep
 import json
 
-WAZUH_PATH = os.path.join('/','Library', 'Ossec') if platform.system() == "Darwin" else os.path.join('/', 'var', 'ossec')
+GUARDBEAR_PATH = os.path.join('/','Library', 'Ossec') if platform.system() == "Darwin" else os.path.join('/', 'var', 'ossec')
 
-WAZUH_BIN = os.path.join(WAZUH_PATH, 'bin')
-WAZUH_CONF = os.path.join(WAZUH_PATH, 'etc', 'ossec.conf')
-WIN_WAZUH_PATH = os.path.join('C:','Program Files (x86)','ossec-agent')
-WIN_WAZUH_CONF = os.path.join(WIN_WAZUH_PATH, 'ossec.conf')
-WAZUH_SOURCES = os.path.join('/', 'wazuh')
-WAZUH_SOURCE_REPOSITORY = 'https://github.com/wazuh/wazuh.git'
-GEN_OSSEC = os.path.join(WAZUH_SOURCES, 'gen_ossec.sh')
+GUARDBEAR_BIN = os.path.join(GUARDBEAR_PATH, 'bin')
+GUARDBEAR_CONF = os.path.join(GUARDBEAR_PATH, 'etc', 'ossec.conf')
+WIN_GUARDBEAR_PATH = os.path.join('C:','Program Files (x86)','ossec-agent')
+WIN_GUARDBEAR_CONF = os.path.join(WIN_GUARDBEAR_PATH, 'ossec.conf')
+GUARDBEAR_SOURCES = os.path.join('/', 'guardbear')
+GUARDBEAR_SOURCE_REPOSITORY = 'https://github.com/guardbear/guardbear.git'
+GEN_OSSEC = os.path.join(GUARDBEAR_SOURCES, 'gen_ossec.sh')
 DEVNULL = open(os.devnull, 'w')
 
 stat_modes = [
@@ -159,59 +159,59 @@ def indent(elem, level=0):
             elem.tail = i
 
 
-def restart_wazuh():
+def restart_guardbear():
     """
-    Restart Wazuh service.
+    Restart GuardBear service.
     """
     if sys.platform == 'win32':
-        os.system('net stop wazuh')
-        os.system('net start wazuh')
+        os.system('net stop guardbear')
+        os.system('net start guardbear')
     else:
-        command = os.path.join(WAZUH_PATH, 'bin/wazuh-control')
+        command = os.path.join(GUARDBEAR_PATH, 'bin/guardbear-control')
         arguments = ['restart']
         check_call([command] + arguments, stdout=DEVNULL, stderr=DEVNULL)
 
 
-def stop_wazuh():
+def stop_guardbear():
     """
-    Stop Wazuh service.
+    Stop GuardBear service.
     """
     if sys.platform == 'win32':
-        os.system('net stop wazuh')
+        os.system('net stop guardbear')
     else:
-        command = os.path.join(WAZUH_PATH, 'bin/wazuh-control')
+        command = os.path.join(GUARDBEAR_PATH, 'bin/guardbear-control')
         arguments = ['stop']
         check_call([command] + arguments, stdout=DEVNULL, stderr=DEVNULL)
 
 
-def write_wazuh_conf(wazuh_conf: ET.ElementTree):
+def write_guardbear_conf(guardbear_conf: ET.ElementTree):
     """
     Write a new configuration in 'ossec.conf' file.
     """
-    dest_file = WIN_WAZUH_CONF if sys.platform == 'Win32' else WAZUH_CONF
-    return wazuh_conf.write(dest_file, encoding='utf-8')
+    dest_file = WIN_GUARDBEAR_CONF if sys.platform == 'Win32' else GUARDBEAR_CONF
+    return guardbear_conf.write(dest_file, encoding='utf-8')
 
 
 
-def get_wazuh_conf() -> ET.ElementTree:
+def get_guardbear_conf() -> ET.ElementTree:
     """
     Get current 'ossec.conf' file.
-    :return: ElemenTree with current Wazuh configuration
+    :return: ElemenTree with current GuardBear configuration
     """
-    conf_file = WIN_WAZUH_CONF if sys.platform == 'Win32' else WAZUH_CONF
+    conf_file = WIN_GUARDBEAR_CONF if sys.platform == 'Win32' else GUARDBEAR_CONF
     return ET.parse(conf_file)
 
 
-def clean_section_wazuh_conf(section: str) -> ET.ElementTree:
+def clean_section_guardbear_conf(section: str) -> ET.ElementTree:
     """
-    Clean all the configuration blocks refered to the selected section on wazuh conf
-    :param section: Section of Wazuh configuration to replace
+    Clean all the configuration blocks refered to the selected section on guardbear conf
+    :param section: Section of GuardBear configuration to replace
     """
 
-    # get Wazuh configuration
-    wazuh_conf = get_wazuh_conf()
+    # get GuardBear configuration
+    guardbear_conf = get_guardbear_conf()
 
-    root = wazuh_conf.getroot()
+    root = guardbear_conf.getroot()
 
     # clean section if exists
 
@@ -220,21 +220,21 @@ def clean_section_wazuh_conf(section: str) -> ET.ElementTree:
 
     indent(root)
 
-    write_wazuh_conf(wazuh_conf)
+    write_guardbear_conf(guardbear_conf)
 
 
-def set_section_wazuh_conf(wazuh_conf: ET.ElementTree, section: str,
+def set_section_guardbear_conf(guardbear_conf: ET.ElementTree, section: str,
                            new_elements: List = None) -> ET.ElementTree:
     """
-    Set a configuration in a section of Wazuh. It replaces the content if it exists.
-    :param wazuh_conf: ElementTree with the base wazuh conf to add section options
-    :param section: Section of Wazuh configuration to replace
+    Set a configuration in a section of GuardBear. It replaces the content if it exists.
+    :param guardbear_conf: ElementTree with the base guardbear conf to add section options
+    :param section: Section of GuardBear configuration to replace
     :param new_elements: List with dictionaries for settings elements in the section
-    :return: ElementTree with the custom Wazuh configuration
+    :return: ElementTree with the custom GuardBear configuration
     """
     def create_elements(section: ET.Element, elements: List):
         """
-        Insert new elements in a Wazuh configuration section.
+        Insert new elements in a GuardBear configuration section.
         :param section: Section where the element will be inserted
         :param elements: List with the new elements to be inserted
         """
@@ -253,9 +253,9 @@ def set_section_wazuh_conf(wazuh_conf: ET.ElementTree, section: str,
                             if isinstance(attribute, dict):
                                 tag.attrib = { **tag.attrib, **attribute }
 
-    root = wazuh_conf.getroot()
+    root = guardbear_conf.getroot()
 
-    section_conf = ET.SubElement(wazuh_conf.getroot(), section)
+    section_conf = ET.SubElement(guardbear_conf.getroot(), section)
 
     # insert elements
     if new_elements is not None:
@@ -263,4 +263,4 @@ def set_section_wazuh_conf(wazuh_conf: ET.ElementTree, section: str,
 
     indent(root)
 
-    return wazuh_conf
+    return guardbear_conf

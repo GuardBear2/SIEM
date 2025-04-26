@@ -1,6 +1,6 @@
-from wazuh.core.config.client import Config
-from wazuh.core.config.models.indexer import IndexerConfig, IndexerNode
-from wazuh.core.config.models.server import NodeConfig, NodeType, ServerConfig, SSLConfig
+from guardbear.core.config.client import Config
+from guardbear.core.config.models.indexer import IndexerConfig, IndexerNode
+from guardbear.core.config.models.server import NodeConfig, NodeType, ServerConfig, SSLConfig
 
 
 def get_default_configuration():
@@ -14,5 +14,5 @@ def get_default_configuration():
                 ssl=SSLConfig(key='example', cert='example', ca='example'),
             ),
         ),
-        indexer=IndexerConfig(hosts=[IndexerNode(host='example', port=1516)], username='wazuh', password='wazuh'),
+        indexer=IndexerConfig(hosts=[IndexerNode(host='example', port=1516)], username='guardbear', password='guardbear'),
     )

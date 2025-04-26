@@ -211,7 +211,7 @@ def run(args):
     if not conf_path.is_file():
         sys.exit(f"Configuration file not found: {conf_path}")
 
-    bin_path = (env_path / "wazuh-engine").resolve()
+    bin_path = (env_path / "guardbear-engine").resolve()
     if not bin_path.is_file():
         sys.exit(f"Engine binary not found: {bin_path}")
 

@@ -1,6 +1,6 @@
 """
-Copyright (C) 2015-2024, Wazuh Inc.
-Created by Wazuh, Inc. <info@wazuh.com>.
+Copyright (C) 2015-2024, GuardBear Inc.
+Created by GuardBear, Inc. <info@guardbear.com>.
 This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 from pathlib import Path

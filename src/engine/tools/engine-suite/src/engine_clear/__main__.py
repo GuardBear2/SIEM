@@ -14,7 +14,7 @@ from api_communication.proto.engine_pb2 import GenericStatus_Response
 
 DEF_RESOURCES = ['kvdbs', 'decoders', 'rules',
                  'outputs', 'filters', 'integrations', 'policies', 'test_sessions', 'routes']
-DEF_NAMESPACES = ['user', 'wazuh', 'system']
+DEF_NAMESPACES = ['user', 'guardbear', 'system']
 
 
 def parse_args():

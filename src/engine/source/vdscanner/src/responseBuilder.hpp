@@ -1,6 +1,6 @@
 /*
- * Wazuh Vulnerability scanner - Scan Orchestrator
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear Vulnerability scanner - Scan Orchestrator
+ * Copyright (C) 2015, GuardBear Inc.
  * March 11, 2024.
  *
  * This program is free software; you can redistribute it

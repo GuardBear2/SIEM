@@ -33,14 +33,14 @@ jobs:
       
       - name: Download integration tests framework
         run: |
-          if [ "X`git ls-remote https://github.com/wazuh/qa-integration-framework.git ${BRANCH_NAME}`" != "X" ]; then
+          if [ "X`git ls-remote https://github.com/guardbear/qa-integration-framework.git ${BRANCH_NAME}`" != "X" ]; then
               QA_BRANCH=${BRANCH_NAME}
-          elif [ "X`git ls-remote https://github.com/wazuh/qa-integration-framework.git ${BRANCH_BASE}`" != "X" ]; then
+          elif [ "X`git ls-remote https://github.com/guardbear/qa-integration-framework.git ${BRANCH_BASE}`" != "X" ]; then
               QA_BRANCH=${BRANCH_BASE}
           else
               QA_BRANCH="main"
           fi
-          git clone -b ${QA_BRANCH} --single-branch https://github.com/wazuh/qa-integration-framework.git
+          git clone -b ${QA_BRANCH} --single-branch https://github.com/guardbear/qa-integration-framework.git
 
       - name: Install dependencies
         run: |
@@ -50,5 +50,5 @@ jobs:
 
       - name: Run coverage
         run: |
-          cd qa-integration-framework/src/wazuh_testing/scripts
+          cd qa-integration-framework/src/guardbear_testing/scripts
           python pytest_coverage.py -p /home/runner/work/GuardBear2/SIEM

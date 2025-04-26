@@ -1,6 +1,6 @@
 /*
- * Wazuh Indexer Connector - Component tests
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear Indexer Connector - Component tests
+ * Copyright (C) 2015, GuardBear Inc.
  * January 09, 2024.
  *
  * This program is free software; you can redistribute it
@@ -181,12 +181,12 @@ extern "C" struct passwd* __wrap_getpwnam(const char* name)
     static char dummy_dir[BUFFER_SIZE];
     static char dummy_shell[BUFFER_SIZE];
 
-    if (strcmp(name, "wazuh") == 0) // Simulate only "wazuh" user existing
+    if (strcmp(name, "guardbear") == 0) // Simulate only "guardbear" user existing
     {
-        dummy_passwd.pw_name = strcpy(dummy_name, "wazuh");
+        dummy_passwd.pw_name = strcpy(dummy_name, "guardbear");
         dummy_passwd.pw_uid = 1000;
         dummy_passwd.pw_gid = 1000;
-        dummy_passwd.pw_dir = strcpy(dummy_dir, "/home/wazuh");
+        dummy_passwd.pw_dir = strcpy(dummy_dir, "/home/guardbear");
         dummy_passwd.pw_shell = strcpy(dummy_shell, "/bin/bash");
         return &dummy_passwd;
     }
@@ -199,9 +199,9 @@ extern "C" struct group* __wrap_getgrnam(const char* name)
     static struct group dummy_group;
     static char dummy_name[BUFFER_SIZE];
 
-    if (strcmp(name, "wazuh") == 0) // Simulate only "wazuh" group existing
+    if (strcmp(name, "guardbear") == 0) // Simulate only "guardbear" group existing
     {
-        dummy_group.gr_name = strcpy(dummy_name, "wazuh");
+        dummy_group.gr_name = strcpy(dummy_name, "guardbear");
         dummy_group.gr_gid = 1000;
         dummy_group.gr_mem = nullptr; // No additional group members in this mock
         return &dummy_group;
@@ -213,7 +213,7 @@ extern "C" struct group* __wrap_getgrnam(const char* name)
 extern "C" int __wrap_chown(const char* path, uid_t owner, gid_t group)
 {
     // Simulate a successful chown operation for the "/tmp/success" file
-    if (strcmp(path, "/var/lib/wazuh-server/tmp/root-ca-merged.pem") == 0)
+    if (strcmp(path, "/var/lib/guardbear-server/tmp/root-ca-merged.pem") == 0)
     {
         return 0; // Return success
     }

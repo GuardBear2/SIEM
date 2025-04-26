@@ -18,7 +18,7 @@ def parse_args():
 
     # Add socket path argument
     parser.add_argument('--api-socket', type=str, default=DefaultSettings.SOCKET_PATH,
-                        help='Path to the Wazuh API socket')
+                        help='Path to the GuardBear API socket')
     parser.add_argument('-n', '--namespace', type=str, default=DefaultSettings.DEFAULT_NS,
                         help='Namespace to use for the catalog')
 

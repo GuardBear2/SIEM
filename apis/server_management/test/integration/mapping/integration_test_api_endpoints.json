@@ -317,7 +317,7 @@
         ]
     },
     {
-        "path": "framework/wazuh",
+        "path": "framework/guardbear",
         "files": [
             {
                 "name": "agent.py",
@@ -364,7 +364,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core",
+        "path": "framework/guardbear/core",
         "files": [
             {
                 "name": "InputValidator.py",
@@ -477,8 +477,8 @@
                 ]
             },
             {
-                "name": "wazuh_queue.py",
-                "tag": "wazuh",
+                "name": "guardbear_queue.py",
+                "tag": "guardbear",
                 "tests": [
                     "test_agent_DELETE_endpoints.tavern.yaml",
                     "test_agent_GET_endpoints.tavern.yaml",
@@ -488,8 +488,8 @@
                 ]
             },
             {
-                "name": "wazuh_socket.py",
-                "tag": "wazuh",
+                "name": "guardbear_socket.py",
+                "tag": "guardbear",
                 "tests": [
                     "test_agent_DELETE_endpoints.tavern.yaml",
                     "test_agent_GET_endpoints.tavern.yaml",
@@ -523,7 +523,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/cluster",
+        "path": "framework/guardbear/core/cluster",
         "files": [
             {
                 "name": "client.py",
@@ -636,7 +636,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/cluster/dapi",
+        "path": "framework/guardbear/core/cluster/dapi",
         "files": [
             {
                 "name": "dapi.py",
@@ -652,7 +652,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/cluster/hap_helper",
+        "path": "framework/guardbear/core/cluster/hap_helper",
         "files": [
             {
                 "name": "hap_helper.py",
@@ -677,8 +677,8 @@
                 ]
             },
             {
-                "name": "wazuh.py",
-                "tag": "wazuh",
+                "name": "guardbear.py",
+                "tag": "guardbear",
                 "tests": [
                     "test_agent_DELETE_endpoints.tavern.yaml",
                     "test_agent_GET_endpoints.tavern.yaml",
@@ -690,7 +690,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/cluster/tests",
+        "path": "framework/guardbear/core/cluster/tests",
         "files": [
             {
                 "name": "conftest.py",
@@ -706,7 +706,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/tests/data/test_agent",
+        "path": "framework/guardbear/core/tests/data/test_agent",
         "files": [
             {
                 "name": "schema_global_test.sql",
@@ -722,7 +722,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/tests/data/test_agent/add_manual",
+        "path": "framework/guardbear/core/tests/data/test_agent/add_manual",
         "files": [
             {
                 "name": "add_manual_use_cases.yaml",
@@ -738,7 +738,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/tests/data/test_database",
+        "path": "framework/guardbear/core/tests/data/test_database",
         "files": [
             {
                 "name": "schema_global_test.sql",
@@ -754,7 +754,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/rbac",
+        "path": "framework/guardbear/rbac",
         "files": [
             {
                 "name": "auth_context.py",
@@ -814,7 +814,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/rbac/default",
+        "path": "framework/guardbear/rbac/default",
         "files": [
             {
                 "name": "policies.yaml",
@@ -874,7 +874,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/rbac/tests",
+        "path": "framework/guardbear/rbac/tests",
         "files": [
             {
                 "name": "utils.py",
@@ -890,7 +890,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/rbac/tests/data",
+        "path": "framework/guardbear/rbac/tests/data",
         "files": [
             {
                 "name": "schema_security_test.sql",
@@ -906,7 +906,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/tests",
+        "path": "framework/guardbear/tests",
         "files": [
             {
                 "name": "util.py",
@@ -922,7 +922,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/tests/data",
+        "path": "framework/guardbear/tests/data",
         "files": [
             {
                 "name": "schema_global_test.sql",
@@ -938,7 +938,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/tests/data/security",
+        "path": "framework/guardbear/tests/data/security",
         "files": [
             {
                 "name": "policies_test_cases.yml",
@@ -1033,7 +1033,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/tests/data/security/default",
+        "path": "framework/guardbear/tests/data/security/default",
         "files": [
             {
                 "name": "default_cases.yml",

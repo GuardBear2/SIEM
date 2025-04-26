@@ -1,6 +1,6 @@
 /*
- * Wazuh cmdLineParser
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear cmdLineParser
+ * Copyright (C) 2015, GuardBear Inc.
  * Dec 4, 2023.
  *
  * This program is free software; you can redistribute it

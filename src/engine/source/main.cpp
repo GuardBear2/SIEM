@@ -258,7 +258,7 @@ int main(int argc, char* argv[])
             hlp::initTZDB(confManager.get<std::string>(conf::key::TZDB_PATH),
                           confManager.get<bool>(conf::key::TZDB_AUTO_UPDATE));
 
-            base::Name logparFieldOverrides({"schema", "wazuh-logpar-overrides", "0"});
+            base::Name logparFieldOverrides({"schema", "guardbear-logpar-overrides", "0"});
             auto res = store->readInternalDoc(logparFieldOverrides);
             if (std::holds_alternative<base::Error>(res))
             {
@@ -605,7 +605,7 @@ int main(int argc, char* argv[])
              * @apiGroup Events
              * @apiVersion 0.1.1-alpha
              *
-             * @apiDescription This endpoint receives events to be processed by the Wazuh-Engine security policy. It
+             * @apiDescription This endpoint receives events to be processed by the GuardBear-Engine security policy. It
              * accepts a NDJSON payload where each line represents an object.
              *
              * **Example NDJSON Payload:**

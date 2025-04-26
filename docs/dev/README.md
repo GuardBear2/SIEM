@@ -1,6 +1,6 @@
 # Development documentation
 
-This section contains the necessary information for developers. Here developers can learn about topics related to the Wazuh Engine and Wazuh Server APIs such as:
+This section contains the necessary information for developers. Here developers can learn about topics related to the GuardBear Engine and GuardBear Server APIs such as:
 - Set up the development environment.
 - Set up the toolchain.
 - Set up editor/debugger.

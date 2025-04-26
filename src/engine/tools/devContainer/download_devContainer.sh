@@ -6,9 +6,9 @@ OLD_PWD=$(pwd)
 # Clean up the temporary directory
 trap 'cd "$OLD_PWD";rm -rf "$TMP_DIR"' EXIT
 
-TMP_DIR="/tmp/wazuh_devContainer"
+TMP_DIR="/tmp/guardbear_devContainer"
 REPO_DEV_DIR="src/engine/tools/devContainer"
-REPO_URL="https://github.com/wazuh/wazuh.git"
+REPO_URL="https://github.com/guardbear/guardbear.git"
 BRANCH="main"
 
 EXCLUDED_FILES=(

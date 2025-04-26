@@ -19,7 +19,7 @@ target_link_libraries(${PROJECT_NAME}
     optimized gmock
     urlrequest
     router
-    wazuhext
+    guardbearext
     lzma
     rocksdb
     pthread

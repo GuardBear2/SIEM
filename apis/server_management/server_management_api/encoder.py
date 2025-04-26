@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -7,14 +7,14 @@ from dataclasses import asdict, is_dataclass
 
 import six
 from connexion.jsonifier import JSONEncoder
-from wazuh.core.indexer.base import remove_empty_values
-from wazuh.core.results import AbstractWazuhResult
+from guardbear.core.indexer.base import remove_empty_values
+from guardbear.core.results import AbstractGuardBearResult
 
 from server_management_api.models.base_model_ import Model
 
 
-class WazuhAPIJSONEncoder(JSONEncoder):
-    """Define the custom Wazuh API JSON encoder class."""
+class GuardBearAPIJSONEncoder(JSONEncoder):
+    """Define the custom GuardBear API JSON encoder class."""
 
     include_nulls = False
 
@@ -40,7 +40,7 @@ class WazuhAPIJSONEncoder(JSONEncoder):
                 attr = o.attribute_map[attr]
                 result[attr] = value
             return result
-        elif isinstance(o, AbstractWazuhResult):
+        elif isinstance(o, AbstractGuardBearResult):
             return o.render()
         elif is_dataclass(o):
             return asdict(o, dict_factory=remove_empty_values)
@@ -63,7 +63,7 @@ def dumps(obj: object) -> str:
     -------
     str
     """
-    return json.dumps(obj, cls=WazuhAPIJSONEncoder)
+    return json.dumps(obj, cls=GuardBearAPIJSONEncoder)
 
 
 def prettify(obj: object) -> str:
@@ -82,4 +82,4 @@ def prettify(obj: object) -> str:
     -------
     str
     """
-    return json.dumps(obj, cls=WazuhAPIJSONEncoder, indent=3)
+    return json.dumps(obj, cls=GuardBearAPIJSONEncoder, indent=3)

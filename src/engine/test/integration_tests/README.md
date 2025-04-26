@@ -1,8 +1,8 @@
-# Integration Tests for Wazuh Engine
+# Integration Tests for GuardBear Engine
 
 ## Overview
 
-This directory contains the integration tests for the Wazuh Engine. These tests are essential for validating the interactions between different components of the Wazuh Engine and ensuring that they function together as expected.
+This directory contains the integration tests for the GuardBear Engine. These tests are essential for validating the interactions between different components of the GuardBear Engine and ensuring that they function together as expected.
 
 ## Prerequisites
 

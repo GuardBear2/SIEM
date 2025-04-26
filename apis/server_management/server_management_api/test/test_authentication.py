@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import hashlib
@@ -11,26 +11,26 @@ from unittest.mock import ANY, MagicMock, call, patch
 
 from connexion.exceptions import Unauthorized
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core.results import WazuhResult
+with patch('guardbear.core.common.guardbear_uid'):
+    with patch('guardbear.core.common.guardbear_gid'):
+        from guardbear.core.results import GuardBearResult
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
+with patch('guardbear.core.common.guardbear_uid'):
+    with patch('guardbear.core.common.guardbear_gid'):
+        sys.modules['guardbear.rbac.orm'] = MagicMock()
         from server_management_api import authentication
 
-        del sys.modules['wazuh.rbac.orm']
+        del sys.modules['guardbear.rbac.orm']
 
 test_path = os.path.dirname(os.path.realpath(__file__))
 test_data_path = os.path.join(test_path, 'data')
 
-security_conf = WazuhResult({'auth_token_exp_timeout': 900, 'rbac_mode': 'black'})
+security_conf = GuardBearResult({'auth_token_exp_timeout': 900, 'rbac_mode': 'black'})
 decoded_payload = {
-    'iss': 'wazuh',
-    'aud': 'Wazuh API REST',
+    'iss': 'guardbear',
+    'aud': 'GuardBear API REST',
     'nbf': 0,
     'exp': security_conf['auth_token_exp_timeout'],
     'sub': '001',
@@ -40,8 +40,8 @@ decoded_payload = {
 }
 
 original_payload = {
-    'iss': 'wazuh',
-    'aud': 'Wazuh API REST',
+    'iss': 'guardbear',
+    'aud': 'GuardBear API REST',
     'nbf': 0,
     'exp': security_conf['auth_token_exp_timeout'],
     'sub': '001',
@@ -58,8 +58,8 @@ def test_check_user_master():
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
+@patch('guardbear.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
+@patch('guardbear.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
 @patch('server_management_api.authentication.raise_if_exc', side_effect=None)
 async def test_check_user(mock_raise_if_exc, mock_distribute_function, mock_dapi):
     """Verify if result is as expected."""
@@ -92,8 +92,8 @@ def test_get_security_conf():
     'server_management_api.authentication.get_keypair',
     return_value=('-----BEGIN PRIVATE KEY-----', '-----BEGIN PUBLIC KEY-----'),
 )
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
+@patch('guardbear.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
+@patch('guardbear.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
 @patch('server_management_api.authentication.raise_if_exc', side_effect=None)
 async def test_generate_token(
     mock_raise_if_exc, mock_distribute_function, mock_dapi, mock_get_keypair, mock_encode, auth_context
@@ -131,7 +131,7 @@ async def test_generate_token(
 def test_check_token(mock_tokenmanager):
     """Check that the `check_token` function works as expected."""
     result = authentication.check_token(
-        username='wazuh_user', roles=tuple([1]), token_nbf_time=3600, run_as=False, origin_node_type='master'
+        username='guardbear_user', roles=tuple([1]), token_nbf_time=3600, run_as=False, origin_node_type='master'
     )
     assert result == {'valid': ANY, 'policies': ANY}
 
@@ -142,15 +142,15 @@ def test_check_token(mock_tokenmanager):
     'server_management_api.authentication.get_keypair',
     return_value=('-----BEGIN PRIVATE KEY-----', '-----BEGIN PUBLIC KEY-----'),
 )
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.distribute_function', return_value=True)
+@patch('guardbear.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
+@patch('guardbear.core.cluster.dapi.dapi.DistributedAPI.distribute_function', return_value=True)
 @patch('server_management_api.authentication.raise_if_exc', side_effect=None)
 async def test_decode_token(mock_raise_if_exc, mock_distribute_function, mock_dapi, mock_get_keypair, mock_decode):
     """Check that the `decode_token` function works as expected."""
     mock_decode.return_value = deepcopy(original_payload)
     mock_raise_if_exc.side_effect = [
-        WazuhResult({'valid': True, 'policies': {'value': 'test'}}),
-        WazuhResult(security_conf),
+        GuardBearResult({'valid': True, 'policies': {'value': 'test'}}),
+        GuardBearResult(security_conf),
     ]
 
     result = authentication.decode_token('test_token')
@@ -177,14 +177,14 @@ async def test_decode_token(mock_raise_if_exc, mock_distribute_function, mock_da
     mock_dapi.assert_has_calls(calls)
     mock_get_keypair.assert_called_once()
     mock_decode.assert_called_once_with(
-        'test_token', '-----BEGIN PUBLIC KEY-----', algorithms=['RS256'], audience='Wazuh API REST'
+        'test_token', '-----BEGIN PUBLIC KEY-----', algorithms=['RS256'], audience='GuardBear API REST'
     )
     assert mock_distribute_function.call_count == 2
     assert mock_raise_if_exc.call_count == 2
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
+@patch('guardbear.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
 @patch('server_management_api.authentication.raise_if_exc', side_effect=None)
 @patch(
     'server_management_api.authentication.get_keypair',
@@ -200,18 +200,18 @@ async def test_decode_token_ko(mock_get_keypair, mock_raise_if_exc, mock_distrib
             'server_management_api.authentication.get_keypair',
             return_value=('-----BEGIN PRIVATE KEY-----', '-----BEGIN PUBLIC KEY-----'),
         ):
-            with patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None):
-                with patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.distribute_function'):
+            with patch('guardbear.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None):
+                with patch('guardbear.core.cluster.dapi.dapi.DistributedAPI.distribute_function'):
                     with patch('server_management_api.authentication.raise_if_exc') as mock_raise_if_exc:
                         mock_decode.return_value = deepcopy(original_payload)
 
                         with pytest.raises(Unauthorized):
-                            mock_raise_if_exc.side_effect = [WazuhResult({'valid': False})]
+                            mock_raise_if_exc.side_effect = [GuardBearResult({'valid': False})]
                             authentication.decode_token(token='test_token')
 
                         with pytest.raises(Unauthorized):
                             mock_raise_if_exc.side_effect = [
-                                WazuhResult({'valid': True, 'policies': {'value': 'test'}}),
-                                WazuhResult({'auth_token_exp_timeout': 900, 'rbac_mode': 'white'}),
+                                GuardBearResult({'valid': True, 'policies': {'value': 'test'}}),
+                                GuardBearResult({'auth_token_exp_timeout': 900, 'rbac_mode': 'white'}),
                             ]
                             authentication.decode_token(token='test_token')

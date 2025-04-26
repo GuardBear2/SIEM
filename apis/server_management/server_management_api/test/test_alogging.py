@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -8,11 +8,11 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
+with patch('guardbear.core.common.guardbear_uid'):
+    with patch('guardbear.core.common.guardbear_gid'):
         from server_management_api import alogging
 
-REQUEST_HEADERS_TEST = {'authorization': 'Basic d2F6dWg6cGFzc3dvcmQxMjM='}  # wazuh:password123
+REQUEST_HEADERS_TEST = {'authorization': 'Basic d2F6dWg6cGFzc3dvcmQxMjM='}  # guardbear:password123
 AUTH_CONTEXT_TEST = {'auth_context': 'example'}
 HASH_AUTH_CONTEXT_TEST = '020efd3b53c1baf338cf143fad7131c3'
 
@@ -30,7 +30,7 @@ HASH_AUTH_CONTEXT_TEST = '020efd3b53c1baf338cf143fad7131c3'
 )
 def test_custom_logging(path, hash_auth_context, body, loggerlevel):
     """Test custom access logging calls."""
-    user, remote, method = ('wazuh', '1.1.1.1', 'POST')
+    user, remote, method = ('guardbear', '1.1.1.1', 'POST')
     query, elapsed_time, status, headers = {'pretty': True}, 1.01, 200, {'content-type': 'xml'}
     json_info = {
         'user': user,

@@ -47,7 +47,7 @@ Contains the different formats of handled events, such as syslog, json, macos, e
 # Install
 The script is packaged along the engine-suite python packaged, to install simply run:
 ```bash
-pip install wazuh/src/engine/tools/engine-suite
+pip install guardbear/src/engine/tools/engine-suite
 ```
 To verify it's working:
 ```bash

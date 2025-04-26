@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -7,8 +7,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from scripts.tests.conftest import get_default_configuration
-from wazuh.core.config.client import CentralizedConfig
-from wazuh.core.config.models.server import ValidateFilePathMixin
+from guardbear.core.config.client import CentralizedConfig
+from guardbear.core.config.models.server import ValidateFilePathMixin
 
 
 class Arguments:
@@ -19,19 +19,19 @@ class Arguments:
         self.func = func
 
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
+with patch('guardbear.core.common.guardbear_uid'):
+    with patch('guardbear.core.common.guardbear_gid'):
         with patch.object(ValidateFilePathMixin, '_validate_file_path', return_value=None):
             default_config = get_default_configuration()
             CentralizedConfig._config = default_config
-            sys.modules['wazuh.rbac.orm'] = MagicMock()
-            import wazuh.rbac.decorators
-            from wazuh.tests.util import RBAC_bypasser
+            sys.modules['guardbear.rbac.orm'] = MagicMock()
+            import guardbear.rbac.decorators
+            from guardbear.tests.util import RBAC_bypasser
 
-            del sys.modules['wazuh.rbac.orm']
-            wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+            del sys.modules['guardbear.rbac.orm']
+            guardbear.rbac.decorators.expose_resources = RBAC_bypasser
             from scripts import rbac_control
-            from wazuh.tests.test_security import db_setup  # noqa
+            from guardbear.tests.test_security import db_setup  # noqa
 
 
 @patch('scripts.rbac_control.sys.exit')

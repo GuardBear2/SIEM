@@ -1,6 +1,6 @@
 /*
- * Wazuh - Indexer connector.
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear - Indexer connector.
+ * Copyright (C) 2015, GuardBear Inc.
  * June 2, 2023.
  *
  * This program is free software; you can redistribute it
@@ -28,9 +28,9 @@ constexpr auto INDEXER_COLUMN {"indexer"};
 constexpr auto USER_KEY {"username"};
 constexpr auto PASSWORD_KEY {"password"};
 constexpr auto ELEMENTS_PER_BULK {1000};
-constexpr auto WAZUH_OWNER {"wazuh"};
-constexpr auto WAZUH_GROUP {"wazuh"};
-constexpr auto MERGED_CA_PATH {"/var/lib/wazuh-server/tmp/root-ca-merged.pem"};
+constexpr auto GUARDBEAR_OWNER {"guardbear"};
+constexpr auto GUARDBEAR_GROUP {"guardbear"};
+constexpr auto MERGED_CA_PATH {"/var/lib/guardbear-server/tmp/root-ca-merged.pem"};
 
 // Single thread in case the events needs to be processed in order.
 constexpr auto SINGLE_ORDERED_DISPATCHING = 1;

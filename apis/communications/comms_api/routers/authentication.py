@@ -1,8 +1,8 @@
 from fastapi import status
-from wazuh.core.exception import WazuhIndexerError, WazuhInternalError, WazuhResourceNotFound
-from wazuh.core.indexer import get_indexer_client
-from wazuh.core.indexer.models.agent import Agent, Status
-from wazuh.core.utils import get_utc_now
+from guardbear.core.exception import GuardBearIndexerError, GuardBearInternalError, GuardBearResourceNotFound
+from guardbear.core.indexer import get_indexer_client
+from guardbear.core.indexer.models.agent import Agent, Status
+from guardbear.core.utils import get_utc_now
 
 from comms_api.authentication.authentication import generate_token
 from comms_api.models.authentication import Credentials, TokenResponse
@@ -40,11 +40,11 @@ async def authentication(credentials: Credentials) -> TokenResponse:
 
             body = Agent(last_login=get_utc_now(), status=Status.ACTIVE)
             await indexer_client.agents.update(credentials.uuid, body)
-    except WazuhIndexerError as exc:
+    except GuardBearIndexerError as exc:
         raise HTTPError(message=f"Couldn't connect to the indexer: {str(exc)}", status_code=status.HTTP_403_FORBIDDEN)
-    except WazuhResourceNotFound:
+    except GuardBearResourceNotFound:
         raise HTTPError(message='Agent does not exist', status_code=status.HTTP_403_FORBIDDEN)
-    except WazuhInternalError as exc:
+    except GuardBearInternalError as exc:
         raise HTTPError(message=f"Couldn't get key pair: {str(exc)}", status_code=status.HTTP_403_FORBIDDEN)
 
     return TokenResponse(token=token)

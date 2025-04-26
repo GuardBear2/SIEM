@@ -7,7 +7,7 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.requests import Request
 from starlette.responses import Response
 
-logger = logging.getLogger('wazuh-comms-api')
+logger = logging.getLogger('guardbear-comms-api')
 
 
 async def log_request(request: Request, response: Response, start_time: time) -> None:
@@ -99,7 +99,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             with contextlib.suppress(json.decoder.JSONDecodeError):
                 # Load the request body to the _json field before calling the controller so it's cached before the
                 # stream is consumed. If there's a json error we skip it so it's handled later.
-                # Related to https://github.com/wazuh/wazuh/issues/24060.
+                # Related to https://github.com/guardbear/guardbear/issues/24060.
                 _ = await request.json()
 
         response = await call_next(request)

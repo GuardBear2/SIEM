@@ -104,7 +104,7 @@
         "typeindex": "cpp"
     },
     "yaml.schemas": {
-        "${env:ENGINE_SRC}/ruleset/schemas/wazuh-asset.json": [
+        "${env:ENGINE_SRC}/ruleset/schemas/guardbear-asset.json": [
             "*/decoders/*.yml",
             "*/decoders/*/*.yml",
             "*/decoders/*/*/*.yml",

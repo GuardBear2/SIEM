@@ -115,7 +115,7 @@ def init(env_path: Path, ruleset_path: Path, health_test_path: Path, stop_on_war
         ruleset_path = cpy_ruleset(env_path, ruleset_path)
         print("Ruleset files copied.")
 
-        bin_path = env_path / 'wazuh-engine'
+        bin_path = env_path / 'guardbear-engine'
 
         print("Starting the engine...")
         engine_handler = EngineHandler(

@@ -10,8 +10,8 @@ variables:
   host: localhost
   port: 55000
   user: testing
-  user_auth_context: wazuh-wui
-  pass: wazuh
+  user_auth_context: guardbear-wui
+  pass: guardbear
   basic_auth: dGVzdGluZzp3YXp1aA== # b64 encoded user:pass, update if user or pass changes
   basic_auth_context: d2F6dWgtd3VpOndhenVoLXd1aQ== # b64 encoded user:pass, update if user or pass changes
   login_endpoint: security/user/authenticate
@@ -90,7 +90,7 @@ variables:
     <localfile>
     <log_format>full_command</log_format>
     <alias>ciscat-ossec-log</alias>
-    <command>grep 'wazuh-modulesd:ciscat:' /opt/ossec/logs/ossec.log | tail -20</command>
+    <command>grep 'guardbear-modulesd:ciscat:' /opt/ossec/logs/ossec.log | tail -20</command>
     <frequency>86400</frequency>
     </localfile>
 

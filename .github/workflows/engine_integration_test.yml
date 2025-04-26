@@ -82,13 +82,13 @@ jobs:
     - name: Create install directory
       run: |
         export WHOAMI=$(whoami)
-        sudo install -d -m 0750 -o ${WHOAMI} /var/lib/wazuh-server/
-        sudo install -d -m 0750 -o ${WHOAMI} /run/wazuh-server/
-        sudo install -d -m 0750 -o ${WHOAMI} /etc/wazuh-server
-        curl -LO http://packages.wazuh.com/deps/vulnerability_model_database/vd_1.0.0_vd_4.10.0.tar.xz
+        sudo install -d -m 0750 -o ${WHOAMI} /var/lib/guardbear-server/
+        sudo install -d -m 0750 -o ${WHOAMI} /run/guardbear-server/
+        sudo install -d -m 0750 -o ${WHOAMI} /etc/guardbear-server
+        curl -LO http://packages.guardbear.com/deps/vulnerability_model_database/vd_1.0.0_vd_4.10.0.tar.xz
         tar -xvf vd_1.0.0_vd_4.10.0.tar.xz
-        mv queue/vd /var/lib/wazuh-server/
-        mv queue/vd_updater /var/lib/wazuh-server/
+        mv queue/vd /var/lib/guardbear-server/
+        mv queue/vd_updater /var/lib/guardbear-server/
         rm -rf queue vd_1.0.0_vd_4.10.0.tar.xz
 
     - name: Build

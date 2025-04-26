@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import binascii
@@ -13,9 +13,9 @@ from connexion.exceptions import OAuthProblem, ProblemException
 from connexion.testing import TestContext
 from freezegun import freeze_time
 from starlette.responses import Response
-from wazuh.core.authentication import JWT_ALGORITHM
-from wazuh.core.config.client import CentralizedConfig
-from wazuh.core.config.models.server import ValidateFilePathMixin
+from guardbear.core.authentication import JWT_ALGORITHM
+from guardbear.core.config.client import CentralizedConfig
+from guardbear.core.config.models.server import ValidateFilePathMixin
 
 from server_management_api.api_exception import ExpectFailedException
 from server_management_api.controllers.test.utils import get_default_configuration
@@ -28,7 +28,7 @@ from server_management_api.middlewares import (
     CheckExpectHeaderMiddleware,
     CheckRateLimitsMiddleware,
     SecureHeadersMiddleware,
-    WazuhAccessLoggerMiddleware,
+    GuardBearAccessLoggerMiddleware,
     access_log,
     check_blocked_ip,
     check_rate_limit,
@@ -195,11 +195,11 @@ async def test_check_rate_limits_middleware_ko(endpoint, return_code_general, re
 @pytest.mark.parametrize(
     'json_body, q_password, b_password, b_key, c_user, hash, sec_header, endpoint, method, status_code',
     [
-        (True, None, None, None, None, 'hash', ('basic', 'wazuh:pwd'), '/agents', 'GET', 200),
-        (False, 'q_pass', 'b_pass', 'b_key', 'wazuh', '', ('basic', 'wazuh:pwd'), LOGIN_ENDPOINT, 'GET', 200),
-        (False, None, 'b_pass', 'b_key', 'wazuh', '', ('bearer', {'sub': 'wazuh'}), RUN_AS_LOGIN_ENDPOINT, 'POST', 403),
-        (False, 'q_pass', None, 'b_key', 'wazuh', '', ('bearer', {'sub': 'wazuh'}), RUN_AS_LOGIN_ENDPOINT, 'POST', 403),
-        (False, 'q_pass', None, 'b_key', 'wazuh', '', ('other', ''), RUN_AS_LOGIN_ENDPOINT, 'POST', 403),
+        (True, None, None, None, None, 'hash', ('basic', 'guardbear:pwd'), '/agents', 'GET', 200),
+        (False, 'q_pass', 'b_pass', 'b_key', 'guardbear', '', ('basic', 'guardbear:pwd'), LOGIN_ENDPOINT, 'GET', 200),
+        (False, None, 'b_pass', 'b_key', 'guardbear', '', ('bearer', {'sub': 'guardbear'}), RUN_AS_LOGIN_ENDPOINT, 'POST', 403),
+        (False, 'q_pass', None, 'b_key', 'guardbear', '', ('bearer', {'sub': 'guardbear'}), RUN_AS_LOGIN_ENDPOINT, 'POST', 403),
+        (False, 'q_pass', None, 'b_key', 'guardbear', '', ('other', ''), RUN_AS_LOGIN_ENDPOINT, 'POST', 403),
     ],
 )
 async def test_access_log(
@@ -247,7 +247,7 @@ async def test_access_log(
         await access_log(request=mock_req, response=response, prev_time=expected_time)
         if json_body:
             mock_req.json.assert_awaited_once()
-        expected_user = UNKNOWN_USER_STRING if not c_user and not sec_header[0] else 'wazuh'
+        expected_user = UNKNOWN_USER_STRING if not c_user and not sec_header[0] else 'guardbear'
         if not c_user:
             mock_get_headers.assert_called_once_with(mock_req)
             if sec_header[0] == 'basic':
@@ -286,7 +286,7 @@ async def test_access_log_hash_auth_context(mock_req):
     """Check that `access_log` obtains the authentication context hash from the JWT token."""
     response = MagicMock()
     response.status_code = 200
-    user = 'wazuh'
+    user = 'guardbear'
     hash_auth_context = '5a5e646ea0bc6e3653cfc593d62b16f7'
     sec_header = ('bearer', {'sub': user, 'hash_auth_context': hash_auth_context})
     body = {}
@@ -371,14 +371,14 @@ async def test_access_log_ko(mock_req, exception):
 
 @pytest.mark.asyncio
 @freeze_time(datetime(1970, 1, 1, 0, 0, 10))
-async def test_wazuh_access_logger_middleware():
+async def test_guardbear_access_logger_middleware():
     """Test access logger middleware."""
     mock_req = AsyncMock()
     response = MagicMock()
     response.status_code = 200
     dispatch_mock = AsyncMock(return_value=response)
 
-    middleware = WazuhAccessLoggerMiddleware(AsyncApp(__name__), dispatch=dispatch_mock)
+    middleware = GuardBearAccessLoggerMiddleware(AsyncApp(__name__), dispatch=dispatch_mock)
     operation = MagicMock(name='operation')
     operation.method = 'post'
 

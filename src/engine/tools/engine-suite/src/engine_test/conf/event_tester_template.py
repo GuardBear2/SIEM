@@ -43,12 +43,12 @@ class TesterMessageTemplate:
         self._header_template = {
             "agent": {
                 "id": "2887e1cf-9bf2-431a-b066-a46860080f56",
-                "name": "wazuh-agent-name",
+                "name": "guardbear-agent-name",
                 "type": "endpoint",
                 "version": "5.0.0",
                 "groups": ["group1", "group2"],
                 "host": {
-                    "hostname": "wazuh-endpoint-linux",
+                    "hostname": "guardbear-endpoint-linux",
                     "os": {"name": "Amazon Linux 2", "platform": "Linux"},
                     "ip": ["192.168.1.2"],
                     "architecture": "x86_64"

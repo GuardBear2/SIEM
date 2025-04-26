@@ -1,11 +1,11 @@
-FROM public.ecr.aws/o5x5t0j3/amd64/api_development:integration_test_wazuh-generic
+FROM public.ecr.aws/o5x5t0j3/amd64/api_development:integration_test_guardbear-generic
 
-ARG WAZUH_BRANCH
+ARG GUARDBEAR_BRANCH
 
-## install Wazuh
-RUN mkdir wazuh && curl -sL https://github.com/wazuh/wazuh/tarball/${WAZUH_BRANCH} | tar zx --strip-components=1 -C wazuh
-ADD base/agent/preloaded-vars.conf /wazuh/etc/preloaded-vars.conf
-RUN /wazuh/install.sh
+## install GuardBear
+RUN mkdir guardbear && curl -sL https://github.com/guardbear/guardbear/tarball/${GUARDBEAR_BRANCH} | tar zx --strip-components=1 -C guardbear
+ADD base/agent/preloaded-vars.conf /guardbear/etc/preloaded-vars.conf
+RUN /guardbear/install.sh
 
 COPY base/agent/entrypoint.sh /scripts/entrypoint.sh
 

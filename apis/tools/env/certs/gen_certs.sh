@@ -19,7 +19,7 @@ if [[ ! -e $fs/root-ca.pem ]]; then
 
 cat << EOF | $cfssl gencert -initca - | $cfssljson -bare root-ca -
 {
-  "CN": "Wazuh",
+  "CN": "GuardBear",
   "key": {
     "algo": "rsa",
     "size": 2048
@@ -28,8 +28,8 @@ cat << EOF | $cfssl gencert -initca - | $cfssljson -bare root-ca -
   {
     "C": "US",
     "L": "San Francisco",
-    "O": "Wazuh",
-    "OU": "Wazuh Root CA"
+    "O": "GuardBear",
+    "OU": "GuardBear Root CA"
   }
  ]
 }
@@ -55,8 +55,8 @@ cat << EOF | $cfssl gencert -ca=root-ca.pem -ca-key=root-ca-key.pem -config=ca-c
   {
     "C": "US",
     "L": "California",
-    "O": "Wazuh",
-    "OU": "Wazuh"
+    "O": "GuardBear",
+    "OU": "GuardBear"
   }
   ],
   "hosts": [
@@ -73,7 +73,7 @@ gen_server_key() {
   openssl genpkey -algorithm RSA -out private-key.pem -pkeyopt rsa_keygen_bits:2048  > /dev/null 2>&1
 }
 
-hosts=(wazuh-indexer wazuh-manager wazuh-worker1 wazuh-worker2)
+hosts=(guardbear-indexer guardbear-manager guardbear-worker1 guardbear-worker2)
 for i in "${hosts[@]}"; do
     gencert $i www
 done

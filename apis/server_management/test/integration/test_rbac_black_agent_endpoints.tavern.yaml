@@ -269,7 +269,7 @@ stages:
      headers:
        Authorization: "Bearer {test_login_token}"
      params:
-       name: 'wazuh-agent2'
+       name: 'guardbear-agent2'
    response:
      status_code: 200
      json:
@@ -285,7 +285,7 @@ stages:
      headers:
        Authorization: "Bearer {test_login_token}"
      params:
-       name: 'wazuh-agent1'
+       name: 'guardbear-agent1'
    response:
      status_code: 200
      json:
@@ -293,7 +293,7 @@ stages:
        data:
          affected_items:
            - id: '001'
-             name: 'wazuh-agent1'
+             name: 'guardbear-agent1'
          failed_items: []
          total_affected_items: 1
          total_failed_items: 0

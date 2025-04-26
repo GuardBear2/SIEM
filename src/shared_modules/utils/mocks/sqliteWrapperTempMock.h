@@ -1,6 +1,6 @@
 /*
- * Wazuh DBSYNC
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear DBSYNC
+ * Copyright (C) 2015, GuardBear Inc.
  * July 31, 2023.
  *
  * This program is free software; you can redistribute it

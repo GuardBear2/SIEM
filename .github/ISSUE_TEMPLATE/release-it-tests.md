@@ -2,10 +2,10 @@
 | :--                                   | :--                                                       |
 | **Main release issue**                | RELEASE_ISSUE                                             |
 | **Main release candidate issue**      | RELEASE_CANDIDATE_ISSUE_URL                               |
-| **Version**                           | WAZUH_VERSION                                             |
+| **Version**                           | GUARDBEAR_VERSION                                             |
 | **Release candidate**                 | RC_VERSION                                                |
-| **wazuh/wazuh tag**                   | https://github.com/wazuh/wazuh/tree/vWAZUH_VERSION-TAG    |
-| **wazuh/wazuh-qa tag**                | https://github.com/wazuh/wazuh-qa/tree/vWAZUH_VERSION-TAG |
+| **guardbear/guardbear tag**                   | https://github.com/guardbear/guardbear/tree/vGUARDBEAR_VERSION-TAG    |
+| **guardbear/guardbear-qa tag**                | https://github.com/guardbear/guardbear-qa/tree/vGUARDBEAR_VERSION-TAG |
 | **Previous release testing issue**    | PREVIOUS_IT                                               |
 | **Build**                             | COMPLETE_THIS_FIELD :warning: :warning: :warning:         |
 
@@ -38,4 +38,4 @@
 
 ## Description
 
-The objective of this issue is to check that the integration tests pass successfully against the version `WAZUH_VERSION` of Wazuh.
+The objective of this issue is to check that the integration tests pass successfully against the version `GUARDBEAR_VERSION` of GuardBear.

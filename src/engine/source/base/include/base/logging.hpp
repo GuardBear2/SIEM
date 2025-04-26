@@ -26,7 +26,7 @@ constexpr auto STD_ERR_PATH {"/dev/stderr"};
  */
 constexpr auto STD_OUT_PATH {"/dev/stdout"};
 
-// constexpr auto WAZUH_LOG_HEADER {"%D %T wazuh-engine[%P] %s:%# at %!(): %l: %v"};
+// constexpr auto GUARDBEAR_LOG_HEADER {"%D %T guardbear-engine[%P] %s:%# at %!(): %l: %v"};
 
 /**
  * @brief Default log header format.

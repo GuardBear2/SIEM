@@ -24,57 +24,57 @@ def cpy_conf(env_path: Path, it_path: Path) -> Path:
     return dest_conf_file
 
 def create_dummy_integration(env_path: Path):
-    wazuh_core_test = env_path / 'engine' / 'wazuh-core-test'
-    wazuh_core_test.mkdir(parents=True, exist_ok=True)
-    (wazuh_core_test / 'decoders').mkdir(exist_ok=True)
-    (wazuh_core_test / 'filters').mkdir(exist_ok=True)
+    guardbear_core_test = env_path / 'engine' / 'guardbear-core-test'
+    guardbear_core_test.mkdir(parents=True, exist_ok=True)
+    (guardbear_core_test / 'decoders').mkdir(exist_ok=True)
+    (guardbear_core_test / 'filters').mkdir(exist_ok=True)
 
-    (wazuh_core_test / 'decoders' / 'test-message.yml').write_text("""\
+    (guardbear_core_test / 'decoders' / 'test-message.yml').write_text("""\
 name: decoder/test-message/0
 check: $agent.id == AA11
 """)
 
-    (wazuh_core_test / 'filters' /
+    (guardbear_core_test / 'filters' /
      'allow-all.yml').write_text("name: filter/allow-all/0\n")
 
-    (wazuh_core_test / 'manifest.yml').write_text(
-        "name: integration/wazuh-core-test/0\ndecoders:\n- decoder/test-message/0\n")
+    (guardbear_core_test / 'manifest.yml').write_text(
+        "name: integration/guardbear-core-test/0\ndecoders:\n- decoder/test-message/0\n")
 
 
 def create_other_dummy_integration(env_path: Path):
-    other_wazuh_core_test = env_path / 'engine' / 'other-wazuh-core-test'
-    other_wazuh_core_test.mkdir(parents=True, exist_ok=True)
-    (other_wazuh_core_test / 'decoders').mkdir(exist_ok=True)
-    (other_wazuh_core_test / 'filters').mkdir(exist_ok=True)
+    other_guardbear_core_test = env_path / 'engine' / 'other-guardbear-core-test'
+    other_guardbear_core_test.mkdir(parents=True, exist_ok=True)
+    (other_guardbear_core_test / 'decoders').mkdir(exist_ok=True)
+    (other_guardbear_core_test / 'filters').mkdir(exist_ok=True)
 
-    (other_wazuh_core_test / 'decoders' / 'other-test-message.yml').write_text("""\
+    (other_guardbear_core_test / 'decoders' / 'other-test-message.yml').write_text("""\
 name: decoder/other-test-message/0
 check: $agent.id == BB22
 """)
 
-    (other_wazuh_core_test / 'manifest.yml').write_text(
-        "name: integration/other-wazuh-core-test/0\ndecoders:\n- decoder/other-test-message/0\n")
+    (other_guardbear_core_test / 'manifest.yml').write_text(
+        "name: integration/other-guardbear-core-test/0\ndecoders:\n- decoder/other-test-message/0\n")
 
 
 def create_dummy_integration_with_parents(env_path: Path):
-    parent_wazuh_core_test = env_path / 'engine' / 'parent-wazuh-core-test'
-    parent_wazuh_core_test.mkdir(parents=True, exist_ok=True)
-    (parent_wazuh_core_test / 'decoders').mkdir(exist_ok=True)
-    (parent_wazuh_core_test / 'filters').mkdir(exist_ok=True)
+    parent_guardbear_core_test = env_path / 'engine' / 'parent-guardbear-core-test'
+    parent_guardbear_core_test.mkdir(parents=True, exist_ok=True)
+    (parent_guardbear_core_test / 'decoders').mkdir(exist_ok=True)
+    (parent_guardbear_core_test / 'filters').mkdir(exist_ok=True)
 
-    (parent_wazuh_core_test / 'decoders' / 'parent-message.yml').write_text("""\
+    (parent_guardbear_core_test / 'decoders' / 'parent-message.yml').write_text("""\
 name: decoder/parent-message/0
 check: $agent.id == AA11
 """)
 
-    (parent_wazuh_core_test / 'decoders' / 'test-message.yml').write_text("""\
+    (parent_guardbear_core_test / 'decoders' / 'test-message.yml').write_text("""\
 name: decoder/test-message/0
 parents:
     - decoder/parent-message/0
     """)
 
-    (parent_wazuh_core_test / 'manifest.yml').write_text(
-        "name: integration/parent-wazuh-core-test/0\ndecoders:\n- decoder/parent-message/0\n")
+    (parent_guardbear_core_test / 'manifest.yml').write_text(
+        "name: integration/parent-guardbear-core-test/0\ndecoders:\n- decoder/parent-message/0\n")
 
 
 def init(env_path: Path, test_path: Path):
@@ -86,7 +86,7 @@ def init(env_path: Path, test_path: Path):
         print("Configuration file copied.")
 
         # Binary path
-        bin_path = env_path / 'wazuh-engine'
+        bin_path = env_path / 'guardbear-engine'
 
         print("Starting the Engine...")
         engine_handler = EngineHandler(

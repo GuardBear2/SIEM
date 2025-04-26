@@ -1,7 +1,7 @@
 from unittest.mock import AsyncMock, MagicMock
 
 from fastapi import status
-from wazuh.core.indexer.models.commands import Command, Status
+from guardbear.core.indexer.models.commands import Command, Status
 
 from comms_api.core.unix_server.commands import post_commands
 from comms_api.models.commands import Commands

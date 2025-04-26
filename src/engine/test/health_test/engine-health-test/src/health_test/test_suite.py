@@ -186,7 +186,7 @@ def run_test(test_parent_path: Path, engine_api_socket: str, unit_result: type, 
         if input_file.parent != test_dir:
             test_name = f"{test_parent_name}-{input_file.parent.name}"
 
-        ns = "wazuh system" if target == 'rule' else "wazuh"
+        ns = "guardbear system" if target == 'rule' else "guardbear"
         engine_test_command = f"engine-test -c {engine_test_conf.resolve().as_posix()} "
         engine_test_command += f"run {test_name} --api-socket {engine_api_socket} -n {ns} {debug_mode} -j"
         command = f"cat {input_file.resolve().as_posix()} | {engine_test_command}"
@@ -203,7 +203,7 @@ def decoder_health_test(env_path: Path, unit_result: type, debug_mode: str, inte
     if not conf_path.is_file():
         sys.exit(f"Configuration file not found: {conf_path}")
 
-    bin_path = (env_path / "wazuh-engine").resolve()
+    bin_path = (env_path / "guardbear-engine").resolve()
     if not bin_path.is_file():
         sys.exit(f"Engine binary not found: {bin_path}")
 
@@ -271,7 +271,7 @@ def rule_health_test(env_path: Path, unit_result: type, debug_mode: str, ruleset
     if not conf_path.is_file():
         sys.exit(f"Configuration file not found: {conf_path}")
 
-    bin_path = (env_path / "wazuh-engine").resolve()
+    bin_path = (env_path / "guardbear-engine").resolve()
     if not bin_path.is_file():
         sys.exit(f"Engine binary not found: {bin_path}")
 

@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -10,14 +10,14 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Union
 
 import jwt
-import wazuh.core.utils as core_utils
-import wazuh.rbac.utils as rbac_utils
+import guardbear.core.utils as core_utils
+import guardbear.rbac.utils as rbac_utils
 from connexion.exceptions import Unauthorized
-from wazuh.core.authentication import JWT_ALGORITHM, JWT_ISSUER, get_keypair
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.config.client import CentralizedConfig
-from wazuh.rbac.orm import AuthenticationManager, TokenManager, UserRolesManager
-from wazuh.rbac.preprocessor import optimize_resources
+from guardbear.core.authentication import JWT_ALGORITHM, JWT_ISSUER, get_keypair
+from guardbear.core.cluster.dapi.dapi import DistributedAPI
+from guardbear.core.config.client import CentralizedConfig
+from guardbear.rbac.orm import AuthenticationManager, TokenManager, UserRolesManager
+from guardbear.rbac.preprocessor import optimize_resources
 
 from server_management_api.util import raise_if_exc
 
@@ -73,7 +73,7 @@ def check_user(user: str, password: str, required_scopes=None) -> Union[dict, No
         request_type='local_master',
         is_async=False,
         wait_for_complete=False,
-        logger=logging.getLogger('wazuh-api'),
+        logger=logging.getLogger('guardbear-api'),
     )
     data = raise_if_exc(pool.submit(asyncio.run, dapi.distribute_function()).result())
 
@@ -118,14 +118,14 @@ def generate_token(user_id: str = None, data: dict = None, auth_context: dict = 
         request_type='local_master',
         is_async=False,
         wait_for_complete=False,
-        logger=logging.getLogger('wazuh-api'),
+        logger=logging.getLogger('guardbear-api'),
     )
     result = raise_if_exc(pool.submit(asyncio.run, dapi.distribute_function()).result()).dikt
     timestamp = int(core_utils.get_utc_now().timestamp())
 
     payload = {
         'iss': JWT_ISSUER,
-        'aud': 'Wazuh API REST',
+        'aud': 'GuardBear API REST',
         'nbf': timestamp,
         'exp': timestamp + result['auth_token_exp_timeout'],
         'sub': str(user_id),
@@ -207,7 +207,7 @@ def decode_token(token: str) -> dict:
     try:
         # Decode JWT token with local secret
         _, public_key = get_keypair()
-        payload = jwt.decode(token, public_key, algorithms=[JWT_ALGORITHM], audience='Wazuh API REST')
+        payload = jwt.decode(token, public_key, algorithms=[JWT_ALGORITHM], audience='GuardBear API REST')
 
         # Check token and add processed policies in the Master node
         server_config = CentralizedConfig.get_server_config()
@@ -223,7 +223,7 @@ def decode_token(token: str) -> dict:
             request_type='local_master',
             is_async=False,
             wait_for_complete=False,
-            logger=logging.getLogger('wazuh-api'),
+            logger=logging.getLogger('guardbear-api'),
         )
         data = raise_if_exc(pool.submit(asyncio.run, dapi.distribute_function()).result()).to_dict()
 
@@ -238,7 +238,7 @@ def decode_token(token: str) -> dict:
             request_type='local_master',
             is_async=False,
             wait_for_complete=False,
-            logger=logging.getLogger('wazuh-api'),
+            logger=logging.getLogger('guardbear-api'),
         )
         result = raise_if_exc(pool.submit(asyncio.run, dapi.distribute_function()).result())
 

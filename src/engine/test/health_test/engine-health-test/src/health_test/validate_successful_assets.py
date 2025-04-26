@@ -13,8 +13,8 @@ class UnitResult(UnitResultInterface):
             self.error = actual.error
             return
 
-        self.expected_decoders = expected.get('wazuh', {}).get('decoders', [])
-        self.expected_rules = expected.get('wazuh', {}).get('rules', [])
+        self.expected_decoders = expected.get('guardbear', {}).get('decoders', [])
+        self.expected_rules = expected.get('guardbear', {}).get('rules', [])
 
         self.success_decoders = []
         self.success_rules = []

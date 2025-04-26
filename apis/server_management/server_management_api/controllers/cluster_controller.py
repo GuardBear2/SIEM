@@ -1,22 +1,22 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
 
-import wazuh.cluster as cluster
-import wazuh.manager as manager
+import guardbear.cluster as cluster
+import guardbear.manager as manager
 from connexion import request
 from connexion.lifecycle import ConnexionResponse
-from wazuh.core.cluster.control import get_system_nodes
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.results import AffectedItemsWazuhResult
+from guardbear.core.cluster.control import get_system_nodes
+from guardbear.core.cluster.dapi.dapi import DistributedAPI
+from guardbear.core.results import AffectedItemsGuardBearResult
 
 from server_management_api.controllers.util import XML_CONTENT_TYPE, json_response
 from server_management_api.models.base_model_ import Body
 from server_management_api.util import parse_api_param, raise_if_exc, remove_nones_to_dict
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('guardbear-api')
 
 
 async def get_cluster_nodes(
@@ -166,7 +166,7 @@ async def get_status(pretty: bool = False, wait_for_complete: bool = False) -> C
 
 
 async def get_status_node(node_id: str, pretty: bool = False, wait_for_complete: bool = False) -> ConnexionResponse:
-    """Get a specified node's Wazuh daemons status.
+    """Get a specified node's GuardBear daemons status.
 
     Parameters
     ----------
@@ -256,7 +256,7 @@ async def get_configuration_node(
     wait_for_complete : bool
         Disable response timeout or not. Default `False`
     section : str
-        Indicates the wazuh configuration section.
+        Indicates the guardbear configuration section.
     field : str
         Indicates a section child.
     raw : bool, optional
@@ -285,7 +285,7 @@ async def get_configuration_node(
     )
     data = raise_if_exc(await dapi.distribute_function())
 
-    if isinstance(data, AffectedItemsWazuhResult):
+    if isinstance(data, AffectedItemsGuardBearResult):
         response = json_response(data, pretty=pretty)
     else:
         response = ConnexionResponse(body=data['message'], content_type=XML_CONTENT_TYPE)
@@ -293,7 +293,7 @@ async def get_configuration_node(
 
 
 async def get_daemon_stats_node(node_id: str, pretty: bool = False, wait_for_complete: bool = False):
-    """Get Wazuh statistical information from the specified daemons of a specified cluster node.
+    """Get GuardBear statistical information from the specified daemons of a specified cluster node.
 
     Parameters
     ----------
@@ -321,9 +321,9 @@ async def get_log_node(
     select: str = None,
     distinct: bool = False,
 ) -> ConnexionResponse:
-    """Get a specified node's wazuh logs.
+    """Get a specified node's guardbear logs.
 
-    Returns the last 2000 wazuh log entries in node {node_id}.
+    Returns the last 2000 guardbear log entries in node {node_id}.
 
     Parameters
     ----------
@@ -392,7 +392,7 @@ async def get_log_node(
 async def get_log_summary_node(
     node_id: str, pretty: bool = False, wait_for_complete: bool = False
 ) -> ConnexionResponse:
-    """Get a summary of a specified node's wazuh logs.
+    """Get a summary of a specified node's guardbear logs.
 
     Parameters
     ----------
@@ -467,7 +467,7 @@ async def put_restart(
 async def get_conf_validation(
     pretty: bool = False, wait_for_complete: bool = False, nodes_list: str = '*'
 ) -> ConnexionResponse:
-    """Check whether the Wazuh configuration in a list of cluster nodes is correct or not.
+    """Check whether the GuardBear configuration in a list of cluster nodes is correct or not.
 
 
     Parameters
@@ -506,14 +506,14 @@ async def get_conf_validation(
 async def update_configuration(
     node_id: str, body: bytes, pretty: bool = False, wait_for_complete: bool = False
 ) -> ConnexionResponse:
-    """Update Wazuh configuration (ossec.conf) in node node_id.
+    """Update GuardBear configuration (ossec.conf) in node node_id.
 
     Parameters
     ----------
     node_id : str
         Node ID.
     body : bytes
-        New content for the Wazuh configuration (ossec.conf).
+        New content for the GuardBear configuration (ossec.conf).
     pretty : bool
         Show results in human-readable format.
     wait_for_complete : bool

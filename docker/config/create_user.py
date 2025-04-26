@@ -13,8 +13,8 @@ SPECIAL_CHARS = "@$!%*?&-_"
 
 
 try:
-    from wazuh.rbac.orm import check_database_integrity
-    from wazuh.security import (
+    from guardbear.rbac.orm import check_database_integrity
+    from guardbear.security import (
         create_user,
         get_users,
         get_roles,
@@ -22,7 +22,7 @@ try:
         update_user,
     )
 except ModuleNotFoundError as e:
-    logging.error("No module 'wazuh' found.")
+    logging.error("No module 'guardbear' found.")
     sys.exit(1)
 
 
@@ -88,7 +88,7 @@ if __name__ == "__main__":
             ],
         )
     else:
-        # modify an existing user ("wazuh" or "wazuh-wui")
+        # modify an existing user ("guardbear" or "guardbear-wui")
         uid = initial_users[username]
         update_user(
             user_id=[
@@ -97,6 +97,6 @@ if __name__ == "__main__":
             password=password,
         )
     # disable unused default users
-    for def_user in ['wazuh', 'wazuh-wui']:
+    for def_user in ['guardbear', 'guardbear-wui']:
         if def_user != username:
             disable_user(initial_users[def_user])

@@ -161,7 +161,7 @@ class OpensearchManagement:
         env_vars = {
             'discovery.type': 'single-node',
             'plugins.security.disabled': 'true',
-            'OPENSEARCH_INITIAL_ADMIN_PASSWORD': 'WazuhTest99$',
+            'OPENSEARCH_INITIAL_ADMIN_PASSWORD': 'GuardBearTest99$',
             'OPENSEARCH_LOG_LEVEL': 'TRACE'
         }
         self.client.containers.run("opensearchproject/opensearch", detach=True, ports={'9200/tcp': 9200},
@@ -366,18 +366,18 @@ def load_indexer_output(engine_handler: EngineHandler) -> None:
         "name": "output/indexer/0",
         "metadata": {
             "title": "Indexer output event",
-            "description": "Output integrations events to wazuh-indexer",
+            "description": "Output integrations events to guardbear-indexer",
             "compatibility": "",
             "versions": [""],
             "references": [""],
             "author": {
-                "name": "Wazuh, Inc.",
+                "name": "GuardBear, Inc.",
                 "date": "2024/12/01"
             }
         },
         "outputs": [
             {
-                "wazuh-indexer": {
+                "guardbear-indexer": {
                     "index": Constants.INDEX_PATTERN
                 }
             }
@@ -404,7 +404,7 @@ def load_indexer_output(engine_handler: EngineHandler) -> None:
 def load_indexer_output_in_policy(engine_handler: EngineHandler, stop_on_warn: bool = True) -> None:
     request = api_policy.AssetPost_Request()
     request.asset = "output/indexer/0"
-    request.policy = "policy/wazuh/0"
+    request.policy = "policy/guardbear/0"
     request.namespace = "system"
     print(f"Adding indexer output to policy...\n{request}")
     error, response = engine_handler.api_client.send_recv(request)
@@ -437,7 +437,7 @@ def delete_indexer_output(engine_handler: EngineHandler) -> None:
 def delete_indexer_output_in_policy(engine_handler: EngineHandler, stop_on_warn: bool = True) -> None:
     request = api_policy.AssetDelete_Request()
     request.asset = "output/indexer/0"
-    request.policy = "policy/wazuh/0"
+    request.policy = "policy/guardbear/0"
     request.namespace = "system"
     print(f"Deleting indexer output to policy...\n{request}")
     error, response = engine_handler.api_client.send_recv(request)
@@ -451,13 +451,13 @@ def delete_indexer_output_in_policy(engine_handler: EngineHandler, stop_on_warn:
     print("indexer output deleted to policy.")
 
 
-def update_wazuh_core_message(wazuh_core_message_file, engine_handler):
+def update_guardbear_core_message(guardbear_core_message_file, engine_handler):
     request = api_catalog.ResourcePut_Request()
-    request.name = "decoder/core-wazuh-message/0"
+    request.name = "decoder/core-guardbear-message/0"
     request.namespaceid = "system"
-    request.content = wazuh_core_message_file.read_text()
+    request.content = guardbear_core_message_file.read_text()
     request.format = api_catalog.ResourceFormat.yml
-    print(f"Updating wazuh-core-message...\n{request}")
+    print(f"Updating guardbear-core-message...\n{request}")
     error, response = engine_handler.api_client.send_recv(request)
     if error:
         raise Exception(error)
@@ -468,9 +468,9 @@ def update_wazuh_core_message(wazuh_core_message_file, engine_handler):
         raise Exception(parsed_response.error)
 
 
-def modify_core_wazuh_decoder(file_path: Path, add_hash: bool = True):
+def modify_core_guardbear_decoder(file_path: Path, add_hash: bool = True):
     """
-    Modifies the given Wazuh YAML file to add or remove 'event_hash' in 'normalize'.
+    Modifies the given GuardBear YAML file to add or remove 'event_hash' in 'normalize'.
 
     Parameters:
     - file_path: Path to the YAML file.
@@ -515,7 +515,7 @@ def decoder_health_test(env_path: Path, integration_name: Optional[str] = None, 
     if not conf_path.is_file():
         sys.exit(f"Configuration file not found: {conf_path}")
 
-    bin_path = (env_path / "wazuh-engine").resolve()
+    bin_path = (env_path / "guardbear-engine").resolve()
     if not bin_path.is_file():
         sys.exit(f"Engine binary not found: {bin_path}")
 
@@ -529,7 +529,7 @@ def decoder_health_test(env_path: Path, integration_name: Optional[str] = None, 
                                    CONFIG_ENV_KEYS.LOG_LEVEL.value: "warning"})
 
     integrations: List[Path] = []
-    CORE_WAZUH_DECODER_PATH = env_path / 'ruleset' / 'decoders' / 'wazuh-core' / 'core-wazuh-message.yml'
+    CORE_GUARDBEAR_DECODER_PATH = env_path / 'ruleset' / 'decoders' / 'guardbear-core' / 'core-guardbear-message.yml'
     original_log_level = ""
 
     try:
@@ -550,17 +550,17 @@ def decoder_health_test(env_path: Path, integration_name: Optional[str] = None, 
                     continue
                 integrations.append(integration_path)
 
-        opensearch_management.init_opensearch(env_path / 'ruleset' / 'schemas' / 'wazuh-template.json')
+        opensearch_management.init_opensearch(env_path / 'ruleset' / 'schemas' / 'guardbear-template.json')
 
         log = (env_path / "logs/engine.log").as_posix()
         engine_handler.start(log)
         print("Engine started.")
-        print("Update wazuh-core-message decoder")
+        print("Update guardbear-core-message decoder")
         if not exist_index_output(engine_handler):
             load_indexer_output(engine_handler)
             load_indexer_output_in_policy(engine_handler)
-        modify_core_wazuh_decoder(CORE_WAZUH_DECODER_PATH)
-        update_wazuh_core_message(CORE_WAZUH_DECODER_PATH, engine_handler)
+        modify_core_guardbear_decoder(CORE_GUARDBEAR_DECODER_PATH)
+        update_guardbear_core_message(CORE_GUARDBEAR_DECODER_PATH, engine_handler)
 
         print("\n\nRunning tests...")
         results = run_test(integrations, engine_handler.api_socket_path)
@@ -569,9 +569,9 @@ def decoder_health_test(env_path: Path, integration_name: Optional[str] = None, 
         if exist_index_output(engine_handler):
             delete_indexer_output_in_policy(engine_handler)
             delete_indexer_output(engine_handler)
-        print("Restart wazuh-core-message decoder changes")
-        modify_core_wazuh_decoder(CORE_WAZUH_DECODER_PATH, add_hash=False)
-        update_wazuh_core_message(CORE_WAZUH_DECODER_PATH, engine_handler)
+        print("Restart guardbear-core-message decoder changes")
+        modify_core_guardbear_decoder(CORE_GUARDBEAR_DECODER_PATH, add_hash=False)
+        update_guardbear_core_message(CORE_GUARDBEAR_DECODER_PATH, engine_handler)
         engine_handler.stop()
         opensearch_management.stop()
         print("Engine stopped.")
@@ -598,7 +598,7 @@ def rule_health_test(env_path: Path, ruleset_name: Optional[str] = None, skip: O
     if not conf_path.is_file():
         sys.exit(f"Configuration file not found: {conf_path}")
 
-    bin_path = (env_path / "wazuh-engine").resolve()
+    bin_path = (env_path / "guardbear-engine").resolve()
     if not bin_path.is_file():
         sys.exit(f"Engine binary not found: {bin_path}")
 
@@ -613,7 +613,7 @@ def rule_health_test(env_path: Path, ruleset_name: Optional[str] = None, skip: O
 
     results: List[Result] = []
     rules: List[Path] = []
-    CORE_WAZUH_DECODER_PATH = env_path / 'ruleset' / 'decoders' / 'wazuh-core' / 'core-wazuh-message.yml'
+    CORE_GUARDBEAR_DECODER_PATH = env_path / 'ruleset' / 'decoders' / 'guardbear-core' / 'core-guardbear-message.yml'
     original_log_level = ""
 
     try:
@@ -633,7 +633,7 @@ def rule_health_test(env_path: Path, ruleset_name: Optional[str] = None, skip: O
                     continue
                 rules.append(ruleset_path)
 
-        opensearch_management.init_opensearch(env_path / 'ruleset' / 'schemas' / 'wazuh-template.json')
+        opensearch_management.init_opensearch(env_path / 'ruleset' / 'schemas' / 'guardbear-template.json')
 
         log = (env_path / "logs/engine.log").as_posix()
         engine_handler.start(log)
@@ -641,9 +641,9 @@ def rule_health_test(env_path: Path, ruleset_name: Optional[str] = None, skip: O
         if not exist_index_output(engine_handler):
             load_indexer_output(engine_handler)
             load_indexer_output_in_policy(engine_handler)
-        print("Update wazuh-core-message decoder")
-        modify_core_wazuh_decoder(CORE_WAZUH_DECODER_PATH)
-        update_wazuh_core_message(CORE_WAZUH_DECODER_PATH, engine_handler)
+        print("Update guardbear-core-message decoder")
+        modify_core_guardbear_decoder(CORE_GUARDBEAR_DECODER_PATH)
+        update_guardbear_core_message(CORE_GUARDBEAR_DECODER_PATH, engine_handler)
 
         print("\n\nRunning tests...")
         results = run_test(rules, engine_handler.api_socket_path)
@@ -652,9 +652,9 @@ def rule_health_test(env_path: Path, ruleset_name: Optional[str] = None, skip: O
         if exist_index_output(engine_handler):
             delete_indexer_output_in_policy(engine_handler)
             delete_indexer_output(engine_handler)
-        print("Restart wazuh-core-message decoder changes")
-        modify_core_wazuh_decoder(CORE_WAZUH_DECODER_PATH, add_hash=False)
-        update_wazuh_core_message(CORE_WAZUH_DECODER_PATH, engine_handler)
+        print("Restart guardbear-core-message decoder changes")
+        modify_core_guardbear_decoder(CORE_GUARDBEAR_DECODER_PATH, add_hash=False)
+        update_guardbear_core_message(CORE_GUARDBEAR_DECODER_PATH, engine_handler)
         engine_handler.stop()
         opensearch_management.stop()
         # Restore level log

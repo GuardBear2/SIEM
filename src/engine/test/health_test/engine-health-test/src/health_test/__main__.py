@@ -130,7 +130,7 @@ def parse_args() -> Namespace:
     # successful assets validate subcommand
     validate_successful_assets_parser = dynamic_subparsers.add_parser(
         'validate_successful_assets', help=(
-            'Verifies in the trace that the decoders that were successful are added to wazuh.decoders and that the successful rules are added to wazuh.rules'
+            'Verifies in the trace that the decoders that were successful are added to guardbear.decoders and that the successful rules are added to guardbear.rules'
             'If you do not specify a specific argument, an error will be thrown. '
             'However, if you do specify the argument, only one is accepted.'))
     validate_successful_assets_parser.add_argument(

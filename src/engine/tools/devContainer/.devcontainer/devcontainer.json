@@ -68,17 +68,17 @@
 
 	"remoteEnv": {
 		// Set the workspace folder to the container workspace folder.
-		"WAZUH_REPO": "${containerWorkspaceFolder}/wazuh",
-		"ENGINE_SRC": "${containerWorkspaceFolder}/wazuh/src/engine",
-		"ENGINE_BUILD": "${containerWorkspaceFolder}/wazuh/src/engine/build",
+		"GUARDBEAR_REPO": "${containerWorkspaceFolder}/guardbear",
+		"ENGINE_SRC": "${containerWorkspaceFolder}/guardbear/src/engine",
+		"ENGINE_BUILD": "${containerWorkspaceFolder}/guardbear/src/engine/build",
 		"ENGINE_RULESET": "${containerWorkspaceFolder}/intelligence-data/engine",
-		"ENGINE_PYTHONPATH_API": "${containerWorkspaceFolder}/wazuh/src/engine/tools/api-communication/",
-		"ENGINE_PYTHONPATH_SUITE": "${containerWorkspaceFolder}/wazuh/src/engine/tools/engine-suite/",
-		"ENGINE_PYTHONPATH_TEST": "${containerWorkspaceFolder}/wazuh/src/engine/test/engine-test-utils/",
-		"ENGINE_PYTHONPATH_HEALTH": "${containerWorkspaceFolder}/wazuh/src/engine/test/health_test/engine-health-test/",
-		"ENGINE_PYTHONPATH_HELPER": "${containerWorkspaceFolder}/wazuh/src/engine/test/helper_tests/engine-helper-test/",
-		"ENGINE_PYTHONPATH_IT": "${containerWorkspaceFolder}/wazuh/src/engine/test/integration_tests/engine-it/",
-		"ENGINE_PYTHONPATH_DBG": "${containerWorkspaceFolder}/wazuh/src/engine/tools/api-communication/src:${containerWorkspaceFolder}/wazuh/src/engine/tools/engine-suite/src:${containerWorkspaceFolder}/wazuh/src/engine/test/engine-test-utils/src:${containerWorkspaceFolder}/wazuh/src/engine/test/health_test/engine-health-test/src:${containerWorkspaceFolder}/wazuh/src/engine/test/helper_tests/engine-helper-test/src:${containerWorkspaceFolder}/wazuh/src/engine/test/integration_tests/engine-it/src",
+		"ENGINE_PYTHONPATH_API": "${containerWorkspaceFolder}/guardbear/src/engine/tools/api-communication/",
+		"ENGINE_PYTHONPATH_SUITE": "${containerWorkspaceFolder}/guardbear/src/engine/tools/engine-suite/",
+		"ENGINE_PYTHONPATH_TEST": "${containerWorkspaceFolder}/guardbear/src/engine/test/engine-test-utils/",
+		"ENGINE_PYTHONPATH_HEALTH": "${containerWorkspaceFolder}/guardbear/src/engine/test/health_test/engine-health-test/",
+		"ENGINE_PYTHONPATH_HELPER": "${containerWorkspaceFolder}/guardbear/src/engine/test/helper_tests/engine-helper-test/",
+		"ENGINE_PYTHONPATH_IT": "${containerWorkspaceFolder}/guardbear/src/engine/test/integration_tests/engine-it/",
+		"ENGINE_PYTHONPATH_DBG": "${containerWorkspaceFolder}/guardbear/src/engine/tools/api-communication/src:${containerWorkspaceFolder}/guardbear/src/engine/tools/engine-suite/src:${containerWorkspaceFolder}/guardbear/src/engine/test/engine-test-utils/src:${containerWorkspaceFolder}/guardbear/src/engine/test/health_test/engine-health-test/src:${containerWorkspaceFolder}/guardbear/src/engine/test/helper_tests/engine-helper-test/src:${containerWorkspaceFolder}/guardbear/src/engine/test/integration_tests/engine-it/src",
 		"TMP_CLEAN_ENV": "/tmp/clean_env",
 		"TMP_PY_VENV": "${containerWorkspaceFolder}/venv"
 	},
@@ -90,7 +90,7 @@
 		"zsh_cnf_2": "echo \"export HISTSIZE=1000000000\" >> ~/.zshrc",
 		"zsh_cnf_3": "echo \"export SAVEHIST=1000000000\" >> ~/.zshrc",
 		// Download repo and install engine
-		"clone_and_install": "if [ ! -d \"${WAZUH_REPO}\" ]; then git clone --recursive https://github.com/wazuh/wazuh.git \"${WAZUH_REPO}\" ; fi; git config --global --add safe.directory \"${WAZUH_REPO}\"; cd  \"${WAZUH_REPO}\"; USER_LANGUAGE=en USER_NO_STOP=y USER_CA_STORE=/path/to/my_cert.pem DOWNLOAD_CONTENT=y ./install.sh;"
+		"clone_and_install": "if [ ! -d \"${GUARDBEAR_REPO}\" ]; then git clone --recursive https://github.com/guardbear/guardbear.git \"${GUARDBEAR_REPO}\" ; fi; git config --global --add safe.directory \"${GUARDBEAR_REPO}\"; cd  \"${GUARDBEAR_REPO}\"; USER_LANGUAGE=en USER_NO_STOP=y USER_CA_STORE=/path/to/my_cert.pem DOWNLOAD_CONTENT=y ./install.sh;"
 	},
 
 	// Post start commands
@@ -99,7 +99,7 @@
 		"swapp-off": "/bin/sh -c 'swapoff -a' || true",
 		"set-max-vm-map-count": "/bin/sh -c 'sysctl -w vm.max_map_count=262144'",
 		"set-max-file-descriptors": "/bin/sh -c 'ulimit -n 65536'",
-		"welcome": "echo '\\e[1;33mWelcome to the Wazuh Engine Development container!\\n\\e[0mRun task \\e[1;32m'Build clean python env'\\e[0m to install the python dependencies.'"
+		"welcome": "echo '\\e[1;33mWelcome to the GuardBear Engine Development container!\\n\\e[0mRun task \\e[1;32m'Build clean python env'\\e[0m to install the python dependencies.'"
 	}
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

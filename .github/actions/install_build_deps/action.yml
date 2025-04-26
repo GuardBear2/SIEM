@@ -1,9 +1,9 @@
-name: "Install Wazuh build dependencies"
-description: "This action installs all the requirements to test and build Wazuh agent/server in Ubuntu Linux"
+name: "Install GuardBear build dependencies"
+description: "This action installs all the requirements to test and build GuardBear agent/server in Ubuntu Linux"
 inputs:
    target:
      required: true
-     description: "Wazuh target to decide if install or not custom dependencies"
+     description: "GuardBear target to decide if install or not custom dependencies"
 runs:
   using: "composite"
   steps:

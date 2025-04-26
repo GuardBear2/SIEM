@@ -4,13 +4,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from fastapi import FastAPI, Request
 from starlette.requests import ClientDisconnect
-from wazuh.core.batcher.client import BatcherClient
-from wazuh.core.batcher.mux_demux import Item, Packet
-from wazuh.core.exception import WazuhError
-from wazuh.core.indexer.bulk import Operation
-from wazuh.core.indexer.commands import CommandsManager
-from wazuh.core.indexer.models.agent import OS, Host
-from wazuh.core.indexer.models.events import (
+from guardbear.core.batcher.client import BatcherClient
+from guardbear.core.batcher.mux_demux import Item, Packet
+from guardbear.core.exception import GuardBearError
+from guardbear.core.indexer.bulk import Operation
+from guardbear.core.indexer.commands import CommandsManager
+from guardbear.core.indexer.models.agent import OS, Host
+from guardbear.core.indexer.models.events import (
     FIM_INDEX,
     INVENTORY_NETWORKS_INDEX,
     INVENTORY_PORTS_INDEX,
@@ -34,9 +34,9 @@ from comms_api.core.events import (
 from comms_api.models.events import StatefulEvents
 
 
-@patch('wazuh.core.engine.events.EventsModule.send', new_callable=AsyncMock)
-@patch('wazuh.core.engine.get_engine_client', new_callable=AsyncMock)
-@patch('wazuh.core.config.client.CentralizedConfig.get_engine_config')
+@patch('guardbear.core.engine.events.EventsModule.send', new_callable=AsyncMock)
+@patch('guardbear.core.engine.get_engine_client', new_callable=AsyncMock)
+@patch('guardbear.core.config.client.CentralizedConfig.get_engine_config')
 async def test_send_stateless_events(mock_engine_config, mock_engine_client, events_send_mock):
     """Check that the `send_stateless_events` function works as expected."""
     request = Request(
@@ -54,9 +54,9 @@ async def test_send_stateless_events(mock_engine_config, mock_engine_client, eve
     events_send_mock.assert_called_once_with(stream_mock())
 
 
-@patch('wazuh.core.engine.events.EventsModule.send', side_effect=ClientDisconnect)
-@patch('wazuh.core.engine.get_engine_client', new_callable=AsyncMock)
-@patch('wazuh.core.config.client.CentralizedConfig.get_engine_config')
+@patch('guardbear.core.engine.events.EventsModule.send', side_effect=ClientDisconnect)
+@patch('guardbear.core.engine.get_engine_client', new_callable=AsyncMock)
+@patch('guardbear.core.config.client.CentralizedConfig.get_engine_config')
 async def test_send_stateless_events_ko(mock_engine_config, mock_engine_client, events_send_mock):
     """Verify that the `send_stateless_events` function fails on a client disconnection."""
     request = Request(
@@ -67,7 +67,7 @@ async def test_send_stateless_events_ko(mock_engine_config, mock_engine_client, 
     )
     stream_mock = MagicMock()
     request.stream = stream_mock
-    with pytest.raises(WazuhError, match=r'2708'):
+    with pytest.raises(GuardBearError, match=r'2708'):
         await send_stateless_events(request=request)
 
 
@@ -134,7 +134,7 @@ async def test_parse_stateful_events():
             version='5.0.0',
             host=Host(
                 architecture='x86_64',
-                hostname='wazuh-agent',
+                hostname='guardbear-agent',
                 ip=['127.0.0.1'],
                 os=OS(name='Debian', type='Linux', version='12'),
             ),
@@ -177,10 +177,10 @@ async def test_parse_stateful_events_ko(disconnect_client, expected_code):
 
     if disconnect_client:
         with patch('fastapi.Request.stream', side_effect=ClientDisconnect()):
-            with pytest.raises(WazuhError, match=rf'{expected_code}'):
+            with pytest.raises(GuardBearError, match=rf'{expected_code}'):
                 await parse_stateful_events(request)
     else:
-        with pytest.raises(WazuhError, match=rf'{expected_code}'):
+        with pytest.raises(GuardBearError, match=rf'{expected_code}'):
             await parse_stateful_events(request)
 
 

@@ -3,7 +3,7 @@ import json
 import yaml
 from pathlib import Path
 
-INTEGRATION_WITHOUT_TESTS = 'wazuh-core'
+INTEGRATION_WITHOUT_TESTS = 'guardbear-core'
 
 def find_and_collect_assets(directory):
     """Recursively search for .yml files, read the 'name' key, and add it to a list."""
@@ -26,7 +26,7 @@ def find_and_collect_assets(directory):
 
 def verify_event_processing(all_assets: dict, expected_json_files):
     """
-    Compare the assets in 'wazuh.decoders' in the '_expected.json' files with the list of all_assets.
+    Compare the assets in 'guardbear.decoders' in the '_expected.json' files with the list of all_assets.
     Each found asset is removed from the all_assets list. If assets remain at the end, the test fails.
     """
     for json_file in expected_json_files:
@@ -34,12 +34,12 @@ def verify_event_processing(all_assets: dict, expected_json_files):
             with open(json_file, 'r') as f:
                 expected_data = json.load(f)
                 for expected in expected_data:
-                    decoders = expected.get('wazuh', {}).get('decoders', [])
+                    decoders = expected.get('guardbear', {}).get('decoders', [])
                     for decoder in decoders:
                         if decoder in all_assets['decoders']:
                             all_assets['decoders'].remove(decoder)
 
-                    rules = expected.get('wazuh', {}).get('rules', [])
+                    rules = expected.get('guardbear', {}).get('rules', [])
                     for rule in rules:
                         if rule in all_assets['rules']:
                             all_assets['rules'].remove(rule)
@@ -90,9 +90,9 @@ def verify(all_assets: dict, ruleset_path: Path):
 
     missing_assets = []
     if all_assets['decoders']:
-        missing_assets.append(f"These assets were not found in 'wazuh.decoders': {', '.join(all_assets['decoders'])}")
+        missing_assets.append(f"These assets were not found in 'guardbear.decoders': {', '.join(all_assets['decoders'])}")
     if all_assets['rules']:
-        missing_assets.append(f"These assets were not found in 'wazuh.rules': {', '.join(all_assets['rules'])}")
+        missing_assets.append(f"These assets were not found in 'guardbear.rules': {', '.join(all_assets['rules'])}")
 
     if missing_assets:
         print("Test failed.\n" + "\n".join(missing_assets))

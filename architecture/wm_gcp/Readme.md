@@ -1,10 +1,10 @@
 <!---
-Copyright (C) 2015, Wazuh Inc.
-Created by Wazuh, Inc. <info@wazuh.com>.
+Copyright (C) 2015, GuardBear Inc.
+Created by GuardBear, Inc. <info@guardbear.com>.
 This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 -->
 
-# Wazuh module: Google Cloud
+# GuardBear module: Google Cloud
 ## Index
 1. [Purpose](#purpose)
 2. [Sequence diagram](#sequence-diagram)

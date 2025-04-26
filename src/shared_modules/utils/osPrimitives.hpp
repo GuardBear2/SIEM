@@ -1,6 +1,6 @@
 /*
- * Wazuh - OS primitives
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear - OS primitives
+ * Copyright (C) 2015, GuardBear Inc.
  * May 1, 2023.
  *
  * This program is free software; you can redistribute it

@@ -9,8 +9,8 @@
 
 namespace api::tester::handlers
 {
-namespace eTester = ::com::wazuh::api::engine::tester;
-namespace eEngine = ::com::wazuh::api::engine;
+namespace eTester = ::com::guardbear::api::engine::tester;
+namespace eEngine = ::com::guardbear::api::engine;
 using namespace adapter::helpers;
 
 template<typename RequestType>

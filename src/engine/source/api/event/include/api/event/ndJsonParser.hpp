@@ -34,7 +34,7 @@ inline ProtocolHandler getNDJsonParser()
         const auto isSubHeader = [](const base::Event& event) -> bool
         {
             return event->isString("/module") && event->isString("/collector");
-        }; // '/module' and '/collector' are mandatory fields and not present in wazuh common schema
+        }; // '/module' and '/collector' are mandatory fields and not present in guardbear common schema
 
         if (batch.empty())
         {

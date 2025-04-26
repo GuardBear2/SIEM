@@ -1,6 +1,6 @@
 /*
- * Wazuh Vulnerability scanner
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear Vulnerability scanner
+ * Copyright (C) 2015, GuardBear Inc.
  * June 04, 2024.
  *
  * This program is free software; you can redistribute it

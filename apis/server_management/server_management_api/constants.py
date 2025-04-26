@@ -1,11 +1,11 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
-from wazuh.core import common
+from guardbear.core import common
 
-CERTS_PATH = common.WAZUH_ETC / 'certs'
+CERTS_PATH = common.GUARDBEAR_ETC / 'certs'
 
-INSTALLATION_UID_PATH = common.WAZUH_LIB / 'installation_uid'
+INSTALLATION_UID_PATH = common.GUARDBEAR_LIB / 'installation_uid'
 INSTALLATION_UID_KEY = 'installation_uid'
 UPDATE_INFORMATION_KEY = 'update_information'
 

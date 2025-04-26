@@ -1,13 +1,13 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from connexion.exceptions import ProblemException
-from wazuh.core.exception import WazuhTooManyRequests
+from guardbear.core.exception import GuardBearTooManyRequests
 
 
 class APIException(Exception):
-    """Wazuh API exception class."""
+    """GuardBear API exception class."""
 
     def __init__(self, code: int, details: str = None):
         """APIException class constructor.
@@ -64,7 +64,7 @@ class MaxRequestsException(ProblemException):
     """Bocked IP Exception Class."""
 
     def __init__(self, code):
-        exc = WazuhTooManyRequests(code=code)
+        exc = GuardBearTooManyRequests(code=code)
         ext = {'code': exc.code}
         ext.update({'remediation': exc.remediation} if hasattr(exc, 'remediation') else {})
         super().__init__(status=429, title=exc.title, detail=exc.message, type=exc.type, ext=ext)

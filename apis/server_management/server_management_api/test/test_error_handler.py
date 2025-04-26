@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -10,8 +10,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from connexion.exceptions import HTTPException, ProblemException, Unauthorized
 from freezegun import freeze_time
-from wazuh.core.config.client import CentralizedConfig
-from wazuh.core.config.models.server import ValidateFilePathMixin
+from guardbear.core.config.client import CentralizedConfig
+from guardbear.core.config.models.server import ValidateFilePathMixin
 
 from server_management_api.api_exception import ExpectFailedException
 from server_management_api.controllers.test.utils import get_default_configuration

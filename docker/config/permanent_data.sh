@@ -1,11 +1,11 @@
 #!/bin/bash
-# Wazuh App Copyright (C) 2017, Wazuh Inc. (License GPLv2)
+# GuardBear App Copyright (C) 2017, GuardBear Inc. (License GPLv2)
 
 # Variables
 source /permanent_data.env
 
-WAZUH_INSTALL_PATH=/var/ossec
-DATA_TMP_PATH=${WAZUH_INSTALL_PATH}/data_tmp
+GUARDBEAR_INSTALL_PATH=/var/ossec
+DATA_TMP_PATH=${GUARDBEAR_INSTALL_PATH}/data_tmp
 mkdir ${DATA_TMP_PATH}
 
 # Move exclusion files to EXCLUSION_PATH

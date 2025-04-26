@@ -1,6 +1,6 @@
 /*
- * Wazuh - Indexer connector.
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear - Indexer connector.
+ * Copyright (C) 2015, GuardBear Inc.
  * June 2, 2023.
  *
  * This program is free software; you can redistribute it

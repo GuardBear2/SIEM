@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015, Wazuh Inc.
+# Copyright (C) 2015, GuardBear Inc.
 # Shared variables and functions
 # Author: Daniel B. Cid <daniel.cid@gmail.com>
 
@@ -33,7 +33,7 @@ fi
 NAMESERVERS=`cat /etc/resolv.conf | grep "^nameserver" | cut -d " " -sf 2`
 NAMESERVERS2=`cat /etc/resolv.conf | grep "^nameserver" | cut -sf 2`
 HOST_CMD=`command -v host 2>/dev/null`
-NAME="Wazuh"
+NAME="GuardBear"
 INSTYPE="server"
 # Default installation directory
 INSTALLDIR="/";

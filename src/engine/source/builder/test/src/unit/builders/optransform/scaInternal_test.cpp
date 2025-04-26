@@ -16,7 +16,7 @@
 #include "builders/optransform/sca.hpp"
 
 using namespace base;
-using namespace wazuhdb::mocks;
+using namespace guardbeardb::mocks;
 using namespace sockiface::mocks;
 using namespace builder::builders::optransform;
 using namespace builder::builders;

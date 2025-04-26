@@ -1,6 +1,6 @@
 {
   "index_patterns": [
-    "wazuh-states-vulnerabilities"
+    "guardbear-states-vulnerabilities"
   ],
   "priority": 1,
   "template": {
@@ -25,7 +25,7 @@
           "vulnerability.id",
           "vulnerability.description.text",
           "vulnerability.severity",
-          "wazuh.cluster.name"
+          "guardbear.cluster.name"
         ],
         "refresh_interval": "2s"
       }
@@ -245,7 +245,7 @@
             }
           }
         },
-        "wazuh": {
+        "guardbear": {
           "properties": {
             "cluster": {
               "properties": {

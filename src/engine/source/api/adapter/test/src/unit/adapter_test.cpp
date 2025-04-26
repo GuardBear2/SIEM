@@ -4,8 +4,8 @@
 
 #include "generic_request.pb.h"
 
-using TestReq = com::wazuh::test::generic_request::Generic_Request;
-using TestRes = com::wazuh::api::engine::GenericStatus_Response;
+using TestReq = com::guardbear::test::generic_request::Generic_Request;
+using TestRes = com::guardbear::api::engine::GenericStatus_Response;
 
 using namespace api::adapter;
 

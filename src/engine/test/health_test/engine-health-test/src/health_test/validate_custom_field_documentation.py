@@ -58,7 +58,7 @@ def verify_custom_field_documentation(custom_field_file, integration, reporter):
 
 
 def verify(integration: Path, allowed_types, reporter):
-    if integration.name != 'wazuh-core':
+    if integration.name != 'guardbear-core':
         test_folder = integration / 'test'
         if not test_folder.exists() or not test_folder.is_dir():
             sys.exit(f"No 'test' folder found in '{integration}'.")

@@ -8,7 +8,7 @@
 
 #include <conf/apiLoader.hpp>
 
-constexpr auto serverPath {"/run/wazuh-server/config-server.sock"};
+constexpr auto serverPath {"/run/guardbear-server/config-server.sock"};
 
 TEST(ApiLoader, environmentVariable)
 {
@@ -17,12 +17,12 @@ TEST(ApiLoader, environmentVariable)
     json::Json cnf {};
 
     // Set the environment variable
-    setenv("WAZUH_CONFIG_SKIP_API", "true", 1);
+    setenv("GUARDBEAR_CONFIG_SKIP_API", "true", 1);
     // Test
     EXPECT_NO_THROW(cnf = (*apiLoader)());
     EXPECT_EQ(cnf, json::Json(R"({})"));
     // Unset the environment variable
-    unsetenv("WAZUH_CONFIG_SKIP_API");
+    unsetenv("GUARDBEAR_CONFIG_SKIP_API");
 }
 
 // Test fixture for the ApiLoader class

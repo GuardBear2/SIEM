@@ -199,7 +199,7 @@ def generate_msg(alert: any, options: any) -> str:
 
     msg = {
         'severity': severity,
-        'pretext': 'WAZUH Alert',
+        'pretext': 'GUARDBEAR Alert',
         'title': alert['rule']['description'] if 'description' in alert['rule'] else 'N/A',
         'text': alert.get('full_log'),
         'rule_id': alert['rule']['id'],

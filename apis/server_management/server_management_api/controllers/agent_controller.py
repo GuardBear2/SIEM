@@ -1,5 +1,5 @@
-# Copyright (C) 2015, Wazuh Inc.
-# Created by Wazuh, Inc. <info@wazuh.com>.
+# Copyright (C) 2015, GuardBear Inc.
+# Created by GuardBear, Inc. <info@guardbear.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -7,9 +7,9 @@ from typing import Union
 
 from connexion import request
 from connexion.lifecycle import ConnexionResponse
-from wazuh import agent
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.common import DATABASE_LIMIT
+from guardbear import agent
+from guardbear.core.cluster.dapi.dapi import DistributedAPI
+from guardbear.core.common import DATABASE_LIMIT
 
 from server_management_api.controllers.util import JSON_CONTENT_TYPE, json_response
 from server_management_api.models.agent_enrollment_model import AgentEnrollmentModel
@@ -17,7 +17,7 @@ from server_management_api.models.agent_group_added_model import GroupAddedModel
 from server_management_api.models.base_model_ import Body
 from server_management_api.util import parse_api_param, raise_if_exc, remove_nones_to_dict
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('guardbear-api')
 
 
 async def delete_agents(
@@ -181,7 +181,7 @@ async def get_agents(
 
 
 async def add_agent(pretty: bool = False, wait_for_complete: bool = False) -> ConnexionResponse:
-    """Add a new Wazuh agent.
+    """Add a new GuardBear agent.
 
     Parameters
     ----------

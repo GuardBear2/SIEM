@@ -181,7 +181,7 @@ def verify(schema, integration: Path, reporter):
 
     allowed_custom_fields_type = {field_info["type"] for field_info in schema_data["fields"].values()}
 
-    if integration.name != 'wazuh-core':
+    if integration.name != 'guardbear-core':
         custom_fields_path = integration / 'test' / 'custom_fields.yml'
         if not custom_fields_path.exists():
             reporter.add_error(integration.name, str(custom_fields_path),

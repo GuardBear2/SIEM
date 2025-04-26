@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Project settings
-project(wazuh-engine
+project(guardbear-engine
     VERSION 0.1
     LANGUAGES CXX
 )
@@ -31,9 +31,9 @@ option(ENGINE_GENERATE_PROTO "Generate protobuf code" OFF)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     if(ENGINE_ASSERT_WITH_SYMBOLS)
         add_link_options ( -rdynamic ) #For asserts bt
-        add_compile_definitions ( WAZUH_ASSERT_WITH_SYM )
+        add_compile_definitions ( GUARDBEAR_ASSERT_WITH_SYM )
     endif()
-    add_compile_definitions ( WAZUH_DEBUG )
+    add_compile_definitions ( GUARDBEAR_DEBUG )
 endif()
 
 
@@ -204,7 +204,7 @@ add_executable(main ${ENGINE_SOURCE_DIR}/main.cpp)
 
 add_subdirectory(${ENGINE_SOURCE_DIR}/feedmanager)
 add_subdirectory(${ENGINE_SOURCE_DIR}/vdscanner)
-add_subdirectory(${ENGINE_SOURCE_DIR}/wazuh-http-request)
+add_subdirectory(${ENGINE_SOURCE_DIR}/guardbear-http-request)
 add_subdirectory(${ENGINE_SOURCE_DIR}/indexerconnector)
 add_subdirectory(${ENGINE_SOURCE_DIR}/base)
 add_subdirectory(${ENGINE_SOURCE_DIR}/bk)

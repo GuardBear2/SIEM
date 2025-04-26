@@ -1,0 +1,9 @@
+- key: guardbear
+  title: "guardbear"
+  description: >
+    guardbear Module
+  fields:
+    - name: guardbear
+      type: group
+      description: >
+      fields:

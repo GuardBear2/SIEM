@@ -48,7 +48,7 @@ RUN make install
 WORKDIR /
 RUN rm -rf /tmp/git-2.18.0
 
-ADD http://packages.wazuh.com/utils/rpm/rpm-4.15.1.tar.bz2 /tmp/rpm-4.15.1.tar.bz2
+ADD http://packages.guardbear.com/utils/rpm/rpm-4.15.1.tar.bz2 /tmp/rpm-4.15.1.tar.bz2
 WORKDIR /tmp
 RUN tar -xjf rpm-4.15.1.tar.bz2
 WORKDIR /tmp/rpm-4.15.1

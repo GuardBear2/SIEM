@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Apply API configuration
-cp -rf /tmp_volume/config/* /var/ossec/ && chown -R wazuh:wazuh /var/ossec/api
+cp -rf /tmp_volume/config/* /var/ossec/ && chown -R guardbear:guardbear /var/ossec/api
 
 # Modify ossec.conf
 for conf_file in /tmp_volume/configuration_files/*.conf; do
@@ -10,19 +10,19 @@ done
 
 sed -i "s:<node>NODE_IP</node>:<node>$1</node>:g" /var/ossec/etc/ossec.conf
 sed -i "s:<node_name>node01</node_name>:<node_name>$2</node_name>:g" /var/ossec/etc/ossec.conf
-sed -i "s:validate_responses=False:validate_responses=True:g" /var/ossec/api/scripts/wazuh_apid.py
+sed -i "s:validate_responses=False:validate_responses=True:g" /var/ossec/api/scripts/guardbear_apid.py
 
 if [ "$3" != "master" ]; then
     sed -i "s:<node_type>master</node_type>:<node_type>worker</node_type>:g" /var/ossec/etc/ossec.conf
 fi
 
 cp -rf /tmp_volume/configuration_files/config/* /var/ossec/
-chown root:wazuh /var/ossec/etc/client.keys
-chown -R wazuh:wazuh /var/ossec/queue/db
-chown -R wazuh:wazuh /var/ossec/etc/shared
+chown root:guardbear /var/ossec/etc/client.keys
+chown -R guardbear:guardbear /var/ossec/queue/db
+chown -R guardbear:guardbear /var/ossec/etc/shared
 chmod --reference=/var/ossec/etc/shared/default /var/ossec/etc/shared/group*
-cd /var/ossec/etc/shared && find -name merged.mg -exec chown wazuh:wazuh {} \; && cd /
-chown root:wazuh /var/ossec/etc/shared/ar.conf
+cd /var/ossec/etc/shared && find -name merged.mg -exec chown guardbear:guardbear {} \; && cd /
+chown root:guardbear /var/ossec/etc/shared/ar.conf
 
 sleep 1
 
@@ -36,7 +36,7 @@ for sh_file in /tmp_volume/configuration_files/*.sh; do
 done
 
 echo "" > /var/ossec/logs/api.log
-/var/ossec/bin/wazuh-control start
+/var/ossec/bin/guardbear-control start
 
 # Master-only configuration
 if [ "$3" == "master" ]; then
@@ -50,7 +50,7 @@ if [ "$3" == "master" ]; then
 
   exit_flag=0
   [ -e /entrypoint_error ] && rm -f /entrypoint_error
-  # Wait until Wazuh API is ready
+  # Wait until GuardBear API is ready
   elapsed_time=0
   while [[ $(grep -c 'Listening on' /var/ossec/logs/api.log)  -eq 0 ]] && [[ $exit_flag -eq 0 ]]
   do

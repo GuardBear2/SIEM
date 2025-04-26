@@ -7,12 +7,12 @@ RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* 
 ENV LANG=en_US.utf8
 ENV REINSTALL_CMAKE_VERSION_FROM_SOURCE="3.30.5"
 
-# wazuh-server directory
-ENV RUN_WAZUH_SERVER=/run/wazuh-server
+# guardbear-server directory
+ENV RUN_GUARDBEAR_SERVER=/run/guardbear-server
 
 # Engine specific environment variables
-ENV WAZUH_ROOT=/root/wazuh
-ENV ENGINE_SRC=$WAZUH_ROOT/src/engine
+ENV GUARDBEAR_ROOT=/root/guardbear
+ENV ENGINE_SRC=$GUARDBEAR_ROOT/src/engine
 ENV ENGINE_BUILD=$ENGINE_SRC/build
 
 # Force use the specific commit of main to avoid breaking changes like:
@@ -95,7 +95,7 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     && apt install gh -y
 
 
-# Start SSH server and wazuh-engine
+# Start SSH server and guardbear-engine
 COPY scripts/EntryPoint.sh /usr/bin/EntryPoint.sh
 RUN chmod +x /usr/bin/EntryPoint.sh
 CMD ["/usr/bin/EntryPoint.sh"]

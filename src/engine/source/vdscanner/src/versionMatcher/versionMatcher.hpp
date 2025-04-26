@@ -1,6 +1,6 @@
 /*
- * Wazuh Vulnerability scanner - Database Feed Manager
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear Vulnerability scanner - Database Feed Manager
+ * Copyright (C) 2015, GuardBear Inc.
  * November 3, 2023.
  *
  * This program is free software; you can redistribute it

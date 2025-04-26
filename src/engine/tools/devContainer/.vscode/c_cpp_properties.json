@@ -3,8 +3,8 @@
         {
             "name": "Clang-11-C++17",
             "includePath": [
-                "${workspaceFolder}/wazuh/src/engine/source/**",
-                "${workspaceFolder}/wazuh/src/engine/build/**"
+                "${workspaceFolder}/guardbear/src/engine/source/**",
+                "${workspaceFolder}/guardbear/src/engine/build/**"
 
             ],
             "defines": [],

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2015, Wazuh Inc.
+# Copyright (C) 2015, GuardBear Inc.
 #
 # This program is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public
@@ -12,8 +12,8 @@ INSTALLDIR=${1}
 CONF_FILE="${INSTALLDIR}/etc/ossec.conf"
 TMP_ENROLLMENT="${INSTALLDIR}/tmp/enrollment-configuration"
 TMP_SERVER="${INSTALLDIR}/tmp/server-configuration"
-WAZUH_REGISTRATION_PASSWORD_PATH="etc/authd.pass"
-WAZUH_MACOS_AGENT_DEPLOYMENT_VARS="/tmp/wazuh_envs"
+GUARDBEAR_REGISTRATION_PASSWORD_PATH="etc/authd.pass"
+GUARDBEAR_MACOS_AGENT_DEPLOYMENT_VARS="/tmp/guardbear_envs"
 
 
 # Set default sed alias
@@ -136,78 +136,78 @@ add_parameter () {
 
 get_deprecated_vars () {
 
-    if [ -n "${WAZUH_MANAGER_IP}" ] && [ -z "${WAZUH_MANAGER}" ]; then
-        WAZUH_MANAGER=${WAZUH_MANAGER_IP}
+    if [ -n "${GUARDBEAR_MANAGER_IP}" ] && [ -z "${GUARDBEAR_MANAGER}" ]; then
+        GUARDBEAR_MANAGER=${GUARDBEAR_MANAGER_IP}
     fi
-    if [ -n "${WAZUH_AUTHD_SERVER}" ] && [ -z "${WAZUH_REGISTRATION_SERVER}" ]; then
-        WAZUH_REGISTRATION_SERVER=${WAZUH_AUTHD_SERVER}
+    if [ -n "${GUARDBEAR_AUTHD_SERVER}" ] && [ -z "${GUARDBEAR_REGISTRATION_SERVER}" ]; then
+        GUARDBEAR_REGISTRATION_SERVER=${GUARDBEAR_AUTHD_SERVER}
     fi
-    if [ -n "${WAZUH_AUTHD_PORT}" ] && [ -z "${WAZUH_REGISTRATION_PORT}" ]; then
-        WAZUH_REGISTRATION_PORT=${WAZUH_AUTHD_PORT}
+    if [ -n "${GUARDBEAR_AUTHD_PORT}" ] && [ -z "${GUARDBEAR_REGISTRATION_PORT}" ]; then
+        GUARDBEAR_REGISTRATION_PORT=${GUARDBEAR_AUTHD_PORT}
     fi
-    if [ -n "${WAZUH_PASSWORD}" ] && [ -z "${WAZUH_REGISTRATION_PASSWORD}" ]; then
-        WAZUH_REGISTRATION_PASSWORD=${WAZUH_PASSWORD}
+    if [ -n "${GUARDBEAR_PASSWORD}" ] && [ -z "${GUARDBEAR_REGISTRATION_PASSWORD}" ]; then
+        GUARDBEAR_REGISTRATION_PASSWORD=${GUARDBEAR_PASSWORD}
     fi
-    if [ -n "${WAZUH_NOTIFY_TIME}" ] && [ -z "${WAZUH_KEEP_ALIVE_INTERVAL}" ]; then
-        WAZUH_KEEP_ALIVE_INTERVAL=${WAZUH_NOTIFY_TIME}
+    if [ -n "${GUARDBEAR_NOTIFY_TIME}" ] && [ -z "${GUARDBEAR_KEEP_ALIVE_INTERVAL}" ]; then
+        GUARDBEAR_KEEP_ALIVE_INTERVAL=${GUARDBEAR_NOTIFY_TIME}
     fi
-    if [ -n "${WAZUH_CERTIFICATE}" ] && [ -z "${WAZUH_REGISTRATION_CA}" ]; then
-        WAZUH_REGISTRATION_CA=${WAZUH_CERTIFICATE}
+    if [ -n "${GUARDBEAR_CERTIFICATE}" ] && [ -z "${GUARDBEAR_REGISTRATION_CA}" ]; then
+        GUARDBEAR_REGISTRATION_CA=${GUARDBEAR_CERTIFICATE}
     fi
-    if [ -n "${WAZUH_PEM}" ] && [ -z "${WAZUH_REGISTRATION_CERTIFICATE}" ]; then
-        WAZUH_REGISTRATION_CERTIFICATE=${WAZUH_PEM}
+    if [ -n "${GUARDBEAR_PEM}" ] && [ -z "${GUARDBEAR_REGISTRATION_CERTIFICATE}" ]; then
+        GUARDBEAR_REGISTRATION_CERTIFICATE=${GUARDBEAR_PEM}
     fi
-    if [ -n "${WAZUH_KEY}" ] && [ -z "${WAZUH_REGISTRATION_KEY}" ]; then
-        WAZUH_REGISTRATION_KEY=${WAZUH_KEY}
+    if [ -n "${GUARDBEAR_KEY}" ] && [ -z "${GUARDBEAR_REGISTRATION_KEY}" ]; then
+        GUARDBEAR_REGISTRATION_KEY=${GUARDBEAR_KEY}
     fi
-    if [ -n "${WAZUH_GROUP}" ] && [ -z "${WAZUH_AGENT_GROUP}" ]; then
-        WAZUH_AGENT_GROUP=${WAZUH_GROUP}
+    if [ -n "${GUARDBEAR_GROUP}" ] && [ -z "${GUARDBEAR_AGENT_GROUP}" ]; then
+        GUARDBEAR_AGENT_GROUP=${GUARDBEAR_GROUP}
     fi
 
 }
 
 set_vars () {
 
-    export WAZUH_MANAGER
-    export WAZUH_MANAGER_PORT
-    export WAZUH_PROTOCOL
-    export WAZUH_REGISTRATION_SERVER
-    export WAZUH_REGISTRATION_PORT
-    export WAZUH_REGISTRATION_PASSWORD
-    export WAZUH_KEEP_ALIVE_INTERVAL
-    export WAZUH_TIME_RECONNECT
-    export WAZUH_REGISTRATION_CA
-    export WAZUH_REGISTRATION_CERTIFICATE
-    export WAZUH_REGISTRATION_KEY
-    export WAZUH_AGENT_NAME
-    export WAZUH_AGENT_GROUP
+    export GUARDBEAR_MANAGER
+    export GUARDBEAR_MANAGER_PORT
+    export GUARDBEAR_PROTOCOL
+    export GUARDBEAR_REGISTRATION_SERVER
+    export GUARDBEAR_REGISTRATION_PORT
+    export GUARDBEAR_REGISTRATION_PASSWORD
+    export GUARDBEAR_KEEP_ALIVE_INTERVAL
+    export GUARDBEAR_TIME_RECONNECT
+    export GUARDBEAR_REGISTRATION_CA
+    export GUARDBEAR_REGISTRATION_CERTIFICATE
+    export GUARDBEAR_REGISTRATION_KEY
+    export GUARDBEAR_AGENT_NAME
+    export GUARDBEAR_AGENT_GROUP
     export ENROLLMENT_DELAY
     # The following variables are yet supported but all of them are deprecated
-    export WAZUH_MANAGER_IP
-    export WAZUH_NOTIFY_TIME
-    export WAZUH_AUTHD_SERVER
-    export WAZUH_AUTHD_PORT
-    export WAZUH_PASSWORD
-    export WAZUH_GROUP
-    export WAZUH_CERTIFICATE
-    export WAZUH_KEY
-    export WAZUH_PEM
+    export GUARDBEAR_MANAGER_IP
+    export GUARDBEAR_NOTIFY_TIME
+    export GUARDBEAR_AUTHD_SERVER
+    export GUARDBEAR_AUTHD_PORT
+    export GUARDBEAR_PASSWORD
+    export GUARDBEAR_GROUP
+    export GUARDBEAR_CERTIFICATE
+    export GUARDBEAR_KEY
+    export GUARDBEAR_PEM
 
-    if [ -r "${WAZUH_MACOS_AGENT_DEPLOYMENT_VARS}" ]; then
-        . ${WAZUH_MACOS_AGENT_DEPLOYMENT_VARS}
-        rm -rf "${WAZUH_MACOS_AGENT_DEPLOYMENT_VARS}"
+    if [ -r "${GUARDBEAR_MACOS_AGENT_DEPLOYMENT_VARS}" ]; then
+        . ${GUARDBEAR_MACOS_AGENT_DEPLOYMENT_VARS}
+        rm -rf "${GUARDBEAR_MACOS_AGENT_DEPLOYMENT_VARS}"
     fi
 
 }
 
 unset_vars() {
 
-    vars=(WAZUH_MANAGER_IP WAZUH_PROTOCOL WAZUH_MANAGER_PORT WAZUH_NOTIFY_TIME \
-          WAZUH_TIME_RECONNECT WAZUH_AUTHD_SERVER WAZUH_AUTHD_PORT WAZUH_PASSWORD \
-          WAZUH_AGENT_NAME WAZUH_GROUP WAZUH_CERTIFICATE WAZUH_KEY WAZUH_PEM \
-          WAZUH_MANAGER WAZUH_REGISTRATION_SERVER WAZUH_REGISTRATION_PORT \
-          WAZUH_REGISTRATION_PASSWORD WAZUH_KEEP_ALIVE_INTERVAL WAZUH_REGISTRATION_CA \
-          WAZUH_REGISTRATION_CERTIFICATE WAZUH_REGISTRATION_KEY WAZUH_AGENT_GROUP \
+    vars=(GUARDBEAR_MANAGER_IP GUARDBEAR_PROTOCOL GUARDBEAR_MANAGER_PORT GUARDBEAR_NOTIFY_TIME \
+          GUARDBEAR_TIME_RECONNECT GUARDBEAR_AUTHD_SERVER GUARDBEAR_AUTHD_PORT GUARDBEAR_PASSWORD \
+          GUARDBEAR_AGENT_NAME GUARDBEAR_GROUP GUARDBEAR_CERTIFICATE GUARDBEAR_KEY GUARDBEAR_PEM \
+          GUARDBEAR_MANAGER GUARDBEAR_REGISTRATION_SERVER GUARDBEAR_REGISTRATION_PORT \
+          GUARDBEAR_REGISTRATION_PASSWORD GUARDBEAR_KEEP_ALIVE_INTERVAL GUARDBEAR_REGISTRATION_CA \
+          GUARDBEAR_REGISTRATION_CERTIFICATE GUARDBEAR_REGISTRATION_KEY GUARDBEAR_AGENT_GROUP \
           ENROLLMENT_DELAY)
 
     for var in "${vars[@]}"; do
@@ -295,21 +295,21 @@ main () {
 
     get_deprecated_vars
 
-    if [ -z "${WAZUH_MANAGER}" ] && [ -n "${WAZUH_PROTOCOL}" ]; then
-        PROTOCOLS=( $(tolower "${WAZUH_PROTOCOL//,/ }") )
+    if [ -z "${GUARDBEAR_MANAGER}" ] && [ -n "${GUARDBEAR_PROTOCOL}" ]; then
+        PROTOCOLS=( $(tolower "${GUARDBEAR_PROTOCOL//,/ }") )
         edit_value_tag "protocol" "${PROTOCOLS[0]}"
     fi
 
-    if [ -n "${WAZUH_MANAGER}" ]; then
+    if [ -n "${GUARDBEAR_MANAGER}" ]; then
         if [ ! -f "${INSTALLDIR}/logs/ossec.log" ]; then
             touch -f "${INSTALLDIR}/logs/ossec.log"
             chmod 660 "${INSTALLDIR}/logs/ossec.log"
-            chown root:wazuh "${INSTALLDIR}/logs/ossec.log"
+            chown root:guardbear "${INSTALLDIR}/logs/ossec.log"
         fi
 
-        # Check if multiples IPs are defined in variable WAZUH_MANAGER
-        ADDRESSES=( ${WAZUH_MANAGER//,/ } ) 
-        PROTOCOLS=( $(tolower "${WAZUH_PROTOCOL//,/ }") )
+        # Check if multiples IPs are defined in variable GUARDBEAR_MANAGER
+        ADDRESSES=( ${GUARDBEAR_MANAGER//,/ } ) 
+        PROTOCOLS=( $(tolower "${GUARDBEAR_PROTOCOL//,/ }") )
         # Get uniques values if all protocols are the same
         if ( [ "${#PROTOCOLS[@]}" -ge "${#ADDRESSES[@]}" ] && ( ( ! echo "${PROTOCOLS[@]}" | grep -q -w "tcp" ) || ( ! echo "${PROTOCOLS[@]}" | grep -q -w "udp" ) ) ) || [ ${#PROTOCOLS[@]} -eq 0 ] || ( ! echo "${PROTOCOLS[@]}" | grep -q -w "udp" ) ; then
             ADDRESSES=( $(echo "${ADDRESSES[@]}" |  tr ' ' '\n' | cat -n | sort -uk2 | sort -n | cut -f2- | tr '\n' ' ') ) 
@@ -318,33 +318,33 @@ main () {
         add_adress_block
     fi
 
-    edit_value_tag "port" "${WAZUH_MANAGER_PORT}"
+    edit_value_tag "port" "${GUARDBEAR_MANAGER_PORT}"
 
-    if [ -n "${WAZUH_REGISTRATION_SERVER}" ] || [ -n "${WAZUH_REGISTRATION_PORT}" ] || [ -n "${WAZUH_REGISTRATION_CA}" ] || [ -n "${WAZUH_REGISTRATION_CERTIFICATE}" ] || [ -n "${WAZUH_REGISTRATION_KEY}" ] || [ -n "${WAZUH_AGENT_NAME}" ] || [ -n "${WAZUH_AGENT_GROUP}" ] || [ -n "${ENROLLMENT_DELAY}" ] || [ -n "${WAZUH_REGISTRATION_PASSWORD}" ]; then
+    if [ -n "${GUARDBEAR_REGISTRATION_SERVER}" ] || [ -n "${GUARDBEAR_REGISTRATION_PORT}" ] || [ -n "${GUARDBEAR_REGISTRATION_CA}" ] || [ -n "${GUARDBEAR_REGISTRATION_CERTIFICATE}" ] || [ -n "${GUARDBEAR_REGISTRATION_KEY}" ] || [ -n "${GUARDBEAR_AGENT_NAME}" ] || [ -n "${GUARDBEAR_AGENT_GROUP}" ] || [ -n "${ENROLLMENT_DELAY}" ] || [ -n "${GUARDBEAR_REGISTRATION_PASSWORD}" ]; then
         add_auto_enrollment
-        set_auto_enrollment_tag_value "manager_address" "${WAZUH_REGISTRATION_SERVER}"
-        set_auto_enrollment_tag_value "port" "${WAZUH_REGISTRATION_PORT}"
-        set_auto_enrollment_tag_value "server_ca_path" "${WAZUH_REGISTRATION_CA}"
-        set_auto_enrollment_tag_value "agent_certificate_path" "${WAZUH_REGISTRATION_CERTIFICATE}"
-        set_auto_enrollment_tag_value "agent_key_path" "${WAZUH_REGISTRATION_KEY}"
-        set_auto_enrollment_tag_value "authorization_pass_path" "${WAZUH_REGISTRATION_PASSWORD_PATH}"
-        set_auto_enrollment_tag_value "agent_name" "${WAZUH_AGENT_NAME}"
-        set_auto_enrollment_tag_value "groups" "${WAZUH_AGENT_GROUP}"
+        set_auto_enrollment_tag_value "manager_address" "${GUARDBEAR_REGISTRATION_SERVER}"
+        set_auto_enrollment_tag_value "port" "${GUARDBEAR_REGISTRATION_PORT}"
+        set_auto_enrollment_tag_value "server_ca_path" "${GUARDBEAR_REGISTRATION_CA}"
+        set_auto_enrollment_tag_value "agent_certificate_path" "${GUARDBEAR_REGISTRATION_CERTIFICATE}"
+        set_auto_enrollment_tag_value "agent_key_path" "${GUARDBEAR_REGISTRATION_KEY}"
+        set_auto_enrollment_tag_value "authorization_pass_path" "${GUARDBEAR_REGISTRATION_PASSWORD_PATH}"
+        set_auto_enrollment_tag_value "agent_name" "${GUARDBEAR_AGENT_NAME}"
+        set_auto_enrollment_tag_value "groups" "${GUARDBEAR_AGENT_GROUP}"
         set_auto_enrollment_tag_value "delay_after_enrollment" "${ENROLLMENT_DELAY}"
         delete_blank_lines "${TMP_ENROLLMENT}"
         concat_conf
     fi
 
             
-    if [ -n "${WAZUH_REGISTRATION_PASSWORD}" ]; then
-        echo "${WAZUH_REGISTRATION_PASSWORD}" > "${INSTALLDIR}/${WAZUH_REGISTRATION_PASSWORD_PATH}"
-        chmod 640 "${INSTALLDIR}"/"${WAZUH_REGISTRATION_PASSWORD_PATH}"
-        chown root:wazuh "${INSTALLDIR}"/"${WAZUH_REGISTRATION_PASSWORD_PATH}"
+    if [ -n "${GUARDBEAR_REGISTRATION_PASSWORD}" ]; then
+        echo "${GUARDBEAR_REGISTRATION_PASSWORD}" > "${INSTALLDIR}/${GUARDBEAR_REGISTRATION_PASSWORD_PATH}"
+        chmod 640 "${INSTALLDIR}"/"${GUARDBEAR_REGISTRATION_PASSWORD_PATH}"
+        chown root:guardbear "${INSTALLDIR}"/"${GUARDBEAR_REGISTRATION_PASSWORD_PATH}"
     fi
 
     # Options to be modified in ossec.conf
-    edit_value_tag "notify_time" "${WAZUH_KEEP_ALIVE_INTERVAL}"
-    edit_value_tag "time-reconnect" "${WAZUH_TIME_RECONNECT}"
+    edit_value_tag "notify_time" "${GUARDBEAR_KEEP_ALIVE_INTERVAL}"
+    edit_value_tag "time-reconnect" "${GUARDBEAR_TIME_RECONNECT}"
 
     unset_vars
 

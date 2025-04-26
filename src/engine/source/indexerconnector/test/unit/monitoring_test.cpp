@@ -1,6 +1,6 @@
 /*
- * Wazuh Indexer Connector - Monitoring tests
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear Indexer Connector - Monitoring tests
+ * Copyright (C) 2015, GuardBear Inc.
  * August 30, 2024.
  *
  * This program is free software; you can redistribute it
@@ -27,7 +27,7 @@ auto mockHTTPRequestLambda = [](RequestParameters requestParameters,
     {
         const auto response = nlohmann::json::array({{{"epoch", "1726271464"},
                                                       {"timestamp", "23:51:04"},
-                                                      {"cluster", "wazuh-cluster"},
+                                                      {"cluster", "guardbear-cluster"},
                                                       {"status", "green"},
                                                       {"node.total", "1"},
                                                       {"node.data", "1"},
@@ -47,7 +47,7 @@ auto mockHTTPRequestLambda = [](RequestParameters requestParameters,
     {
         const auto response = nlohmann::json::array({{{"epoch", "1726271464"},
                                                       {"timestamp", "23:51:04"},
-                                                      {"cluster", "wazuh-cluster"},
+                                                      {"cluster", "guardbear-cluster"},
                                                       {"status", "yellow"},
                                                       {"node.total", "1"},
                                                       {"node.data", "1"},
@@ -67,7 +67,7 @@ auto mockHTTPRequestLambda = [](RequestParameters requestParameters,
     {
         const auto response = nlohmann::json::array({{{"epoch", "1726271464"},
                                                       {"timestamp", "23:51:04"},
-                                                      {"cluster", "wazuh-cluster"},
+                                                      {"cluster", "guardbear-cluster"},
                                                       {"status", "red"},
                                                       {"node.total", "1"},
                                                       {"node.data", "1"},

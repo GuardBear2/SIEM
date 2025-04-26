@@ -5,13 +5,13 @@ from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jwt import decode, encode
 from jwt.exceptions import PyJWTError
-from wazuh.core.authentication import JWT_ALGORITHM, JWT_ISSUER, get_keypair
-from wazuh.core.exception import WazuhCommsAPIError
-from wazuh.core.utils import get_utc_now
+from guardbear.core.authentication import JWT_ALGORITHM, JWT_ISSUER, get_keypair
+from guardbear.core.exception import GuardBearCommsAPIError
+from guardbear.core.utils import get_utc_now
 
 from comms_api.routers.exceptions import HTTPError
 
-JWT_AUDIENCE = 'Wazuh Communications API'
+JWT_AUDIENCE = 'GuardBear Communications API'
 JWT_EXPIRATION = 900
 
 
@@ -44,7 +44,7 @@ class JWTBearer(HTTPBearer):
             request.state.agent_uuid = payload.get('uuid', '')
         except HTTPException as exc:
             raise HTTPError(message=str(exc), status_code=status.HTTP_403_FORBIDDEN)
-        except WazuhCommsAPIError as exc:
+        except GuardBearCommsAPIError as exc:
             raise HTTPError(message=exc.message, code=exc.code, status_code=status.HTTP_403_FORBIDDEN)
         except Exception as exc:
             raise HTTPError(message=str(exc), status_code=status.HTTP_403_FORBIDDEN)
@@ -75,15 +75,15 @@ def decode_token(token: str) -> dict:
         payload = decode(token, public_key, algorithms=[JWT_ALGORITHM], audience=JWT_AUDIENCE)
 
         if (payload['exp'] - payload['iat']) != JWT_EXPIRATION:
-            raise WazuhCommsAPIError(2706)
+            raise GuardBearCommsAPIError(2706)
 
         current_timestamp = int(get_utc_now().timestamp())
         if payload['exp'] <= current_timestamp:
-            raise WazuhCommsAPIError(2707)
+            raise GuardBearCommsAPIError(2707)
 
         return payload
     except PyJWTError as exc:
-        raise WazuhCommsAPIError(2706) from exc
+        raise GuardBearCommsAPIError(2706) from exc
 
 
 def generate_token(uuid: str) -> str:

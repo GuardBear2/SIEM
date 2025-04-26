@@ -39,7 +39,7 @@ options:
   -h, --help            show this help message and exit
   --version             show program's version number and exit
   --api-socket API_SOCKET
-                        Path to the Wazuh API socket
+                        Path to the GuardBear API socket
   -n NAMESPACE, --namespace NAMESPACE
                         Namespace to use for the catalog
   --format {json,yml,yaml}

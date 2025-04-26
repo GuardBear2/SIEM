@@ -2,7 +2,7 @@ from threading import Thread
 
 import uvicorn
 from fastapi import APIRouter, FastAPI
-from wazuh.core import common
+from guardbear.core import common
 
 from comms_api.core.commands import CommandsManager
 from comms_api.core.unix_server.commands import post_commands

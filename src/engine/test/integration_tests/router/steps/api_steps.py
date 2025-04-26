@@ -115,7 +115,7 @@ def create_filter(filter_name: str):
     request.type = "filter"
     request.format = "yaml"
     # Load content from file
-    with open(f"{RULESET_DIR}/wazuh-core-test/filters/allow-all.yml", "r") as f:
+    with open(f"{RULESET_DIR}/guardbear-core-test/filters/allow-all.yml", "r") as f:
         request.content = f.read()
     request.namespaceid = "system"
     error, response = send_recv(request, api_engine.GenericStatus_Response())

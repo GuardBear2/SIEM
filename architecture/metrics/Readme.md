@@ -1,6 +1,6 @@
 <!---
-Copyright (C) 2015, Wazuh Inc.
-Created by Wazuh, Inc. <info@wazuh.com>.
+Copyright (C) 2015, GuardBear Inc.
+Created by GuardBear, Inc. <info@guardbear.com>.
 This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 -->
 
@@ -15,13 +15,13 @@ This program is free software; you can redistribute it and/or modify it under th
 
 ## Purpose
 
-Wazuh includes some metrics to understand the behavior of its components, which allow to investigate errors and detect problems with some configurations. This feature has multiple actors: `wazuh-remoted` for agent interaction messages, `wazuh-analysisd` for processed events.
+GuardBear includes some metrics to understand the behavior of its components, which allow to investigate errors and detect problems with some configurations. This feature has multiple actors: `guardbear-remoted` for agent interaction messages, `guardbear-analysisd` for processed events.
 
 ## Sequence diagram
 
 The sequence diagram shows the basic flow of metric counters. These are the main flows:
 
-1. Messages received by `wazuh-remoted` from agents.
-2. Messages that `wazuh-remoted` sends to agents.
-3. Events received by `wazuh-analysisd`.
-4. Events processed by `wazuh-analysisd`.
+1. Messages received by `guardbear-remoted` from agents.
+2. Messages that `guardbear-remoted` sends to agents.
+3. Events received by `guardbear-analysisd`.
+4. Events processed by `guardbear-analysisd`.

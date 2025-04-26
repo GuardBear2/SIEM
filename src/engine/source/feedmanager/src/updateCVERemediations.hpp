@@ -1,6 +1,6 @@
 /*
- * Wazuh storeRemediationsModel
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear storeRemediationsModel
+ * Copyright (C) 2015, GuardBear Inc.
  * October 05, 2023.
  *
  * This program is free software; you can redistribute it

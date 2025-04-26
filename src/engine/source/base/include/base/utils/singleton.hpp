@@ -1,6 +1,6 @@
 /*
- * Wazuh Utils - Singleton template
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear Utils - Singleton template
+ * Copyright (C) 2015, GuardBear Inc.
  * May 20, 2022.
  *
  * This program is free software; you can redistribute it

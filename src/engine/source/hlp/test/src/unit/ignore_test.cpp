@@ -14,9 +14,9 @@ INSTANTIATE_TEST_SUITE_P(IgnoreBuild,
 INSTANTIATE_TEST_SUITE_P(
     IgnoreParse,
     HlpParseTest,
-    ::testing::Values(ParseT(SUCCESS, "wazuh", j("{}"), 5, getIgnoreParser, {NAME, "", {}, {"wazuh"}}),
-                      ParseT(SUCCESS, "wazuh 123", j("{}"), 5, getIgnoreParser, {NAME, "", {}, {"wazuh"}}),
-                      ParseT(SUCCESS, "wazuhwazuh", j("{}"), 10, getIgnoreParser, {NAME, "", {}, {"wazuh"}}),
-                      ParseT(SUCCESS, "wazuhwazuhwazuhwazuh", j("{}"), 20, getIgnoreParser, {NAME, "", {}, {"wazuh"}}),
-                      ParseT(SUCCESS, "wazuhwa", j("{}"), 5, getIgnoreParser, {NAME, "", {}, {"wazuh"}}),
-                      ParseT(FAILURE, "WAZUH", j("{}"), 0, getIgnoreParser, {NAME, "", {}, {"wazuh"}})));
+    ::testing::Values(ParseT(SUCCESS, "guardbear", j("{}"), 5, getIgnoreParser, {NAME, "", {}, {"guardbear"}}),
+                      ParseT(SUCCESS, "guardbear 123", j("{}"), 5, getIgnoreParser, {NAME, "", {}, {"guardbear"}}),
+                      ParseT(SUCCESS, "guardbearguardbear", j("{}"), 10, getIgnoreParser, {NAME, "", {}, {"guardbear"}}),
+                      ParseT(SUCCESS, "guardbearguardbearguardbearguardbear", j("{}"), 20, getIgnoreParser, {NAME, "", {}, {"guardbear"}}),
+                      ParseT(SUCCESS, "guardbearwa", j("{}"), 5, getIgnoreParser, {NAME, "", {}, {"guardbear"}}),
+                      ParseT(FAILURE, "GUARDBEAR", j("{}"), 0, getIgnoreParser, {NAME, "", {}, {"guardbear"}})));

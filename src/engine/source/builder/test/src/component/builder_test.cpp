@@ -166,7 +166,7 @@ INSTANTIATE_TEST_SUITE_P(
                   {
                       EXPECT_CALL(*store, readInternalDoc(testing::_))
                           .WillOnce(testing::Return(json::Json {POLICY_JSON}));
-                      EXPECT_CALL(*store, getNamespace(testing::_)).WillOnce(testing::Return("wazuh"));
+                      EXPECT_CALL(*store, getNamespace(testing::_)).WillOnce(testing::Return("guardbear"));
                       EXPECT_CALL(*store, readDoc(testing::_)).WillOnce(testing::Return(base::Error {"ERROR"}));
                       return "Could not read document for integration 'integration/test/0'";
                   })),
@@ -189,7 +189,7 @@ INSTANTIATE_TEST_SUITE_P(
                                   }
                                   else if (name == "integration/test/0")
                                   {
-                                      return "wazuh";
+                                      return "guardbear";
                                   }
                                   return "";
                               }));
@@ -219,7 +219,7 @@ INSTANTIATE_TEST_SUITE_P(
                                   }
                                   else if (name == "decoder/parent-test/0")
                                   {
-                                      return "wazuh";
+                                      return "guardbear";
                                   }
                                   return "";
                               }));
@@ -461,7 +461,7 @@ INSTANTIATE_TEST_SUITE_P(
                                  {base::And::create("condition",
                                                     {base::And::create("stage.check",
                                                                        {base::Term<base::EngineOp>::create(
-                                                                           "wazuh.queue: filter(49)", {})}),
+                                                                           "guardbear.queue: filter(49)", {})}),
                                                      base::Term<base::EngineOp>::create("AcceptAll", {})})}),
                SUCCESS(
                    [](const std::shared_ptr<MockStore>& store,

@@ -46,10 +46,10 @@ base::Expression indexerOutputBuilder(const json::Json& definition,
     }
 
     auto indexName = value.getString().value();
-    // Verify index name starts with wazuh- and contains only lowecase alphanumeric characters, hyphens and dots
-    if (!std::regex_match(indexName, std::regex("wazuh-[a-z0-9.-]+")))
+    // Verify index name starts with guardbear- and contains only lowecase alphanumeric characters, hyphens and dots
+    if (!std::regex_match(indexName, std::regex("guardbear-[a-z0-9.-]+")))
     {
-        throw std::runtime_error(fmt::format("Invalid index name '{}'. Index name must start with 'wazuh-' and contain "
+        throw std::runtime_error(fmt::format("Invalid index name '{}'. Index name must start with 'guardbear-' and contain "
                                              "only lowercase alphanumeric characters, hyphens and dots",
                                              indexName));
     }

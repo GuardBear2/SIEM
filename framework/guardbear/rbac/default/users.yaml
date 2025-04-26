@@ -1,0 +1,17 @@
+# GUARDBEAR SYSTEM FILE, PLEASE DO NOT MODIFY
+
+default_users:
+  guardbear:
+    description: Superuser of GuardBear.
+    password: guardbear
+    allow_run_as: True
+
+  guardbear-wui:
+    description: Superuser of GuardBear UI
+    password: guardbear-wui
+    allow_run_as: True
+
+  agent-init:
+    description: User capable of enrolling new agents.
+    password: agent-init
+    allow_run_as: False

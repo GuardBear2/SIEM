@@ -7,7 +7,7 @@ endif()
 
 add_library(engine_bench_main
     OBJECT
-    wazuhBenchMain.cpp
+    guardbearBenchMain.cpp
     )
 
 target_link_libraries(engine_bench_main

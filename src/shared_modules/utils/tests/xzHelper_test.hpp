@@ -1,6 +1,6 @@
 /*
- * Wazuh - Shared Modules utils tests
- * Copyright (C) 2015, Wazuh Inc.
+ * GuardBear - Shared Modules utils tests
+ * Copyright (C) 2015, GuardBear Inc.
  * April 19, 2023.
  *
  * This program is free software; you can redistribute it

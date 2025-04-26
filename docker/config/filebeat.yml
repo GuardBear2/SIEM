@@ -1,7 +1,7 @@
 
-# Wazuh - Filebeat configuration file
+# GuardBear - Filebeat configuration file
 filebeat.modules:
-  - module: wazuh
+  - module: guardbear
     alerts:
       enabled: true
     archives:
@@ -9,11 +9,11 @@ filebeat.modules:
 
 setup.template.json.enabled: true
 setup.template.overwrite: true
-setup.template.json.path: '/etc/filebeat/wazuh-template.json'
-setup.template.json.name: 'wazuh'
+setup.template.json.path: '/etc/filebeat/guardbear-template.json'
+setup.template.json.name: 'guardbear'
 setup.ilm.enabled: false
 output.elasticsearch:
-  hosts: ['https://wazuh.indexer:9200']
+  hosts: ['https://guardbear.indexer:9200']
   #username:
   #password:
   #ssl.verification_mode:

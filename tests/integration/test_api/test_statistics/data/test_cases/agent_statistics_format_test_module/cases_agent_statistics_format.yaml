@@ -1,13 +1,13 @@
 - name: REMOTED_ENDPOINT
   description: remoted statistics endpoint
   configuration_parameters:
-    ENDPOINT: wazuh-remoted
+    ENDPOINT: guardbear-remoted
   metadata:
-    endpoint: wazuh-remoted
+    endpoint: guardbear-remoted
 
 - name: ANALYSISD_ENDPOINT
   description: analysisd statistics endpoint
   configuration_parameters:
-    ENDPOINT: wazuh-analysisd
+    ENDPOINT: guardbear-analysisd
   metadata:
-    endpoint: wazuh-analysisd
+    endpoint: guardbear-analysisd
