@@ -10,6 +10,9 @@ $whatIf = $false
 # Full path to this script (so we can skip modifying it)
 $scriptPath = $PSCommandPath
 
+# Create UTF8 encoding without BOM
+$utf8NoBom = New-Object System.Text.UTF8Encoding $false
+
 ###############################################################################
 # 1) RENAME DIRECTORIES THAT CONTAIN "Wazuh"/"WAZUH"/"wazuh" (DEEP->SHALLOW)
 ###############################################################################
@@ -123,7 +126,7 @@ foreach ($file in $files) {
 
         if (-not $whatIf) {
             Try {
-                [System.IO.File]::WriteAllText($file.FullName, $newContent, [System.Text.Encoding]::UTF8)
+                [System.IO.File]::WriteAllText($file.FullName, $newContent, $utf8NoBom)
             }
             Catch {
                 Write-Warning "Failed to write changes to '$($file.FullName)': $($_.Exception.Message)"
