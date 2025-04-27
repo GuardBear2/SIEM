@@ -6,9 +6,9 @@ GUARDBEAR_TAG=$(curl --silent https://api.github.com/repos/guardbear/guardbear/g
 
 ## check tag to use the correct repository
 if [[ -n "${GUARDBEAR_TAG}" ]]; then
-  APT_KEY=https://packages.guardbear.com/key/GPG-KEY-GUARDBEAR
+  APT_KEY=https://packages.wazuh.com/key/GPG-KEY-GUARDBEAR
   GPG_SIGN="gpgcheck=1\ngpgkey=${APT_KEY}]"
-  REPOSITORY="[guardbear]\n${GPG_SIGN}\nenabled=1\nname=EL-\$releasever - GuardBear\nbaseurl=https://packages.guardbear.com/4.x/yum/\nprotect=1"
+  REPOSITORY="[guardbear]\n${GPG_SIGN}\nenabled=1\nname=EL-\$releasever - GuardBear\nbaseurl=https://packages.wazuh.com/4.x/yum/\nprotect=1"
 fi
 
 rpm --import "${APT_KEY}"

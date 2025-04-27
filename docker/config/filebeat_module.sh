@@ -4,7 +4,7 @@ GUARDBEAR_TAG=$(curl --silent https://api.github.com/repos/guardbear/guardbear/g
 
 ## check tag to use the correct repository
 if [[ -n "${GUARDBEAR_TAG}" ]]; then
-  REPOSITORY="packages.guardbear.com/4.x"
+  REPOSITORY="packages.wazuh.com/4.x"
 fi
 
 curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/${FILEBEAT_CHANNEL}-${FILEBEAT_VERSION}-x86_64.rpm &&\

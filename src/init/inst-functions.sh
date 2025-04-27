@@ -41,7 +41,7 @@ InstallPython()
 
     echo "Download Python ${PYTHON_VERSION} file"
     mkdir -p ${PYTHON_INSTALLDIR}
-    wget -O ${PYTHON_FULL_PATH} http://packages.guardbear.com/deps/50/libraries/python/${PYTHON_VERSION}/${PYTHON_FILENAME}
+    wget -O ${PYTHON_FULL_PATH} http://packages.wazuh.com/deps/50/libraries/python/${PYTHON_VERSION}/${PYTHON_FILENAME}
 
     tar -xf $PYTHON_FULL_PATH -C ${PYTHON_INSTALLDIR} && rm -rf ${PYTHON_FULL_PATH}
 
@@ -86,7 +86,7 @@ checkDownloadContent()
     if [ "X${DOWNLOAD_CONTENT}" = "Xy" ]; then
         echo "Download ${VD_FILENAME} file"
         mkdir -p ${INSTALLDIR}var/lib/guardbear-server/tmp/
-        wget -O ${VD_FULL_PATH} http://packages.guardbear.com/deps/vulnerability_model_database/${VD_FILENAME}
+        wget -O ${VD_FULL_PATH} http://packages.wazuh.com/deps/vulnerability_model_database/${VD_FILENAME}
 
         chmod 640 ${VD_FULL_PATH}
         chown ${GUARDBEAR_USER}:${GUARDBEAR_GROUP} ${VD_FULL_PATH}
