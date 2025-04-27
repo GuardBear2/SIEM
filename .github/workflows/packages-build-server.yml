@@ -105,11 +105,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_after_successful_duplicate: 'false'
 
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
       - name: Set tag and container name
         run: |
           VERSION=$(sed 's/^v\([0-9]*\.[0-9]*\.[0-9]*\)/\1/' $GITHUB_WORKSPACE/src/VERSION)

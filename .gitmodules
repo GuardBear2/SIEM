@@ -1,3 +1,0 @@
-﻿[submodule "src/engine/source/guardbear-http-request"]
-	path = src/engine/source/guardbear-http-request
-	url = https://github.com/guardbear/guardbear-http-request

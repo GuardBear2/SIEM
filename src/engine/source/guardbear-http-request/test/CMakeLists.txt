@@ -1,0 +1,5 @@
+add_subdirectory(benchmark)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_subdirectory(component)
+    add_subdirectory(unit)
+endif()
