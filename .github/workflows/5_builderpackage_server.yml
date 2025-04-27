@@ -1,4 +1,4 @@
-run-name: Build guardbear-server packages on PR ${{ github.event.pull_request.number }}
+﻿run-name: Build guardbear-server packages on PR ${{ github.event.pull_request.number }}
 name: Build guardbear-server packages on PR
 
 on:
@@ -17,7 +17,7 @@ jobs:
       matrix:
         architecture: [amd64]
         system: [deb]
-    uses: ./.github/workflows/packages-build-server.yml
+    uses: ./.github/workflows/packages-build-manager.yml
     with:
       architecture: ${{ matrix.architecture }}
       system: ${{ matrix.system }}
