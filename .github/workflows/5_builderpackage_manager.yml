@@ -1,0 +1,24 @@
+run-name: Build guardbear-manager packages on PR ${{ github.event.pull_request.number }}
+name: Build guardbear-manager packages on PR
+
+on:
+  pull_request:
+    types: [synchronize, opened, reopened, ready_for_review]
+    branches:
+      - main
+      - '[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+
+jobs:
+  package-build:
+    if: ${{ !github.event.pull_request.draft }}
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [amd64]
+        system: [deb]
+    uses: ./.github/workflows/packages-build-manager.yml
+    with:
+      architecture: ${{ matrix.architecture }}
+      system: ${{ matrix.system }}
+    secrets: inherit 
