@@ -142,23 +142,39 @@ jobs:
             exit 1;
           fi
 
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Upload package to GitHub
+        uses: actions/upload-artifact@v4
         with:
-          aws-access-key-id: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_SECRET_KEY }}
-          aws-region: ${{ secrets.CI_AWS_REGION }}
-
-      - name: Upload package to S3
-        working-directory: packages
-        run: |
-          aws s3 cp /tmp/${{ env.PACKAGE_NAME }} s3://packages-dev.internal.guardbear.com/development/guardbear/4.x/main/packages/
-          s3uri="s3://packages-dev.internal.guardbear.com/development/guardbear/4.x/main/packages/${{ env.PACKAGE_NAME }}"
-          echo "S3 URI: ${s3uri}"
-
-      - name: Upload checksum to S3
+          name: ${{ env.PACKAGE_NAME }}
+          path: /tmp/${{ env.PACKAGE_NAME }}
+          if-no-files-found: error
+      
+      - name: Upload checksum to GitHub
         if: ${{ inputs.checksum }}
-        run: |
-          aws s3 cp /tmp/${{ env.PACKAGE_NAME }}.sha512 s3://packages-dev.internal.guardbear.com/development/guardbear/4.x/main/packages/
-          s3uri="s3://packages-dev.internal.guardbear.com/development/guardbear/4.x/main/packages/${{ env.PACKAGE_NAME }}.sha512"
-          echo "S3 sha512 URI: ${s3uri}"
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PACKAGE_NAME }}.sha512
+          path: /tmp/${{ env.PACKAGE_NAME }}.sha512
+          if-no-files-found: error
+
+      # Keeping AWS steps commented out for reference
+      # - name: Set up AWS CLI
+      #  uses: aws-actions/configure-aws-credentials@v4
+      #  with:
+      #    aws-access-key-id: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_ACCESS_KEY }}
+      #    aws-secret-access-key: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_SECRET_KEY }}
+      #    aws-region: ${{ secrets.CI_AWS_REGION }}
+
+      # - name: Upload package to S3
+      #  working-directory: packages
+      #  run: |
+      #    aws s3 cp /tmp/${{ env.PACKAGE_NAME }} s3://packages-dev.internal.guardbear.com/development/guardbear/4.x/main/packages/
+      #    s3uri="s3://packages-dev.internal.guardbear.com/development/guardbear/4.x/main/packages/${{ env.PACKAGE_NAME }}"
+      #    echo "S3 URI: ${s3uri}"
+
+      # - name: Upload checksum to S3
+      #  if: ${{ inputs.checksum }}
+      #  run: |
+      #    aws s3 cp /tmp/${{ env.PACKAGE_NAME }}.sha512 s3://packages-dev.internal.guardbear.com/development/guardbear/4.x/main/packages/
+      #    s3uri="s3://packages-dev.internal.guardbear.com/development/guardbear/4.x/main/packages/${{ env.PACKAGE_NAME }}.sha512"
+      #    echo "S3 sha512 URI: ${s3uri}"
