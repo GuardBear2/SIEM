@@ -21,7 +21,6 @@ on:
 
 env:
     PACKAGE_REFERENCE: ${{ inputs.package_reference || github.head_ref || github.sha }}
-    S3_BUCKET_PATH: s3://packages-dev.internal.guardbear.com/development/guardbear/5.x/main/packages
 
 jobs:
 
@@ -32,17 +31,11 @@ jobs:
     if: ${{ github.event.pull_request.draft == false || github.event_name == 'workflow_dispatch' }}
     outputs:
       name: ${{ steps.package_name.outputs.name }}
-      exists: ${{ steps.check_package.outputs.exists }}
+      exists: ${{ steps.check_artifact.outputs.exists }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_SECRET_KEY }}
-          aws-region: ${{ secrets.CI_AWS_REGION }}
-        
+
       # Set guardbear-server package name
       - name: Set package name
         id: package_name
@@ -52,20 +45,34 @@ jobs:
           version=$(sed -E 's/^v([0-9]+\.[0-9]+\.[0-9]+)$/\1/' <<< $full_version)
           echo "name=guardbear-server_${version}-0_amd64_${short_commit}.deb" >> $GITHUB_OUTPUT
 
-      - name: Check if guardbear-server package exists
-        id: check_package
-        run: |
-          if aws s3 ls ${{ env.S3_BUCKET_PATH }}/${{ steps.package_name.outputs.name }} > /dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
+      - name: Check if guardbear-server package exists as artifact
+        id: check_artifact
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const packageName = '${{ steps.package_name.outputs.name }}';
+            try {
+              const artifacts = await github.rest.actions.listArtifactsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo
+              });
+
+              const exists = artifacts.data.artifacts.some(artifact =>
+                artifact.name === 'guardbear-server-package' &&
+                !artifact.expired
+              );
+
+              core.setOutput('exists', exists.toString());
+            } catch (error) {
+              console.error('Error checking artifacts:', error);
+              core.setOutput('exists', 'false');
+            }
 
 # Launch guardbear-server package generation workflow
   generate_package:
     name: Trigger package generation workflow
     needs: check_package_existence
-    if: ${{ github.event_name == 'workflow_dispatch' && needs.check_package_existence.outputs.exists == 'false' }} 
+    if: ${{ github.event_name == 'workflow_dispatch' && needs.check_package_existence.outputs.exists == 'false' }}
     secrets: inherit
     uses: ./.github/workflows/packages-build-server.yml
     with:
@@ -76,7 +83,7 @@ jobs:
   wait_package:
     name: Wait for guardbear-server package generation workflow
     needs: check_package_existence
-    if: ${{ github.event_name == 'pull_request' && needs.check_package_existence.outputs.exists == 'false' }} 
+    if: ${{ github.event_name == 'pull_request' && needs.check_package_existence.outputs.exists == 'false' }}
     runs-on: ubuntu-latest
     steps:
     - name: Wait for guardbear-server package generation workflow
@@ -93,7 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [check_package_existence, generate_package, wait_package]
     if: always() && (needs.generate_package.result == 'success' || needs.wait_package.result == 'success' || needs.check_package_existence.outputs.exists == 'true')
-    env: 
+    env:
       PACKAGE_NAME: ${{ needs.check_package_existence.outputs.name }}
     steps:
       # Check tests tiers input
@@ -113,21 +120,17 @@ jobs:
         with:
           python-version-file: "./.github/workflows/.python-version-it"
           architecture: x64
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v4
+
+      # Download guardbear-server package artifact
+      - name: Download guardbear-server package artifact
+        uses: actions/download-artifact@v3
         with:
-          aws-access-key-id: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.CI_INTERNAL_DEVELOPMENT_BUCKET_USER_SECRET_KEY }}
-          aws-region: ${{ secrets.CI_AWS_REGION }}
-      
-      # Fetch guardbear-server package
-      - name: Fetch guardbear-server package 
-        run: |
-          aws s3 cp ${{ env.S3_BUCKET_PATH }}/${{env.PACKAGE_NAME}} ${GITHUB_WORKSPACE}/${{env.PACKAGE_NAME}}
+          name: guardbear-server-package
+          path: ${{ github.workspace }}
 
       # Install guardbear-server package
-      - name: Install guardbear-server 
-        run: sudo apt install ${GITHUB_WORKSPACE}/${{env.PACKAGE_NAME}}
+      - name: Install guardbear-server
+        run: sudo apt install ${{ github.workspace }}/${{env.PACKAGE_NAME}}
 
       # Download and install integration tests framework.
       - name: Download and install integration tests framework
